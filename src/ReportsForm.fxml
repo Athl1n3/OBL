@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="332.0" prefWidth="473.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane prefHeight="430.0" prefWidth="400.0">
+         <top>
+            <Pane prefHeight="61.0" prefWidth="534.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="188.0" layoutY="4.0" prefHeight="53.0" prefWidth="98.0" text="Reports">
+                     <font>
+                        <Font name="Bell MT Bold" size="27.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="70.0" fitWidth="138.0" layoutX="335.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/Logo.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="imgBack" fitHeight="44.0" fitWidth="57.0" onMouseClicked="#imgBackPressed" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images\baseline_arrow_back_black_48dp.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+         </top>
+         <bottom>
+            <GridPane prefHeight="50.0" prefWidth="540.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="72.0" minHeight="8.0" prefHeight="31.0" />
+                  <RowConstraints maxHeight="100.0" minHeight="10.0" prefHeight="63.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="btnGetReport" mnemonicParsing="false" onAction="#btnGetReportPressed" prefWidth="140.0" text="Get report" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets right="30.0" />
+                     </GridPane.margin>
+                  </Button>
+                  <Separator prefWidth="200.0" />
+               </children>
+            </GridPane>
+         </bottom>
+         <center>
+            <GridPane prefHeight="303.0" prefWidth="473.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="147.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="198.0" minWidth="10.0" prefWidth="146.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="133.0" minHeight="10.0" prefHeight="124.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="118.0" minHeight="10.0" prefHeight="77.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <TilePane prefHeight="105.0" prefWidth="169.0" GridPane.columnIndex="1">
+                     <children>
+                        <RadioButton fx:id="rdActivityReport" mnemonicParsing="false" prefHeight="30.0" prefWidth="162.0" text="Activity Report">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="colorToggleGroup" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="rdLendsReport" mnemonicParsing="false" prefHeight="30.0" prefWidth="161.0" text="Lends Report" toggleGroup="$colorToggleGroup" />
+                        <RadioButton fx:id="rdDelaysReport" mnemonicParsing="false" text="Return Delays Report" toggleGroup="$colorToggleGroup" />
+                     </children>
+                  </TilePane>
+                  <Label text="Report Type:" GridPane.valignment="TOP">
+                     <font>
+                        <Font name="Arial Black" size="12.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets right="20.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="Report Content:" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                     <font>
+                        <Font name="Arial Black" size="12.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets right="20.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <MenuButton mnemonicParsing="false" text="Default" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+               </children>
+               <padding>
+                  <Insets left="90.0" right="90.0" top="20.0" />
+               </padding>
+            </GridPane>
+         </center>
+      </BorderPane>
+   </children>
+</VBox>
