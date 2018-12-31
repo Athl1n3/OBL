@@ -25,7 +25,7 @@ public class ClientConsole implements OBLclientIF {
 	public ClientConsole() {
 		this("localhost", DEFAULT_PORT);
 		/*
-		 * try { client = new ChatClient("localhost", DEFAULT_PORT, this);aa
+		 * try { client = new ChatClient("localhost", DEFAULT_PORT, this);
 		 * System.out.println("connected"); } catch (IOException Exception) {
 		 * System.out.println("Error: Can't setup connection!" +
 		 * " Terminating client."); System.exit(1); }
