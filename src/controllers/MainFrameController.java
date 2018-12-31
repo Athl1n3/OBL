@@ -54,7 +54,7 @@ public class MainFrameController implements Initializable {
 
 	public void start(Stage stage) {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("MainFrameController.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("MainFrameController.fxml"));aa
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.setTitle("Student Frame");
