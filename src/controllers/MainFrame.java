@@ -3,6 +3,7 @@ import java.util.List;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import server.ClientConsole;
 
 public class MainFrame extends Application {
 	

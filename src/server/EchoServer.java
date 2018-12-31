@@ -1,4 +1,4 @@
-package controllers;
+package server;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
