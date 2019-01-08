@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox minHeight="-Infinity" prefHeight="408.0" prefWidth="502.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserLookupController">
+<VBox minHeight="-Infinity" prefHeight="408.0" prefWidth="502.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UserLookupController">
    <children>
       <AnchorPane prefHeight="370.0" prefWidth="502.0">
          <children>
@@ -74,7 +74,7 @@
             </GridPane>
             <ImageView fitHeight="87.0" fitWidth="147.0" layoutX="354.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@images/Logo.png" />
+                  <Image url="@../images/Logo.png" />
                </image>
             </ImageView>
             <GridPane prefHeight="408.0" prefWidth="334.0">
@@ -136,7 +136,7 @@
                   </TextField>
                   <ImageView fx:id="imgBack" fitHeight="44.0" fitWidth="57.0" onMouseClicked="#imgBackClicked" pickOnBounds="true" preserveRatio="true" GridPane.halignment="LEFT" GridPane.valignment="TOP">
                      <image>
-                        <Image url="@images\baseline_arrow_back_black_48dp.png" />
+                        <Image url="@..\images\baseline_arrow_back_black_48dp.png" />
                      </image>
                   </ImageView>
                   <Button fx:id="btnEditData" mnemonicParsing="false" onAction="#btnEditDataPressed" prefWidth="140.0" text="Edit User Data" GridPane.columnIndex="1" GridPane.rowIndex="6">

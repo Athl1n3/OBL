@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="527.0" prefWidth="714.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SearchController">
+<VBox prefHeight="527.0" prefWidth="714.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SearchController">
    <children>
       <BorderPane prefHeight="530.0" prefWidth="680.0">
          <top>
@@ -27,7 +27,7 @@
                <children>
                   <ImageView fx:id="imgBack" fitHeight="44.0" fitWidth="57.0" onMouseClicked="#imgBackClicked" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@images\baseline_arrow_back_black_48dp.png" />
+                        <Image url="@..\images\baseline_arrow_back_black_48dp.png" />
                      </image>
                   </ImageView>
                   <Label layoutX="277.0" layoutY="22.0" text="Book Search">
@@ -37,7 +37,7 @@
                   </Label>
                   <ImageView fitHeight="87.0" fitWidth="147.0" layoutX="533.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@images/Logo.png" />
+                        <Image url="@../images/Logo.png" />
                      </image>
                   </ImageView>
                </children>

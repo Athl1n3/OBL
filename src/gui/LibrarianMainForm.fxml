@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LibrarianMainController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LibrarianMainController">
    <children>
       <BorderPane prefHeight="409.0" prefWidth="640.0">
          <top>
@@ -20,7 +20,7 @@
                <children>
                   <ImageView fitHeight="105.0" fitWidth="192.0" layoutX="448.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@images/Logo.png" />
+                        <Image url="@../images/Logo.png" />
                      </image>
                   </ImageView>
                   <Label layoutX="14.0" layoutY="14.0" text="Hello,">
@@ -41,7 +41,7 @@
                <children>
                   <ImageView fx:id="imgLogout" fitHeight="61.0" fitWidth="72.0" layoutX="579.0" onMouseClicked="#imgLogoutClicked" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@images/baseline_exit_to_app_black_48dp.png" />
+                        <Image url="@../images/baseline_exit_to_app_black_48dp.png" />
                      </image>
                   </ImageView>
                </children>
@@ -63,17 +63,17 @@
                <children>
                   <ImageView fx:id="imgSearch" fitHeight="99.0" fitWidth="117.0" onMouseClicked="#imgSearchClicked" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@images/Search.png" />
+                        <Image url="@../images/Search.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="imgUsersManagement" fitHeight="95.0" fitWidth="101.0" onMouseClicked="#imgUsersManagementClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                      <image>
-                        <Image url="@images/UsersManagment.png" />
+                        <Image url="@../images/UsersManagment.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="imgExtendLend" fitHeight="122.0" fitWidth="133.0" onMouseClicked="#imgExtendLendClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <image>
-                        <Image url="@images/ExtendTime.png" />
+                        <Image url="@../images/ExtendTime.png" />
                      </image>
                   </ImageView>
                   <Label text="Book Search" GridPane.rowIndex="1">
@@ -93,7 +93,7 @@
                   </Label>
                   <ImageView fx:id="imgLibraryManagement" fitHeight="88.0" fitWidth="125.0" onMouseClicked="#imgLibraryManagementClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                      <image>
-                        <Image url="@images/LibraryMnagement.png" />
+                        <Image url="@../images/LibraryMnagement.png" />
                      </image>
                      <GridPane.margin>
                         <Insets />
@@ -116,12 +116,12 @@
                   </Label>
                   <ImageView fx:id="imgLendBook" fitHeight="99.0" fitWidth="117.0" onMouseClicked="#imgLendBookClicked" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
                      <image>
-                        <Image url="@images/BookOut.png" />
+                        <Image url="@../images/BookOut.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="imgReturnBook" fitHeight="99.0" fitWidth="117.0" onMouseClicked="#imgReturnBookClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <image>
-                        <Image url="@images/BookIn.png" />
+                        <Image url="@../images/BookIn.png" />
                      </image>
                   </ImageView>
                </children>
