@@ -2,11 +2,11 @@ package controllers;
 
 import java.util.ArrayList;
 
-import client.ClientConsole;
+import client.ClientConnection;
 import entities.*;
 
 public class DatabaseController {
-	private static ClientConsole ClientConnection;
+	private static ClientConnection ClientConnection;
 	
 	public static void AddAccount(Account newAccount)
 	{
@@ -41,7 +41,7 @@ public class DatabaseController {
 	 * Initiate a client connection to the server
 	 * @param newClientConnection
 	 */
-	public static void InitiateClient(ClientConsole newClientConnection)
+	public static void InitiateClient(ClientConnection newClientConnection)
 	{
 		ClientConnection = newClientConnection;
 	}
