@@ -8,7 +8,7 @@ import common.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-public class ClientConsole implements OBLclientIF {
+public class ClientConnection implements OBLclientIF {
 
 	// The default port to connect on.
 	final public static int DEFAULT_PORT = 5555;
@@ -22,7 +22,7 @@ public class ClientConsole implements OBLclientIF {
 	 * @param port The port to connect on.
 	 */
 
-	public ClientConsole() {
+	public ClientConnection() {
 		this("localhost", DEFAULT_PORT);
 		/*
 		 * try { client = new ChatClient("localhost", DEFAULT_PORT, this);
@@ -32,7 +32,7 @@ public class ClientConsole implements OBLclientIF {
 		 */
 	}
 
-	public ClientConsole(String host, int port) {
+	public ClientConnection(String host, int port) {
 		try {
 			client = new OBLclient(host, port, this);
 		} catch (IOException exception) {
