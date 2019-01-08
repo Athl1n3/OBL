@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -54,17 +55,26 @@ public class MySQLConnection {
 		return null;
 	}
 
+	/**
+	 * Parse database result set into an ArrayList with rows separated by commas
+	 * @param rs
+	 * @return arr
+	 */
 	public ArrayList<String> parseResultSet(ResultSet rs) {
 		ArrayList<String> arr = new ArrayList<>();
-
+		int i;
 		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
 			while (rs.next()) {
-				arr.add(rs.getString(1));
+				i = 1;
+				while (i < rsmd.getColumnCount()) {
+					arr.add(rs.getString(i++));
+				}
+				arr.add(",");
 			}
 		} catch (SQLException Exception) {
 			System.out.println("ERROR while parsing array!");
 		}
 		return arr;
 	}
-
 }
