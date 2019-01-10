@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.Vector;
+
 /**
  * @author азог
  *
@@ -10,21 +12,38 @@ public class Account extends Person {
 	private String userName;
 	private String password;
 	private String userType;
+	//private Vector accountData = new Vector();
 
 	public Account()
 	{
 		//super();
 	}
 	
-	public Account(int iD, float firstName, float lastName, float eMail, float mobileNum, int userID, String userName,
+	public Account(int id, String firstName, String lastName, String eMail, int mobileNum, int userID, String userName,
 			String password, String userType) {
-		super(iD, firstName, lastName, eMail, mobileNum);
+		super(id, firstName, lastName, eMail, mobileNum);
 		this.userID = userID;
 		this.userName = userName;
 		this.password = password;
 		this.userType = userType;
+		/*accountData.addElement(id));	
+		accountData.addElement(firstName);
+		accountData.addElement(lastName);
+		accountData.addElement(eMail);
+		accountData.addElement(mobileNum);
+		accountData.addElement(userID);
+		accountData.addElement(userName);
+		accountData.addElement(password);
+		accountData.addElement(userType);
+		*/
 	}
-
+	
+	/*
+	public Vector getAccountData() {
+		return accountData;
+	}
+	*/
+	
 	/**
 	 * Gets the user ID.
 	 * 
@@ -96,5 +115,6 @@ public class Account extends Person {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
+
 
 }

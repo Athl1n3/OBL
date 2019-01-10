@@ -1,8 +1,10 @@
 package controllers;
 
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import entities.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -62,7 +64,10 @@ public class NewAccountController {
 
     @FXML
     void btnCreateAccountPressed(ActionEvent event) {
-
+    	Account newAccount = new Account();
+    	newAccount.setID(Integer.parseInt(txtID.getText()));
+    	
+    	
     }
 
     @FXML
@@ -72,18 +77,6 @@ public class NewAccountController {
 
     @FXML
     void initialize() {
-        assert btnCreateAccount != null : "fx:id=\"btnCreateAccount\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert imgBack != null : "fx:id=\"imgBack\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert txtID != null : "fx:id=\"txtID\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert txtFirstName != null : "fx:id=\"txtFirstName\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert txtLastName != null : "fx:id=\"txtLastName\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert txtMobileNum != null : "fx:id=\"txtMobileNum\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert txtEmail != null : "fx:id=\"txtEmail\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert lblUserID != null : "fx:id=\"lblUserID\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert txtUsername != null : "fx:id=\"txtUsername\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert txtConPassword != null : "fx:id=\"txtConPassword\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-        assert txtPassword != null : "fx:id=\"txtPassword\" was not injected: check your FXML file 'NewAccountForm.fxml'.";
-
+       
     }
 }
