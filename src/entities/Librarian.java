@@ -5,9 +5,9 @@ public class Librarian extends Account {
 	private int workerID;
 
 	
-	       public Librarian(int iD, float firstName, float lastName, float eMail, float mobileNum, int userID, String userName,
+	       public Librarian(int id, String firstName, String lastName, String eMail, int mobileNum, int userID, String userName,
 			String password, String userType, int workerID) {
-		super(iD, firstName, lastName, eMail, mobileNum, userID, userName, password, userType);
+		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, userType);
 		this.workerID = workerID;
 	}
 
