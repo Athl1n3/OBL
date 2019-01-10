@@ -1,20 +1,19 @@
 package entities;
 
 public class Person {
-	private int ID;
-	private float firstName;
-	private float lastName;
-	private float eMail;
-	private float mobileNum;
+	protected int id;
+	protected String firstName;
+	protected String lastName;
+	protected String eMail;
+	protected int mobileNum;
 	
 	public Person()
 	{
-		
 	}
 	
-	public Person(int iD, float firstName, float lastName, float eMail, float mobileNum) {
+	public Person(int id, String firstName, String lastName, String eMail, int mobileNum) {
 		super();
-		ID = iD;
+		id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.eMail = eMail;
@@ -29,28 +28,28 @@ public class Person {
  	 * @return  ID
  	 */
 	public int getID() {
-		return ID;
+		return id;
 	}
 	/**
 	 * Instantiates the ID
 	 * @param  set the ID
 	 */
-	public void setID(int iD) {
-		ID = iD;
+	public void setID(int id) {
+		id = id;
 	}
  	/**
  	 * Gets the  first Name.
  	 * 
  	 * @return  firstName
  	 */
-	public float getFirstName() {
+	public String getFirstName() {
 		return firstName;
 	}
 	/**
 	 * Instantiates the firstName
 	 * @param  set the firstName
 	 */
-	public void setFirstName(float firstName) {
+	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
  	/**
@@ -58,14 +57,14 @@ public class Person {
  	 * 
  	 * @return  LastName
  	 */
-	public float getLastName() {
+	public String getLastName() {
 		return lastName;
 	}
 	/**
 	 * Instantiates the LastName
 	 * @param  set the LastName
 	 */
-	public void setLastName(float lastName) {
+	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
  	/**
@@ -73,14 +72,14 @@ public class Person {
  	 * 
  	 * @return  eMail
  	 */
-	public float geteMail() {
+	public String geteMail() {
 		return eMail;
 	}
 	/**
 	 * Instantiates the eMail
 	 * @param  set the eMail
 	 */
-	public void seteMail(float eMail) {
+	public void seteMail(String eMail) {
 		this.eMail = eMail;
 	}
  	/**
@@ -88,14 +87,14 @@ public class Person {
  	 * 
  	 * @return  mobileNum
  	 */
-	public float getMobileNum() {
+	public int getMobileNum() {
 		return mobileNum;
 	}
 	/**
 	 * Instantiates the mobile Number
 	 * @param  set the mobileNum
 	 */
-	public void setMobileNum(float mobileNum) {
+	public void setMobileNum(int mobileNum) {
 		this.mobileNum = mobileNum;
 	}
 
