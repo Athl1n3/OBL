@@ -1,10 +1,14 @@
 package entities;
 
-public class Librarian extends Account {
+public class LibrarianAccount extends Account {
 
 	private int workerID;
 
-	public Librarian(int id, String firstName, String lastName, String eMail, int mobileNum, int userID,
+	public LibrarianAccount() {
+
+	}
+
+	public LibrarianAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
 			String userName, String password, int workerID, boolean logged) {
 		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, userType.Librarian, logged);
 		this.workerID = workerID;

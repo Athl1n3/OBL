@@ -11,7 +11,11 @@ public class UserAccount extends Account {
 
 	private accountStatus status;
 
-	public UserAccount(int id, String firstName, String lastName, String eMail, int mobileNum, int userID,
+	public UserAccount() {
+
+	}
+
+	public UserAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
 			String userName, String password, accountStatus status, int delays, int lostBooks, boolean logged) {
 		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, userType.User, logged);
 		this.status = status;
