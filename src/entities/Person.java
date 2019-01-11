@@ -1,7 +1,7 @@
 package entities;
 
 public class Person {
-	protected int id;
+	protected int ID;
 	protected String firstName;
 	protected String lastName;
 	protected String eMail;
@@ -11,31 +11,28 @@ public class Person {
 	{
 	}
 	
-	public Person(int id, String firstName, String lastName, String eMail, int mobileNum) {
-		super();
-		id = id;
+	public Person(int ID, String firstName, String lastName, String eMail, int mobileNum) {
+		this.ID = ID;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.eMail = eMail;
 		this.mobileNum = mobileNum;
 	}
 
-	
-	
- 	/**
+	/**
  	 * Gets the  ID.
  	 * 
  	 * @return  ID
  	 */
 	public int getID() {
-		return id;
+		return ID;
 	}
 	/**
 	 * Instantiates the ID
 	 * @param  set the ID
 	 */
-	public void setID(int id) {
-		id = id;
+	public void setID(int ID) {
+		this.ID = ID;
 	}
  	/**
  	 * Gets the  first Name.
@@ -72,14 +69,14 @@ public class Person {
  	 * 
  	 * @return  eMail
  	 */
-	public String geteMail() {
+	public String getEmail() {
 		return eMail;
 	}
 	/**
 	 * Instantiates the eMail
 	 * @param  set the eMail
 	 */
-	public void seteMail(String eMail) {
+	public void setEmail(String eMail) {
 		this.eMail = eMail;
 	}
  	/**
@@ -96,10 +93,5 @@ public class Person {
 	 */
 	public void setMobileNum(int mobileNum) {
 		this.mobileNum = mobileNum;
-	}
-
-
-	
-	
-
+	}	
 }

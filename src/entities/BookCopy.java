@@ -1,24 +1,51 @@
 package entities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class BookCopy {
-      public BookCopy(int bookID, int serialNumber, String purchaseDate) {
+		private int bookID;
+      private String SerialNumber; 
+      private static int availableCopies;
+      private Date purchaseDate;
+      private boolean lent;
+	
+      public BookCopy(int bookID, String serialNumber, Date purchaseDate, boolean lent) {
 		super();
 		this.bookID = bookID;
 		SerialNumber = serialNumber;
 		this.purchaseDate = purchaseDate;
-	}
-	private int bookID;
-      private int SerialNumber; 
-      private static int availableCopies;
-      private String purchaseDate;//?????????????????
-	
+		this.lent = lent;
+	}	
 
-    SimpleDateFormat dateForm=new SimpleDateFormat("MM/dd/YY");
   	/**
+	 * @return the lent
+	 */
+	public boolean isLent() {
+		return lent;
+	}
+
+	/**
+	 * @param lent the lent to set
+	 */
+	public void setLent(boolean lent) {
+		this.lent = lent;
+	}
+
+	/**
+	 * @return the purchaseDate
+	 */
+	public Date getPurchaseDate() {
+		return purchaseDate;
+	}
+
+	/**
+	 * @param purchaseDate the purchaseDate to set
+	 */
+	public void setPurchaseDate(Date purchaseDate) {
+		this.purchaseDate = purchaseDate;
+	}
+
+	/**
   	 * Gets the book ID.
   	 * 
   	 * @return  bookID
@@ -38,14 +65,14 @@ public class BookCopy {
   	 * 
   	 * @return  SerialNumber
   	 */
-	public int getSerialNumber() {
+	public String getSerialNumber() {
 		return SerialNumber;
 	}
 	/**
 	 * Instantiates Serial Number.
 	 * @param  SerialNumber 
 	 */
-	public void setSerialNumber(int serialNumber) {
+	public void setSerialNumber(String serialNumber) {
 		SerialNumber = serialNumber;
 	}
   	/**
@@ -69,16 +96,6 @@ public class BookCopy {
   	 * @return  purchaseDate
   	 * @throws ParseException 
   	 */
-	public Date getPurchaseDate() throws ParseException {
-		return dateForm.parse(purchaseDate);
-	}
-	/**
-	 * Instantiates purchase Date.
-	 * @param  purchaseDate 
-	 */
-	public void setPurchaseDate(String purchaseDate) {
-		this.purchaseDate = purchaseDate;
-	}
       
       
 }
