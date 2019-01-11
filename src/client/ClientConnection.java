@@ -41,8 +41,8 @@ public class ClientConnection implements OBLclientIF {
 		}
 	}
 
-	public void executeQuery(String query) {
-		client.handleMessageFromClientUI(query);
+	public void executeQuery(ArrayList<Object> arr) {
+		client.handleMessageFromClientUI(arr);
 	}
 
 	// **************************************//
@@ -95,6 +95,11 @@ public class ClientConnection implements OBLclientIF {
 
 	public void terminate() {
 		client.quit();
+	}
+
+	public void executeQuery(String string) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -39,9 +39,9 @@ public class OBLclient extends AbstractClient {
 	}
 
 	// This method handles all data coming from the UI
-	public void handleMessageFromClientUI(String str) {
+	public void handleMessageFromClientUI(ArrayList<Object> arr) {
 		try {
-			sendToServer(str);
+			sendToServer(arr);
 		} catch (IOException e) {
 			clientUI.display("Could not send message to server.  Terminating client.");
 			quit();

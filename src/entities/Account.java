@@ -12,6 +12,7 @@ public class Account extends Person {
 	private String userName;
 	private String password;
 	private String userType;
+	private String status;
 	//private Vector accountData = new Vector();
 
 	public Account()
@@ -114,6 +115,14 @@ public class Account extends Person {
 	 */
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 
