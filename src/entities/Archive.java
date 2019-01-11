@@ -141,14 +141,14 @@ public class Archive {
 	 * 
 	 * @return  eMail
 	 */
-	public String geteMail() {
+	public String getEmail() {
 		return eMail;
 	}
 	/**
 	 * Instantiates the Email.
 	 * @param email set the Email
 	 */
-	public void seteMail(String eMail) {
+	public void setEmail(String eMail) {
 		this.eMail = eMail;
 	}
 	

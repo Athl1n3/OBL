@@ -1,7 +1,5 @@
 package entities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class UserActivity {
@@ -9,18 +7,13 @@ public class UserActivity {
 	
 	private int userID;
 	private String activityName;
-	private String date;//!!!!!!!!!!
+	private Date date;
 	
-	SimpleDateFormat dateForm=new SimpleDateFormat("MM/dd/YY");
-	
-	public UserActivity(int userID, String activityName, String date) {
-		super();
+	public UserActivity(int userID, String activityName, Date date) {
 		this.userID = userID;
 		this.activityName = activityName;
 		this.date = date;
 	}
-
-	
 	
 	/**
 	 * Gets the user ID.
@@ -52,23 +45,18 @@ public class UserActivity {
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
 	}
+
 	/**
-	 * Gets the date.
-	 * 
-	 * @return  date
-	 * @throws ParseException 
+	 * @return the date
 	 */
-	public Date getDate() throws ParseException {
-		return dateForm.parse(date);
+	public Date getDate() {
+		return date;
 	}
+
 	/**
-	 * Instantiates date
-	 * @param  date 
+	 * @param date the date to set
 	 */
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	
-
 }
