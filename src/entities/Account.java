@@ -1,66 +1,82 @@
 package entities;
 
-import java.util.Vector;
-
 /**
  * @author азог
  *
  */
-public class Account extends Person {
+public abstract class Account extends Person {
 
-	private int userID;
+	private int accountID;
 	private String userName;
 	private String password;
+<<<<<<< HEAD
 	private String userType;
 	private String status;
 	//private Vector accountData = new Vector();
+=======
+	private boolean logged;
+>>>>>>> branch 'master' of https://github.com/Athl1n3/OBL-Project.git
 
-	public Account()
-	{
-		//super();
+	public enum userType {
+		User, Librarian, Manager
+	};
+
+	private userType userType;
+
+	public Account() {
+		// super();
 	}
-	
-	public Account(int id, String firstName, String lastName, String eMail, int mobileNum, int userID, String userName,
-			String password, String userType) {
+
+	public Account(int id, String firstName, String lastName, String eMail, String mobileNum, int accountID,
+			String userName, String password, userType userType, boolean logged) {
 		super(id, firstName, lastName, eMail, mobileNum);
-		this.userID = userID;
+		this.accountID = accountID;
 		this.userName = userName;
 		this.password = password;
 		this.userType = userType;
-		/*accountData.addElement(id));	
-		accountData.addElement(firstName);
-		accountData.addElement(lastName);
-		accountData.addElement(eMail);
-		accountData.addElement(mobileNum);
-		accountData.addElement(userID);
-		accountData.addElement(userName);
-		accountData.addElement(password);
-		accountData.addElement(userType);
-		*/
-	}
-	
-	/*
-	public Vector getAccountData() {
-		return accountData;
-	}
-	*/
-	
-	/**
-	 * Gets the user ID.
-	 * 
-	 * @return userID
-	 */
-	public int getUserID() {
-		return userID;
+		this.logged = logged;
 	}
 
 	/**
-	 * Instantiates the userID
-	 * 
-	 * @param set the userID
+	 * @return the logged
 	 */
-	public void setUserID(int userID) {
-		this.userID = userID;
+	public boolean isLogged() {
+		return logged;
+	}
+
+	/**
+	 * @param logged the logged to set
+	 */
+	public void setLogged(boolean logged) {
+		this.logged = logged;
+	}
+
+	/**
+	 * @return the userType
+	 */
+	public userType getUserType() {
+		return userType;
+	}
+
+	/**
+	 * @param userType the userType to set
+	 */
+	public void setUserType(userType userType) {
+		this.userType = userType;
+	}
+
+	/**
+	 * @return the accountID
+	 */
+	public int getAccountID() {
+		return accountID;
+	}
+
+	/**
+	 * @param accountID the accountID to set
+	 */
+	public void setAccountID(int accountID) {
+		this.accountID = accountID;
 	}
 
 	/**
@@ -98,6 +114,7 @@ public class Account extends Person {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+<<<<<<< HEAD
 
 	/**
 	 * Gets the user Type.
@@ -126,4 +143,6 @@ public class Account extends Person {
 	}
 
 
+=======
+>>>>>>> branch 'master' of https://github.com/Athl1n3/OBL-Project.git
 }

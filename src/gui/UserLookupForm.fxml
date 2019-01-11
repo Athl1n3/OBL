@@ -35,7 +35,10 @@
               </rowConstraints>
                <children>
                   <Button fx:id="btnLock" mnemonicParsing="false" onAction="#btnLockPressed" prefHeight="32.0" prefWidth="140.0" text="Lock/Unlock" GridPane.rowIndex="3" />
-                  <Button fx:id="btnSuspend" mnemonicParsing="false" onAction="#btnSuspendPressed" prefHeight="32.0" prefWidth="140.0" text="Suspend/Unsuspend" GridPane.rowIndex="2" />
+                  <Button fx:id="btnSuspend" mnemonicParsing="false" onAction="#btnSuspendPressed" prefHeight="32.0" prefWidth="147.0" text="Suspend/Unsuspend" GridPane.rowIndex="2">
+                     <font>
+                        <Font size="13.0" />
+                     </font></Button>
                   <Label text="Status:" textAlignment="CENTER" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets right="45.0" />

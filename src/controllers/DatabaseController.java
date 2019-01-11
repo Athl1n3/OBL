@@ -6,7 +6,11 @@ import client.ClientConnection;
 import entities.*;
 
 public class DatabaseController {
+<<<<<<< HEAD
 	private static ClientConnection clientConnection;
+=======
+	private static ClientConnection ClientConnection;
+>>>>>>> branch 'master' of https://github.com/Athl1n3/OBL-Project.git
 	
 	static LoggedUser loggedUser;
 	

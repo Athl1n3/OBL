@@ -1,15 +1,11 @@
 package entities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class Book {
 	private int bookID;
 	private String name;
 	private String author;
 	private double edition;
-	private String  printYear;//?????????????
+	private int  printYear;
 	private String Subject;
 	private String description;
 	private int catalog;
@@ -17,7 +13,7 @@ public class Book {
 	private String shelf;
 	private int copiesNumber;
 	
-	public Book(int bookID, String name, String author, double edition, String printYear, String subject,
+	public Book(int bookID, String name, String author, double edition, int printYear, String subject,
 			String description, int catalog, String tableOfContents, String shelf, int copiesNumber) {
 		super();
 		this.bookID = bookID;
@@ -33,12 +29,6 @@ public class Book {
 		this.copiesNumber = copiesNumber;
 	}
 	
-	//Date thisDate=new Date();
-	SimpleDateFormat dateForm=new SimpleDateFormat("MM/dd/YY");
-	
-
-	
-	
   	/**
   	 * Gets the book ID.
   	 * 
@@ -47,6 +37,7 @@ public class Book {
 	public int getBookID() {
 		return bookID;
 	}
+	
 	/**
 	 * Instantiates book ID
 	 * @param  bookID 
@@ -54,6 +45,7 @@ public class Book {
 	public void setBookID(int bookID) {
 		this.bookID = bookID;
 	}
+	
   	/**
   	 * Gets the name.
   	 * 
@@ -62,6 +54,7 @@ public class Book {
 	public String getName() {
 		return name;
 	}
+	
 	/**
 	 * Instantiates name
 	 * @param  name 
@@ -69,6 +62,7 @@ public class Book {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
   	/**
   	 * Gets the author.
   	 * 
@@ -77,6 +71,7 @@ public class Book {
 	public String getAuthor() {
 		return author;
 	}
+	
 	/**
 	 * Instantiates the author
 	 * @param  author 
@@ -84,6 +79,7 @@ public class Book {
 	public void setAuthor(String author) {
 		this.author = author;
 	}
+	
   	/**
   	 * Gets the edition.
   	 * 
@@ -99,26 +95,21 @@ public class Book {
 	public void setEdition(double edition) {
 		this.edition = edition;
 	}
+
   	/**
-  	 * Gets the print Year.
-  	 * 
-  	 * @return  printYear.
-  	 * @throws ParseException 
-  	 */
-	public Date getPrintYear() throws ParseException {
-		//return printYear;
-		//return dateForm.format(thisDate);
-		return dateForm.parse(printYear);
-		
-	}
-	/**
-	 * Instantiates the print Year
-	 * @param  printYear 
+	 * @return the printYear
 	 */
-	public void setPrintYear(String printYear) {
+	public int getPrintYear() {
+		return printYear;
+	}
+	
+	/**
+	 * @param printYear the printYear to set
+	 */
+	public void setPrintYear(int printYear) {
 		this.printYear = printYear;
 	}
-  	/**
+	/**
   	 * Gets the Subject.
   	 * 
   	 * @return  Subject.
