@@ -90,7 +90,7 @@ public class EditBookController {
     	editedBook.setCatalog(Integer.parseInt(txtCatalog.getText()));
     	editedBook.setCopiesNumber(Integer.parseInt(txtCopies.getText()));
     	editedBook.setShelf(txtShelf.getText());
-    	//Updated edited book in DB
+    	//Updated edited book in DB (DBController.updateBook(editedBook));
     	//add success message 
     	Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Success");
@@ -120,7 +120,7 @@ public class EditBookController {
     }
     
     /*
-     * this function initialize the fields in the new window previous window selected book  
+     * this function initialize the fields in the new window previous window selected book 
      */
     public void initFields(Book selectedBook) {
     	
