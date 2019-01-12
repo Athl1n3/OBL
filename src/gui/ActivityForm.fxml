@@ -25,12 +25,12 @@
                         <Image url="@..\images\baseline_arrow_back_black_48dp.png" />
                      </image>
                   </ImageView>
-                  <Label layoutX="221.0" layoutY="22.0" text="Account Activity History">
+                  <Label layoutX="200.0" layoutY="5.0" text="Account Activity History">
                      <font>
-                        <Font name="Bell MT" size="25.0" />
+                        <Font name="Bell MT" size="29.0" />
                      </font>
                   </Label>
-                  <ImageView fitHeight="87.0" fitWidth="147.0" layoutX="554.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="99.0" fitWidth="185.0" layoutX="515.0" layoutY="-3.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/Logo.png" />
                      </image>

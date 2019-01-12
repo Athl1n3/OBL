@@ -15,6 +15,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * @author Adam Mahameed
+ * @version 1.2 [12.1.2019]
+ * 
+ */
 public class ArchivedDataController {
 
 	@FXML
@@ -45,6 +51,9 @@ public class ArchivedDataController {
 	private TextField txtUserID;
 
 	@FXML
+	private TextField txtPassword;
+
+	@FXML
 	private TextField txtUsername;
 
 	private static Archive userArcData;
@@ -55,6 +64,7 @@ public class ArchivedDataController {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 		Scene scene = SceneController.pop();
 		stage.setScene(scene);
+		stage.setTitle("User lookup");
 	}
 
 	@FXML

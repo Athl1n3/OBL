@@ -20,6 +20,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * @author Adam Mahameed
+ * @version 1.2 [12.1.2019]
+ * 
+ */
 public class ActivityController {
 
 	@FXML
@@ -49,6 +55,7 @@ public class ActivityController {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 		Scene scene = SceneController.pop();
 		stage.setScene(scene);
+		stage.setTitle("User Lookup");
 	}
 
 	@FXML

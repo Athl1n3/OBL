@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 import javafx.scene.Scene;
 
+/**
+ * 
+ * @author Adam Mahameed
+ * @version 1.2 [12.1.2019]
+ * 
+ */
 public class SceneController {
 	private static ArrayList<Scene> stageList = new ArrayList<>();
 

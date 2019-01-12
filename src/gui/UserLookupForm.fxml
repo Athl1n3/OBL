@@ -15,30 +15,32 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox minHeight="-Infinity" prefHeight="408.0" prefWidth="502.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UserLookupController">
+<VBox minHeight="-Infinity" prefHeight="518.0" prefWidth="701.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UserLookupController">
    <children>
-      <AnchorPane prefHeight="370.0" prefWidth="502.0">
+      <AnchorPane prefHeight="523.0" prefWidth="701.0">
          <children>
-            <Separator layoutX="332.0" layoutY="115.0" orientation="VERTICAL" prefHeight="293.0" prefWidth="19.0" />
-            <Separator layoutY="101.0" prefHeight="30.0" prefWidth="502.0" />
-            <GridPane layoutX="354.0" layoutY="49.0" prefHeight="360.0" prefWidth="147.0">
+            <Separator layoutX="487.0" layoutY="116.0" orientation="VERTICAL" prefHeight="398.0" prefWidth="19.0" />
+            <Separator layoutY="101.0" prefHeight="30.0" prefWidth="701.0" />
+            <ImageView fitHeight="99.0" fitWidth="185.0" layoutX="515.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/Logo.png" />
+               </image>
+            </ImageView>
+            <GridPane layoutX="526.0" layoutY="43.0" prefHeight="474.0" prefWidth="161.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints maxHeight="120.8" minHeight="10.0" prefHeight="56.00001220703125" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="112.00000000000001" minHeight="10.0" prefHeight="84.00001831054688" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="130.4" minHeight="1.8000000000000114" prefHeight="38.40003356933593" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="129.1999725341797" minHeight="10.0" prefHeight="74.4" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="142.39999999999998" minHeight="10.0" prefHeight="38.40001220703127" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="110.40001220703124" minHeight="0.0" prefHeight="71.19998779296878" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="120.8" minHeight="10.0" prefHeight="64.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="148.0" minHeight="10.0" prefHeight="148.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="130.4" minHeight="1.8000000000000114" prefHeight="61.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="150.0" minHeight="10.0" prefHeight="61.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="142.39999999999998" minHeight="10.0" prefHeight="59.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="110.40001220703124" minHeight="0.0" prefHeight="78.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="btnLock" mnemonicParsing="false" onAction="#btnLockPressed" prefHeight="32.0" prefWidth="140.0" text="Lock/Unlock" GridPane.rowIndex="3" />
-                  <Button fx:id="btnSuspend" mnemonicParsing="false" onAction="#btnSuspendPressed" prefHeight="32.0" prefWidth="147.0" text="Suspend/Unsuspend" GridPane.rowIndex="2">
-                     <font>
-                        <Font size="13.0" />
-                     </font></Button>
+                  <Button fx:id="btnLock" mnemonicParsing="false" onAction="#btnLockPressed" prefHeight="32.0" prefWidth="197.0" text="Lock/Unlock" GridPane.rowIndex="3" />
+                  <Button fx:id="btnSuspend" mnemonicParsing="false" onAction="#btnSuspendPressed" prefHeight="32.0" prefWidth="174.0" text="Suspend/Unsuspend" GridPane.rowIndex="2" />
                   <Label text="Status:" textAlignment="CENTER" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets right="45.0" />
@@ -49,12 +51,12 @@
                         <Insets left="45.0" />
                      </GridPane.margin>
                      <font>
-                        <Font name="System Bold" size="12.0" />
+                        <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
                   <CheckBox fx:id="cbEditUser" mnemonicParsing="false" text="Edit User" GridPane.rowIndex="1">
                      <GridPane.margin>
-                        <Insets top="50.0" />
+                        <Insets top="65.0" />
                      </GridPane.margin>
                   </CheckBox>
                   <Button fx:id="btnView" mnemonicParsing="false" onAction="#btnView" prefHeight="29.0" prefWidth="64.0" text="View">
@@ -67,32 +69,46 @@
                         <Insets left="80.0" top="22.0" />
                      </GridPane.margin>
                   </Button>
-                  <Button fx:id="btnViewHistory" mnemonicParsing="false" onAction="#btnViewHistoryPressed" prefWidth="140.0" text="View Activity History" GridPane.rowIndex="5">
+                  <Button fx:id="btnViewHistory" mnemonicParsing="false" onAction="#btnViewHistoryPressed" prefHeight="31.0" prefWidth="166.0" text="View Activity History" GridPane.rowIndex="5">
                      <GridPane.margin>
                         <Insets bottom="17.0" />
                      </GridPane.margin>
                   </Button>
-                  <Button fx:id="btnArchive" mnemonicParsing="false" onAction="#btnArchivePressed" prefWidth="140.0" text="Archived Data" GridPane.rowIndex="4" />
+                  <Button fx:id="btnArchive" mnemonicParsing="false" onAction="#btnArchivePressed" prefHeight="31.0" prefWidth="242.0" text="Archived Data" GridPane.rowIndex="4" />
+                  <Label text="User ID:" GridPane.rowIndex="1">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets bottom="60.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Label fx:id="lblUserID" text="Label" textFill="#241ea8" GridPane.rowIndex="1">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets bottom="60.0" left="55.0" />
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
                </children>
             </GridPane>
-            <ImageView fitHeight="87.0" fitWidth="147.0" layoutX="354.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/Logo.png" />
-               </image>
-            </ImageView>
-            <GridPane prefHeight="408.0" prefWidth="334.0">
+            <GridPane layoutX="-2.0" layoutY="59.0" prefHeight="459.0" prefWidth="508.0">
               <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="123.20001220703125" minWidth="10.0" prefWidth="96.800048828125" />
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="207.4000122070312" minWidth="10.0" prefWidth="195.199951171875" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="360.0" minWidth="10.0" prefWidth="300.0" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints maxHeight="203.19998779296876" minHeight="0.0" prefHeight="62.800009155273436" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="221.60000000000002" minHeight="0.0" prefHeight="53.39998168945313" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="221.60000000000002" minHeight="0.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="221.60000000000002" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="221.60000000000002" minHeight="0.0" prefHeight="59.99999389648437" vgrow="SOMETIMES" />
                 <RowConstraints maxHeight="268.8" minHeight="0.0" prefHeight="61.600003051757824" valignment="CENTER" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="316.0" minHeight="0.0" prefHeight="51.800024414062506" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="394.4" minHeight="4.799981689453148" prefHeight="54.39998779296877" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="436.8" minHeight="0.0" prefHeight="67.20001220703125" valignment="TOP" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="394.4" minHeight="4.799981689453148" prefHeight="61.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="436.8" minHeight="0.0" prefHeight="74.0" valignment="TOP" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Label text="Last Name" GridPane.rowIndex="3">
@@ -100,19 +116,11 @@
                         <Insets />
                      </GridPane.margin>
                   </Label>
-                  <Label text="User Lookup" GridPane.columnIndex="1">
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
-                     <font>
-                        <Font name="Bell MT" size="25.0" />
-                     </font>
-                  </Label>
-                  <Label text="ID" GridPane.rowIndex="1" />
+                  <Label text="ID" />
                   <Label text="Mobile Number" GridPane.rowIndex="4" />
                   <Label text="First Name" GridPane.rowIndex="2" />
                   <Label text="Email" GridPane.rowIndex="5" />
-                  <TextField fx:id="txtUserID" prefHeight="26.0" prefWidth="181.0" promptText="User ID" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <TextField fx:id="txtUserID" prefHeight="31.0" prefWidth="249.0" promptText="ID" GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
@@ -137,18 +145,25 @@
                         <Insets />
                      </GridPane.margin>
                   </TextField>
-                  <ImageView fx:id="imgBack" fitHeight="44.0" fitWidth="57.0" onMouseClicked="#imgBackClicked" pickOnBounds="true" preserveRatio="true" GridPane.halignment="LEFT" GridPane.valignment="TOP">
-                     <image>
-                        <Image url="@..\images\baseline_arrow_back_black_48dp.png" />
-                     </image>
-                  </ImageView>
                   <Button fx:id="btnEditData" mnemonicParsing="false" onAction="#btnEditDataPressed" prefWidth="140.0" text="Edit User Data" GridPane.columnIndex="1" GridPane.rowIndex="6">
                      <GridPane.margin>
-                        <Insets top="10.0" />
+                        <Insets top="20.0" />
                      </GridPane.margin>
                   </Button>
+                  <Label text="Username" GridPane.rowIndex="1" />
+                  <TextField fx:id="txtUsername" prefHeight="31.0" prefWidth="249.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
             </GridPane>
+            <Label layoutX="273.0" layoutY="5.0" text="User Lookup">
+               <font>
+                  <Font name="Bell MT" size="29.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="imgBack" fitHeight="44.0" fitWidth="57.0" onMouseClicked="#imgBackClicked" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@..\images\baseline_arrow_back_black_48dp.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
    </children>

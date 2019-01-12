@@ -26,6 +26,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * @author Adam Mahameed
+ * @version 1.2 [12.1.2019]
+ * 
+ */
 public class UserLookupController {
 
 	@FXML
@@ -38,10 +44,16 @@ public class UserLookupController {
 	private Button btnLock;
 
 	@FXML
+	private Label lblUserID;
+
+	@FXML
 	private Button btnSuspend;
 
 	@FXML
 	private Label lblStatus;
+
+	@FXML
+	private TextField txtUsername;
 
 	@FXML
 	private CheckBox cbEditUser;
@@ -174,7 +186,6 @@ public class UserLookupController {
 			txtEmail.requestFocus();
 			return false;
 		}
-
 		return true;// If all inputs are valid
 	}
 
@@ -279,11 +290,11 @@ public class UserLookupController {
 		}
 		lblStatus.setText("---");
 
-		btnEditData.setVisible(false);
+		btnEditData.setDisable(true);
 		cbEditUser.setOnAction(new EventHandler<ActionEvent>() {// Edit user checkbox event handler
 			@Override
 			public void handle(ActionEvent event) {
-				btnEditData.setVisible(cbEditUser.isSelected() ? true : false);
+				btnEditData.setDisable(cbEditUser.isSelected() ? false : true);
 				txtFirstName.setEditable(cbEditUser.isSelected() ? true : false);
 				txtLastName.setEditable(cbEditUser.isSelected() ? true : false);
 				txtMobileNum.setEditable(cbEditUser.isSelected() ? true : false);
@@ -309,10 +320,12 @@ public class UserLookupController {
 	 * Load user account data into GUI corresponding text fields
 	 */
 	void LoadUserData() {
+		txtUsername.setText(lookupAccount.getUserName());
 		txtFirstName.setText(lookupAccount.getFirstName());
 		txtLastName.setText(lookupAccount.getLastName());
 		txtMobileNum.setText(String.valueOf(lookupAccount.getMobileNum()));
 		txtEmail.setText(String.valueOf(lookupAccount.getEmail()));
+		lblUserID.setText(String.valueOf(lookupAccount.getAccountID()));
 		switch (lookupAccount.getStatus()) {
 		case Active:
 			lblStatus.setTextFill(javafx.scene.paint.Color.GREEN);
