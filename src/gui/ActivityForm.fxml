@@ -92,8 +92,8 @@
                   </Label>
                   <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
                     <columns>
-                      <TableColumn prefWidth="150.0" text="Date" />
-                      <TableColumn minWidth="0.0" prefWidth="550.0" text="Activity" />
+                      <TableColumn fx:id="dateColumn" prefWidth="150.0" text="Date" />
+                      <TableColumn fx:id="activityColumn" minWidth="0.0" prefWidth="550.0" text="Activity" />
                     </columns>
                   </TableView>
                </children>
