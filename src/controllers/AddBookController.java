@@ -76,32 +76,30 @@ public class AddBookController {
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
 
-
-		try{
+		try {
 			if (!(txtBookID.getText().matches("[0-9]+") && txtPrintYear.getText().matches("[0-9]+")
-					&& txtCatalog.getText().matches("[0-9]+") && txtEdition.getText().matches("[0-9]+")&& txtCopies.getText().matches("[0-9]+"))) {
-			
-					throw new Exception();
+					&& txtCatalog.getText().matches("[0-9]+") && txtEdition.getText().matches("[0-9]+")
+					&& txtCopies.getText().matches("[0-9]+"))) {
+
+				throw new Exception();
 			}
-	
+
 			Book newBook = new Book(Integer.parseInt(txtBookID.getText()), txtBookName.getText(), txtAuthor.getText(),
 					Double.parseDouble(txtEdition.getText()), Integer.parseInt(txtPrintYear.getText()),
 					txtBookSubject.getText(), txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()),
 					txtTableOfContents.getText(), txtShelf.getText(), Integer.parseInt(txtCopies.getText()));
-			
+
 			// write this book to DB (DBController.addbook(newBook));
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Succsess");
 			alert.setHeaderText("The book has added successfully");
 			alert.showAndWait();
-			
+
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/ManageLibraryForm.fxml"));
 			Stage stage = new Stage();
 			stage.setScene(new Scene((Parent) loader.load()));
 			stage.show();
 			((Node) event.getSource()).getScene().getWindow().hide();
-
-			
 
 		} catch (Exception e) {
 			Alert alert = new Alert(AlertType.ERROR);
@@ -121,7 +119,6 @@ public class AddBookController {
 		 * alert.setContentText("please enter a new id "); alert.showAndWait(); } }
 		 */
 
-		
 	}
 
 	/*

@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -63,7 +64,7 @@ public class ManageLibraryController {
 
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
-		
+
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/AddBookForm.fxml"));
 			Parent root = (Parent) loader.load();
@@ -76,19 +77,45 @@ public class ManageLibraryController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	@FXML
 	void btnDeleteBookPressed(ActionEvent event) {
+
+		Book selectedForDelete = (Book) tableView.getSelectionModel().getSelectedItem();
+		try {
+
+			if (selectedForDelete == null)
+				throw new Exception();
+			else {
+				Alert confirmation = new Alert(AlertType.CONFIRMATION);
+				confirmation.setTitle("Confirmation");
+				confirmation.setHeaderText("Are you sure want to delete this book");
+				// confirmation.setContentText("Select a book for delete!");
+				confirmation.showAndWait().ifPresent(response -> {
+					if (response == ButtonType.OK) {
+						// delete this book from DB
+						// DBController.DeleteBook(selectedForDelete);
+					}
+				});
+
+			}
+
+		} catch (Exception e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("No book has selected");
+			alert.setContentText("Select a book for delete!");
+			alert.showAndWait();
+		}
 
 	}
 
 	@FXML
 	void btnEditBookPressed(ActionEvent event) throws Exception {
 		Book selectedForEdit = (Book) tableView.getSelectionModel().getSelectedItem();
-		
-		//
+
 		try {
 
 			if (selectedForEdit == null) {
@@ -109,8 +136,7 @@ public class ManageLibraryController {
 			((Node) event.getSource()).getScene().getWindow().hide();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error");
 			alert.setHeaderText("No book has selected");
@@ -118,16 +144,15 @@ public class ManageLibraryController {
 			alert.showAndWait();
 		}
 
-
 	}
 
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/LibrarianMainForm.fxml"));
-	    Stage stage = new Stage();
-	    stage.setScene(new Scene((Parent) loader.load()));
-	    stage.show();
-	    ((Node) event.getSource()).getScene().getWindow().hide();
+		Stage stage = new Stage();
+		stage.setScene(new Scene((Parent) loader.load()));
+		stage.show();
+		((Node) event.getSource()).getScene().getWindow().hide();
 	}
 
 	@FXML
