@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
 
@@ -10,11 +11,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class EditBookController {
@@ -65,7 +69,11 @@ public class EditBookController {
 
     @FXML
     void btnBrowsePathPressed(ActionEvent event) {
-    	//adam will make it 
+    	FileChooser fc = new FileChooser();
+		File SelectedFile = fc.showOpenDialog(null); 
+		if(SelectedFile != null) {
+			txtPath.setText(SelectedFile.getAbsolutePath());
+		}
     }
 
     @FXML
@@ -84,6 +92,11 @@ public class EditBookController {
     	editedBook.setShelf(txtShelf.getText());
     	//Updated edited book in DB
     	//add success message 
+    	Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Success");
+		alert.setContentText("this changes has updated successfully");
+		alert.showAndWait();
+    	
     }
 
     
@@ -116,7 +129,7 @@ public class EditBookController {
     	txtAuthor.setText(selectedBook.getAuthor());
     	txtBookID.setText(Integer.toString(selectedBook.getBookID()));
     	txtEdition.setText(Double.toString(selectedBook.getEdition()));
-    	//txtPrintYear.setText(Date.selectedBook.getPrintYear());
+    	txtPrintYear.setText(Integer.toString(selectedBook.getPrintYear()));
     	txtSubject.setText(selectedBook.getSubject());
     	txtCatalog.setText(Integer.toString(selectedBook.getCatalog()));
     	txtCopies.setText(Integer.toString(selectedBook.getCopiesNumber()));

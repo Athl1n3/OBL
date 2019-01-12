@@ -71,7 +71,6 @@ public class ManageLibraryController {
 			stage.setTitle("Add book");
 			stage.setScene(new Scene(root));
 			stage.show();
-
 			// Hide this current window
 			((Node) event.getSource()).getScene().getWindow().hide();
 		} catch (IOException e) {
@@ -112,7 +111,7 @@ public class ManageLibraryController {
 			e.printStackTrace();
 		}
 		catch(Exception e) {
-			Alert alert = new Alert(AlertType.INFORMATION);
+			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error");
 			alert.setHeaderText("No book has selected");
 			alert.setContentText("Select a book for edit!");

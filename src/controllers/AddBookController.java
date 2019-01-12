@@ -1,8 +1,10 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
 
 import entities.Book;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class AddBookController {
@@ -72,18 +75,41 @@ public class AddBookController {
 
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
-		Book newBook = new Book(
-				Integer.parseInt(txtBookID.getText()), 
-				txtBookName.getText(),
-				txtAuthor.getText(),
-				Double.parseDouble(txtEdition.getText()),
-				Integer.parseInt(txtPrintYear.getText()),
-				txtBookSubject.getText(),
-				txtDescirption.getText(), 
-				Integer.parseInt(txtCatalog.getText()),
-				txtTableOfContents.getText(),
-				txtShelf.getText(), 
-				Integer.parseInt(txtCopies.getText()));
+
+
+		try{
+			if (!(txtBookID.getText().matches("[0-9]+") && txtPrintYear.getText().matches("[0-9]+")
+					&& txtCatalog.getText().matches("[0-9]+") && txtEdition.getText().matches("[0-9]+")&& txtCopies.getText().matches("[0-9]+"))) {
+			
+					throw new Exception();
+			}
+	
+			Book newBook = new Book(Integer.parseInt(txtBookID.getText()), txtBookName.getText(), txtAuthor.getText(),
+					Double.parseDouble(txtEdition.getText()), Integer.parseInt(txtPrintYear.getText()),
+					txtBookSubject.getText(), txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()),
+					txtTableOfContents.getText(), txtShelf.getText(), Integer.parseInt(txtCopies.getText()));
+			
+			// write this book to DB (DBController.addbook(newBook));
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Succsess");
+			alert.setHeaderText("The book has added successfully");
+			alert.showAndWait();
+			
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/ManageLibraryForm.fxml"));
+			Stage stage = new Stage();
+			stage.setScene(new Scene((Parent) loader.load()));
+			stage.show();
+			((Node) event.getSource()).getScene().getWindow().hide();
+
+			
+
+		} catch (Exception e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("The following fields must contain Numbers only ");
+			alert.setContentText("ID \nPrint year \nCatalog \nCopies");
+			alert.showAndWait();
+		}
 
 		/*
 		 * needs DB try {
@@ -95,23 +121,40 @@ public class AddBookController {
 		 * alert.setContentText("please enter a new id "); alert.showAndWait(); } }
 		 */
 
-		// write to this book to DB
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/ManageLibraryForm.fxml"));
-		Stage stage = new Stage();
-		stage.setScene(new Scene((Parent) loader.load()));
-		stage.show();
-		((Node) event.getSource()).getScene().getWindow().hide();
-
+		
 	}
 
+	/*
+	 * when browse button clicked this method open the window to get the path of the
+	 * file
+	 */
 	@FXML
 	void btnBrowsePathPressed(ActionEvent event) {
+		FileChooser fc = new FileChooser();
+		File SelectedFile = fc.showOpenDialog(null);
 
+		if (SelectedFile != null) {
+			txtPath.setText(SelectedFile.getAbsolutePath());
+		}
 	}
 
+	/*
+	 * this method clears all the data in the fields when clear button clicked
+	 */
 	@FXML
-	void btnClearPressed(ActionEvent event) {	
-		txtBookName .clear();
+	void btnClearPressed(ActionEvent event) {
+		txtBookName.clear();
+		txtBookID.clear();
+		txtEdition.clear();
+		txtAuthor.clear();
+		txtTableOfContents.clear();
+		txtPrintYear.clear();
+		txtBookSubject.clear();
+		txtCatalog.clear();
+		txtCopies.clear();
+		txtShelf.clear();
+		txtDescirption.clear();
+		txtPath.clear();
 	}
 
 	@FXML
@@ -123,20 +166,35 @@ public class AddBookController {
 		((Node) event.getSource()).getScene().getWindow().hide();
 	}
 
-	// disable the button until fill all the data
 	/*
-	 * @FXML void EnableAddBookButton(InputMethodEvent event) {
-	 * System.out.println("dddd");
-	 * if(txtBookName.getText()==null||txtAuthor.getText()==null||txtBookID.getText(
-	 * )==null||txtEdition.getText()==null||txtPrintYear.getText()==null||
-	 * txtBookSubject.getText()==null||txtCatalog.getText()==null||txtCopies.getText
-	 * ()==null||txtShelf.getText()==null) btnAddBook.setDisable(true); else
-	 * btnAddBook.setDisable(false); }
+	 * initialize "add button to disable until fill all the fields in the form
 	 */
-
 	@FXML
 	void initialize() {
 		btnAddBook.setDisable(true);
+
+		BooleanBinding bb = new BooleanBinding() {
+			{
+				super.bind(txtBookName.textProperty(), txtAuthor.textProperty(), txtBookID.textProperty(),
+						txtEdition.textProperty(), txtTableOfContents.textProperty(), txtPrintYear.textProperty(),
+						txtBookSubject.textProperty(), txtCatalog.textProperty(), txtCopies.textProperty(),
+						txtShelf.textProperty(), txtDescirption.textProperty(), txtPath.textProperty());
+			}
+
+			// this function return true if at least one field not filled
+			@Override
+			protected boolean computeValue() {
+				return (txtBookName.getText().isEmpty() || txtAuthor.getText().isEmpty()
+						|| txtBookID.getText().isEmpty() || txtEdition.getText().isEmpty()
+						|| txtTableOfContents.getText().isEmpty() || txtPrintYear.getText().isEmpty()
+						|| txtBookSubject.getText().isEmpty() || txtCatalog.getText().isEmpty()
+						|| txtCopies.getText().isEmpty() || txtShelf.getText().isEmpty()
+						|| txtDescirption.getText().isEmpty() || txtPath.getText().isEmpty());
+			}
+		};
+
+		// Enable "add book button" after fill all the fields
+		btnAddBook.disableProperty().bind(bb);
 
 	}
 
