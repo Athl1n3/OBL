@@ -1,27 +1,21 @@
 package entities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LentBook {
-	public LentBook(int userID, int bookID, String issueDate, String dueDate, String returnDate, boolean late) {
+	public LentBook(int userID, int bookID, Date issueDate, Date dueDate, boolean late) {
 		super();
 		this.userID = userID;
 		this.bookID = bookID;
 		IssueDate = issueDate;
 		DueDate = dueDate;
-		ReturnDate = returnDate;
 		this.late = late;
 	}
 	private int userID;
 	private int bookID;
-	private String IssueDate;//?????????????
-	private String DueDate;//?
-	private String ReturnDate;//?
+	private Date IssueDate;
+	private Date DueDate;
 	private boolean  late;
-	
-	SimpleDateFormat dateForm=new SimpleDateFormat("MM/dd/YY");
 	
 	/**
 	 * Gets the user ID.
@@ -53,54 +47,7 @@ public class LentBook {
 	public void setBookID(int bookID) {
 		this.bookID = bookID;
 	}
-	/**
-	 * Gets the Issue Date.
-	 * 
-	 * @return  IssueDate
-	 * @throws ParseException 
-	 */
-	public Date getIssueDate() throws ParseException {
-		return dateForm.parse(IssueDate);
-	}
-	/**
-	 * Instantiates Issue Date
-	 * @param  IssueDate 
-	 */
-	public void setIssueDate(String issueDate) {
-		IssueDate = issueDate;
-	}
-	/**
-	 * Gets the Due Date.
-	 * 
-	 * @return  DueDate
-	 * @throws ParseException 
-	 */
-	public Date getDueDate() throws ParseException {
-		return dateForm.parse(DueDate);
-	}
-	/**
-	 * Instantiates Due Date
-	 * @param  DueDate 
-	 */
-	public void setDueDate(String dueDate) {
-		DueDate = dueDate;
-	}
-	/**
-	 * Gets the Return Date.
-	 * 
-	 * @return  ReturnDate
-	 * @throws ParseException 
-	 */
-	public Date getReturnDate() throws ParseException {
-		return dateForm.parse(ReturnDate);
-	}
-	/**
-	 * Instantiates Return Date
-	 * @param  ReturnDate 
-	 */
-	public void setReturnDate(String returnDate) {
-		ReturnDate = returnDate;
-	}
+	
 	/**
 	 * Gets true if late.
 	 * 
@@ -116,7 +63,28 @@ public class LentBook {
 	public void setLate(boolean late) {
 		this.late = late;
 	}
-	
-
-
+	/**
+	 * @return the issueDate
+	 */
+	public Date getIssueDate() {
+		return IssueDate;
+	}
+	/**
+	 * @param issueDate the issueDate to set
+	 */
+	public void setIssueDate(Date issueDate) {
+		IssueDate = issueDate;
+	}
+	/**
+	 * @return the dueDate
+	 */
+	public Date getDueDate() {
+		return DueDate;
+	}
+	/**
+	 * @param dueDate the dueDate to set
+	 */
+	public void setDueDate(Date dueDate) {
+		DueDate = dueDate;
+	}
 }

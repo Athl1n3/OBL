@@ -1,74 +1,66 @@
 package entities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class UserActivity {
-	
-	
+
 	private int userID;
 	private String activityName;
-	private String date;//!!!!!!!!!!
-	
-	SimpleDateFormat dateForm=new SimpleDateFormat("MM/dd/YY");
-	
-	public UserActivity(int userID, String activityName, String date) {
-		super();
+	private Date date;
+
+	public UserActivity(int userID, String activityName, Date date) {
 		this.userID = userID;
 		this.activityName = activityName;
 		this.date = date;
 	}
 
-	
-	
 	/**
 	 * Gets the user ID.
 	 * 
-	 * @return  userID
+	 * @return userID
 	 */
 	public int getUserID() {
 		return userID;
 	}
+
 	/**
 	 * Instantiates user ID
-	 * @param  userID 
+	 * 
+	 * @param userID
 	 */
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}
+
 	/**
 	 * Gets the activity Name.
 	 * 
-	 * @return  activityName
+	 * @return activityName
 	 */
 	public String getActivityName() {
 		return activityName;
 	}
+
 	/**
 	 * Instantiates activity Name
-	 * @param  activityName 
+	 * 
+	 * @param activityName
 	 */
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
 	}
+
 	/**
-	 * Gets the date.
-	 * 
-	 * @return  date
-	 * @throws ParseException 
+	 * @return the date
 	 */
-	public Date getDate() throws ParseException {
-		return dateForm.parse(date);
+	public Date getDate() {
+		return date;
 	}
+
 	/**
-	 * Instantiates date
-	 * @param  date 
+	 * @param date the date to set
 	 */
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	
-
 }

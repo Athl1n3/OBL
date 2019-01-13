@@ -1,85 +1,75 @@
 package entities;
 
 public class UserAccount extends Account {
-	
-	private String status;
+
 	private int delays;
 	private int lostBooks;
-	private boolean logged;
-	
-	public UserAccount(int id, String firstName, String lastName, String eMail, int mobileNum, int userID,
-			String userName, String password, String userType, String status, int delays, int lostBooks,
-			boolean logged) {
-		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, userType);
+
+	public enum accountStatus {
+		Active, Locked, Suspended
+	};
+
+	private accountStatus status;
+
+	public UserAccount() {
+
+	}
+
+	public UserAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
+			String userName, String password, accountStatus status, int delays, int lostBooks, boolean logged) {
+		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, userType.User, logged);
 		this.status = status;
 		this.delays = delays;
 		this.lostBooks = lostBooks;
-		this.logged = logged;
 	}
-	/**
-	 * Gets the status user account.
-	 * 
-	 * @return  status
-	 */
 
-	public String getStatus() {
+	/**
+	 * @return the status
+	 */
+	public accountStatus getStatus() {
 		return status;
 	}
+
 	/**
-	 * Instantiates the status
-	 * @param  status 
+	 * @param status the status to set
 	 */
-	public void setStatus(String status) {
+	public void setStatus(accountStatus status) {
 		this.status = status;
 	}
+
 	/**
 	 * Gets the delays time.
 	 * 
-	 * @return  delays
+	 * @return delays
 	 */
 	public int getDelays() {
 		return delays;
 	}
+
 	/**
 	 * Instantiates the delays time
-	 * @param  delays 
+	 * 
+	 * @param delays
 	 */
 	public void setDelays(int delays) {
 		this.delays = delays;
 	}
+
 	/**
 	 * Gets how many time lost books.
 	 * 
-	 * @return  delays
+	 * @return delays
 	 */
 	public int getLostBooks() {
 		return lostBooks;
 	}
+
 	/**
 	 * Instantiates and update the lost Books
-	 * @param  lostBooks 
+	 * 
+	 * @param lostBooks
 	 */
 	public void setLostBooks(int lostBooks) {
 		this.lostBooks = lostBooks;
 	}
-	/**
-	 * Gets true if logged.
-	 * 
-	 * @return  logged
-	 */
-	public boolean isLogged() {
-		return logged;
-	}
-	/**
-	 * Instantiates and update the status logged
-	 * @param  logged 
-	 */
-	public void setLogged(boolean logged) {
-		this.logged = logged;
-	}
-	
-	
-
-
-
 }

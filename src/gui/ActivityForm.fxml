@@ -2,8 +2,8 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TreeTableColumn?>
-<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -25,12 +25,12 @@
                         <Image url="@..\images\baseline_arrow_back_black_48dp.png" />
                      </image>
                   </ImageView>
-                  <Label layoutX="221.0" layoutY="22.0" text="Account Activity History">
+                  <Label layoutX="200.0" layoutY="5.0" text="Account Activity History">
                      <font>
-                        <Font name="Bell MT" size="25.0" />
+                        <Font name="Bell MT" size="29.0" />
                      </font>
                   </Label>
-                  <ImageView fitHeight="87.0" fitWidth="147.0" layoutX="554.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="99.0" fitWidth="185.0" layoutX="515.0" layoutY="-3.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/Logo.png" />
                      </image>
@@ -50,21 +50,6 @@
                   <RowConstraints maxHeight="374.0" minHeight="10.0" prefHeight="373.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <TreeTableView fx:id="treeTableView" prefHeight="304.0" prefWidth="602.0" tableMenuButtonVisible="true" GridPane.rowIndex="3">
-                     <columns>
-                        <TreeTableColumn editable="false" prefWidth="393.0" sortable="false" text="Book Details">
-                           <columns>
-                              <TreeTableColumn editable="false" prefWidth="88.0" sortable="false" text="Book Name" />
-                              <TreeTableColumn editable="false" prefWidth="57.0" sortable="false" text="Edition" />
-                              <TreeTableColumn editable="false" prefWidth="74.0" sortable="false" text="Print Date" />
-                              <TreeTableColumn editable="false" prefWidth="88.0" sortable="false" text="Book Author" />
-                              <TreeTableColumn editable="false" prefWidth="68.0" sortable="false" text="Topic" />
-                           </columns>
-                        </TreeTableColumn>
-                        <TreeTableColumn editable="false" prefWidth="97.0" sortable="false" text="Issued Date" />
-                        <TreeTableColumn editable="false" prefWidth="112.0" sortable="false" text="Due Date" />
-                     </columns>
-                  </TreeTableView>
                   <GridPane prefHeight="31.0" prefWidth="582.0">
                     <columnConstraints>
                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="205.0" minWidth="10.0" prefWidth="205.0" />
@@ -105,6 +90,12 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
+                  <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
+                    <columns>
+                      <TableColumn fx:id="dateColumn" prefWidth="150.0" text="Date" />
+                      <TableColumn fx:id="activityColumn" minWidth="0.0" prefWidth="550.0" text="Activity" />
+                    </columns>
+                  </TableView>
                </children>
             </GridPane>
          </center>
