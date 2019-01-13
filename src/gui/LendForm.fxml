@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="418.0" prefWidth="539.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LendBookController">
+<VBox prefHeight="418.0" prefWidth="539.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LendBookController">
   <children>
       <BorderPane prefHeight="468.0" prefWidth="600.0">
          <top>
@@ -54,16 +54,16 @@
                <children>
                   <Label text="Book ID:" />
                   <Label GridPane.rowIndex="3" />
-                  <TextField fx:id="txtBookIdD" floatText="Lend Book ID" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" GridPane.columnIndex="1">
+                  <TextField fx:id="txtBookID" floatText="Lend Book ID" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" GridPane.columnIndex="1">
                      <padding>
                         <Insets bottom="10.0" />
                      </padding>
                   </TextField>
                   <Label text="Book Name:" GridPane.rowIndex="1" />
-                  <TextField fx:id="txtBookName" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" promptText="Lent book name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="txtBookName" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" promptText="Lent book name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Book Type:" GridPane.rowIndex="2" />
-                  <TextField fx:id="txtBookType" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" promptText="Lent book type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField fx:id="txtAvailableCopies" disable="true" floatText="Availabe Copies" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <TextField fx:id="txtBookType" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" promptText="Lent book type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="txtAvailableCopies" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" promptText="Availabe Copies" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <padding>
                         <Insets bottom="10.0" />
                      </padding>
@@ -98,7 +98,7 @@
                   <DatePicker fx:id="dtDueDate" prefHeight="26.0" prefWidth="180.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <Label text="Due Date:" GridPane.rowIndex="3" />
                   <Label text="Name:" GridPane.rowIndex="1" />
-                  <TextField fx:id="txtName" disable="true" floatText="Lender name" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <TextField fx:id="txtName" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" promptText="Lender name" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <padding>
                         <Insets bottom="10.0" />
                      </padding>
