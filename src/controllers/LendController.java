@@ -80,7 +80,6 @@ public class LendController {
     
     @FXML
     void btnBookLookupPressed(ActionEvent event) {
-    	lentBook= new Book(123,"alaa","allua",12,"1996","sub","desc",1,"table of c","alala",11,"alalalala");
     	// lentBook = DataBaseController.getBook(txtBookID.getText());
     	if(lentBook == null){
     		Alert alert = new Alert(AlertType.WARNING,"There is no such book in the library", ButtonType.OK);
@@ -88,7 +87,6 @@ public class LendController {
     	}
     	else {
     		//lenderBook = DatabaseController.getAccount(txtUserID.getText());
-    		lenderAccount = new UserAccount(111,"asus", "laptop", "alaatg.7", 9851,111,"Zerox","a123", "Member", "Active", 0 , 0, true);
     		if(lenderAccount == null) {
         		Alert alert = new Alert(AlertType.WARNING,"There is no such user", ButtonType.OK);
         		alert.show();
@@ -144,7 +142,7 @@ public class LendController {
     		date.plusWeeks(2);
     	dtDueDate.setValue(date);
 		
-    	LentBook lntbook = new LentBook(lenderAccount.getID(),lentBook.getBookID(), LocalDate.now().toString(),date.toString(),false);
+    	LentBook lntbook = new LentBook(lenderAccount.getID(),lentBook.getBookID(), LocalDate.now(),date,false , lentBook.getName(), lentBook.getEdition(), lentBook.getAuthor(), lentBook.getSubject());
     	//DataBaseController.setLentBook(lntbook);     needs to be added //
 		
     	Alert alert = new Alert(AlertType.INFORMATION, "Book has been lent successfully",ButtonType.OK);

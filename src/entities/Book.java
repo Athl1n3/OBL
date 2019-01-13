@@ -4,7 +4,7 @@ public class Book {
 	private int bookID;
 	private String name;
 	private String author;
-	private double edition;
+	private String edition;
 	private int  printYear;
 	private String Subject;
 	private String description;
@@ -12,9 +12,10 @@ public class Book {
 	private String tableOfContents;
 	private String shelf;
 	private int copiesNumber;
+	private String type;
 	
-	public Book(int bookID, String name, String author, double edition, int printYear, String subject,
-			String description, int catalog, String tableOfContents, String shelf, int copiesNumber) {
+	public Book(int bookID, String name, String author, String edition, int printYear, String subject,
+			String description, int catalog, String tableOfContents, String shelf, int copiesNumber, String type) {
 		super();
 		this.bookID = bookID;
 		this.name = name;
@@ -27,6 +28,7 @@ public class Book {
 		this.tableOfContents = tableOfContents;
 		this.shelf = shelf;
 		this.copiesNumber = copiesNumber;
+		this.type = type;
 	}
 	
   	/**
@@ -85,14 +87,14 @@ public class Book {
   	 * 
   	 * @return  edition.
   	 */
-	public double getEdition() {
+	public String getEdition() {
 		return edition;
 	}
 	/**
 	 * Instantiates the edition
 	 * @param  edition 
 	 */
-	public void setEdition(double edition) {
+	public void setEdition(String edition) {
 		this.edition = edition;
 	}
 
@@ -198,6 +200,14 @@ public class Book {
 	 */
 	public void setCopiesNumber(int copiesNumber) {
 		this.copiesNumber = copiesNumber;
+	}
+	
+	public String getBookType() {
+		return type;
+	}
+	
+	public void setBookType(String type) {
+		this.type = type;
 	}
 
 }

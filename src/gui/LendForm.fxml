@@ -50,6 +50,7 @@
                   <RowConstraints minHeight="10.0" prefHeight="50.0" valignment="CENTER" />
                   <RowConstraints minHeight="10.0" prefHeight="50.0" valignment="CENTER" />
                 <RowConstraints minHeight="10.0" prefHeight="50.0" />
+                  <RowConstraints minHeight="10.0" prefHeight="50.0" />
               </rowConstraints>
                <children>
                   <Label text="Book ID:" />
