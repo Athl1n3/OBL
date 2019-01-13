@@ -12,13 +12,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -85,9 +83,9 @@ public class AddBookController {
 			}
 
 			Book newBook = new Book(Integer.parseInt(txtBookID.getText()), txtBookName.getText(), txtAuthor.getText(),
-					Double.parseDouble(txtEdition.getText()), Integer.parseInt(txtPrintYear.getText()),
-					txtBookSubject.getText(), txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()),
-					txtTableOfContents.getText(), txtShelf.getText(), Integer.parseInt(txtCopies.getText()));
+					txtEdition.getText(), Integer.parseInt(txtPrintYear.getText()), txtBookSubject.getText(),
+					txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()), txtTableOfContents.getText(),
+					txtShelf.getText(), Integer.parseInt(txtCopies.getText()), null);
 
 			// write this book to DB (DBController.addbook(newBook));
 			Alert alert = new Alert(AlertType.INFORMATION);

@@ -2,7 +2,6 @@ package controllers;
 
 import java.io.IOException;
 import java.time.Year;
-import java.util.ArrayList;
 
 import entities.Book;
 import javafx.collections.FXCollections;
@@ -175,7 +174,7 @@ public class ManageLibraryController {
 
 		ObservableList<Book> books = FXCollections.observableArrayList();
 		// need to add the books from DB
-		books.add(new Book(123, "book1", "fadi", 1, 6, "action", "anananana", 1, "annon", "shelf", 12));
+		books.add(new Book(123, "book1", "fadi", "1", 6, "action", "anananana", 1, "annon", "shelf", 12, "regular"));
 
 		return books;
 	}
