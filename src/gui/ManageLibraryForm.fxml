@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="518.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ManageLibraryController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="518.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ManageLibraryController">
    <children>
       <BorderPane prefHeight="526.0" prefWidth="701.0">
          <top>
@@ -41,13 +41,14 @@
          <left>
             <TableView fx:id="tableView" prefHeight="444.0" prefWidth="681.0" BorderPane.alignment="CENTER">
               <columns>
-                <TableColumn prefWidth="137.0" text="Name" />
-                <TableColumn minWidth="6.0" prefWidth="106.0" text="Author" />
-                  <TableColumn prefWidth="75.0" text="Edition" />
-                  <TableColumn prefWidth="75.0" text="Year" />
-                  <TableColumn prefWidth="82.0" text="Copies" />
-                  <TableColumn prefWidth="98.0" text="Available Copies" />
-                  <TableColumn prefWidth="88.0" text="Shelf" />
+                  <TableColumn fx:id="bookID" prefWidth="137.0" text="Book ID" />
+                <TableColumn fx:id="name" prefWidth="83.99996948242188" text="Name" />
+                <TableColumn fx:id="author" minWidth="6.0" prefWidth="85.5999755859375" text="Author" />
+                  <TableColumn fx:id="edition" prefWidth="87.20001220703125" text="Edition" />
+                  <TableColumn fx:id="year" prefWidth="73.5999755859375" text="Year" />
+                  <TableColumn fx:id="copies" prefWidth="60.800048828125" text="Copies" />
+                  <TableColumn fx:id="availableCopies" prefWidth="149.60003662109375" text="Available Copies" />
+                  <TableColumn prefWidth="129.5999755859375" text="Shelf" />
               </columns>
             </TableView>
          </left>
