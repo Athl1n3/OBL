@@ -12,11 +12,13 @@ import entities.Account;
 import entities.Book;
 import entities.LentBook;
 import entities.UserAccount;
+import entities.UserAccount.accountStatus;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -75,11 +77,15 @@ public class LendController {
     @FXML
     private Button btnClear;
 
-    UserAccount lenderAccount;
-    Book lentBook;
+    UserAccount lenderAccount = new UserAccount(316544345,"ALAA","Grable", "alaatg.7@gmail.com","0522985313",111,"Zerox","asd123", accountStatus.Active,0,0,true);
+    Book lentBook = new Book(123,"Aces", "Zbe", "1st", 1992,"Fucking adam", "Fuck", 1, "Sex", "7", 15, "Wanted",10,0);
+    
+    private static UserAccount loggedAccount;
     
     @FXML
     void btnBookLookupPressed(ActionEvent event) {
+    	
+    	
     	// lentBook = DataBaseController.getBook(txtBookID.getText());
     	if(lentBook == null){
     		Alert alert = new Alert(AlertType.WARNING,"There is no such book in the library", ButtonType.OK);
@@ -104,7 +110,7 @@ public class LendController {
     			txtName.setText(lenderAccount.getFirstName());
     			txtName.setEditable(false);
     			
-    			if(!lenderAccount.getStatus().equals("Active")) {
+    			if(!lenderAccount.getStatus().equals(accountStatus.Active)) {
     				Alert alert = new Alert(AlertType.WARNING , "This account is " + lenderAccount.getStatus(), ButtonType.OK);
 					alert.show();
     			}
@@ -137,12 +143,12 @@ public class LendController {
     	
     	LocalDate date = LocalDate.now();
     	if(lentBook.getBookType().equals("Wanted") )    /// the book is wanted
-    		date.plusDays(3);
+    		date = date.plusDays(3);
     	else      // the books is regular
-    		date.plusWeeks(2);
+    		date = date.plusWeeks(2);
     	dtDueDate.setValue(date);
 		
-    	LentBook lntbook = new LentBook(lenderAccount.getID(),lentBook.getBookID(), LocalDate.now(),date,false , lentBook.getName(), lentBook.getEdition(), lentBook.getAuthor(), lentBook.getSubject());
+    	LentBook lntbook = new LentBook(lenderAccount.getID(),lentBook.getBookID(), LocalDate.now(),date,false , lentBook.getName(), lentBook.getEdition(), lentBook.getAuthor(), lentBook.getSubject(), lentBook.getBookType());
     	//DataBaseController.setLentBook(lntbook);     needs to be added //
 		
     	Alert alert = new Alert(AlertType.INFORMATION, "Book has been lent successfully",ButtonType.OK);
@@ -152,7 +158,10 @@ public class LendController {
 
     @FXML
     void imgBackClicked(MouseEvent event) {
-
+    	Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+		Scene scene = SceneController.pop();
+		stage.setScene(scene);
+		stage.setTitle("User Main");
     }
     
     @FXML
@@ -161,10 +170,8 @@ public class LendController {
     	dtIssueDate.setEditable(false);
     	btnLendBook.setDisable(true);
     	
-    	BooleanBinding booleanBind = txtBookID.textProperty().isEmpty().and(txtUserID.textProperty().isEmpty());
+    	BooleanBinding booleanBind = txtBookID.textProperty().isEmpty().or(txtUserID.textProperty().isEmpty());
     	btnBookLookup.disableProperty().bind(booleanBind);
-    	
-    	
     }
     
   /*  @FXML
@@ -179,14 +186,14 @@ public class LendController {
     		btnLendBook.setDisable(false);
     }*/
     
-    void start(Stage primaryStage) throws Exception{
-    	Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
-    	Scene scene = new Scene(root);
-    	primaryStage.setTitle("lend book");
-    	primaryStage.setScene(scene);
-    	primaryStage.show();
-    	
-    	
-    }
+    void start(Stage stage, Account loggedAccount) throws Exception {
+		this.loggedAccount = (UserAccount)loggedAccount;
+		Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
+		Scene scene = new Scene(root);
+		stage.setTitle("Lend book");
+		stage.sizeToScene();
+		stage.setScene(scene);
+		stage.show();
+	}
 }
 

@@ -35,7 +35,6 @@ public class ExtendLendController {
 
 	LentBook lntBook;
 	Book tmpBook;
-	private ObservableList<LentBook> list;
 
 	@FXML
 	private ResourceBundle resources;
@@ -104,20 +103,17 @@ public class ExtendLendController {
 			
 		}
 		
-		
-
 	}
 
 	@FXML
 	void initialize() {
-		
-		bookNameCol.setCellValueFactory(new PropertyValueFactory<>("bookName"));
-		bookEditionCol.setCellValueFactory(new PropertyValueFactory<>("bookEdition"));
-		bookAuthorCol.setCellValueFactory(new PropertyValueFactory<>("bookAuthor"));
-		bookTopicCol.setCellValueFactory(new PropertyValueFactory<>("bookTopic"));
-		bookIssuedDate.setCellValueFactory(new PropertyValueFactory<>("IssueDate"));
-		bookDueDate.setCellValueFactory(new PropertyValueFactory<>("DueDate"));
-		list = getLentBookList();
+		bookNameCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookName"));
+		bookTopicCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookTopic"));
+		bookEditionCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookEdition"));
+		bookAuthorCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookAuthor"));
+		bookIssuedDate.setCellValueFactory(new PropertyValueFactory<LentBook,LocalDate>("IssueDate"));
+		bookDueDate.setCellValueFactory(new PropertyValueFactory<LentBook,LocalDate>("DueDate"));
+		ObservableList<LentBook> list = getLentBookList();
 		tableView.setItems(list);
 		btnExtendBook.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 	}
@@ -126,11 +122,9 @@ public class ExtendLendController {
 
 		// DatabaseController.getExtendBookList(account.getID()) ** & send it to the
 		// next code line
-		
 		LentBook LntBK1 = new LentBook(123,111,LocalDate.now(),LocalDate.now().plusWeeks(2), false,"Marshood","2st", "ALAA", "Calculus","Math" );
-		System.out.println(LntBK1);
 		LentBook LntBK2 = new LentBook(777,999,LocalDate.now(),LocalDate.now().plusWeeks(2), false,"Fucker","7st", "ahmad", "notur","prog" );
-		ObservableList<LentBook> list = FXCollections.observableArrayList(LntBK1, LntBK2);
+		ObservableList<LentBook> list = FXCollections.observableArrayList(LntBK1,LntBK2);
 		return list;
 	}
 	
