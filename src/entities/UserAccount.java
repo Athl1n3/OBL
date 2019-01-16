@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.ArrayList;
+
 public class UserAccount extends Account {
 
 	private int delays;
@@ -12,7 +14,7 @@ public class UserAccount extends Account {
 	private accountStatus status;
 
 	public UserAccount() {
-
+		this.setUserType(userType.User);
 	}
 
 	public UserAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
@@ -71,5 +73,32 @@ public class UserAccount extends Account {
 	 */
 	public void setLostBooks(int lostBooks) {
 		this.lostBooks = lostBooks;
+	}
+
+	public void parseArrayIntoAccount(ArrayList<String> accountArray) {
+		this.setAccountID(Integer.parseInt(accountArray.get(0)));
+		this.setID(Integer.parseInt(accountArray.get(1)));
+		this.setFirstName(accountArray.get(2));
+		this.setLastName(accountArray.get(3));
+		this.setMobileNum(accountArray.get(4));
+		this.setEmail(accountArray.get(5));
+		this.setUserName(accountArray.get(6));
+		this.setPassword(accountArray.get(7));
+		if (accountArray.get(9) == "1")
+			this.setLogged(true);
+		else
+			this.setLogged(false);
+		switch (accountArray.get(10)) {
+		case "Active":
+			this.setStatus(accountStatus.Active);
+			break;
+		case "Suspended":
+			this.setStatus(accountStatus.Suspended);
+			break;
+		case "Locked":
+			this.setStatus(accountStatus.Locked);
+			break;
+		}
+		this.setDelays(Integer.parseInt(accountArray.get(11)));
 	}
 }

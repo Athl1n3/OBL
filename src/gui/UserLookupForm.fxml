@@ -120,7 +120,7 @@
                   <Label text="Mobile Number" GridPane.rowIndex="4" />
                   <Label text="First Name" GridPane.rowIndex="2" />
                   <Label text="Email" GridPane.rowIndex="5" />
-                  <TextField fx:id="txtUserID" prefHeight="31.0" prefWidth="249.0" promptText="ID" GridPane.columnIndex="1">
+                  <TextField fx:id="txtID" prefHeight="31.0" prefWidth="249.0" promptText="ID" GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>

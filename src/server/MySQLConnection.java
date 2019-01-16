@@ -2,7 +2,6 @@ package server;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -57,6 +56,7 @@ public class MySQLConnection {
 
 	/**
 	 * Parse database result set into an ArrayList with rows separated by commas
+	 * 
 	 * @param rs
 	 * @return arr
 	 */
@@ -67,7 +67,7 @@ public class MySQLConnection {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			while (rs.next()) {
 				i = 1;
-				while (i < rsmd.getColumnCount()) {
+				while (i <= rsmd.getColumnCount()) {
 					arr.add(rs.getString(i++));
 				}
 				arr.add(",");
