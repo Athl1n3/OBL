@@ -1,17 +1,22 @@
 package controllers;
 
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import entities.*;
+import entities.Account.UserType;
+import entities.UserAccount.accountStatus;
+import client.ClientConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class NewAccountController {
 
@@ -46,9 +51,6 @@ public class NewAccountController {
     private TextField txtEmail;
 
     @FXML
-    private Label lblUserID;
-
-    @FXML
     private TextField txtUsername;
 
     @FXML
@@ -57,6 +59,8 @@ public class NewAccountController {
     @FXML
     private TextField txtPassword;
 
+	public ClientConnection cc;
+
     @FXML
     void btnClearPressed(ActionEvent event) {
 
@@ -64,10 +68,18 @@ public class NewAccountController {
 
     @FXML
     void btnCreateAccountPressed(ActionEvent event) {
-    	Account newAccount = new Account();
+    	UserAccount newAccount = new UserAccount();
     	newAccount.setID(Integer.parseInt(txtID.getText()));
-    	
-    	
+    	newAccount.setFirstName(txtFirstName.getText());
+    	newAccount.setLastName(txtLastName.getText());
+    	newAccount.setMobileNum(Integer.parseInt(txtMobileNum.getText()));
+    	newAccount.setEmail(txtEmail.getText());
+    	newAccount.setAccountID(1);
+    	newAccount.setUserName(txtUsername.getText());
+    	newAccount.setPassword(txtPassword.getText());
+    	newAccount.userType = UserType.User;
+    	newAccount.status = accountStatus.Active;
+    	DatabaseController.AddAccount(newAccount);
     }
 
     @FXML
@@ -79,4 +91,15 @@ public class NewAccountController {
     void initialize() {
        
     }
+    public void start(Stage stage) {
+  		try {
+  			Parent root = FXMLLoader.load(getClass().getResource("../gui/NewAccountForm.fxml"));
+  			Scene scene = new Scene(root);
+  			stage.setScene(scene);
+  			stage.setTitle("Student Frame");
+  			stage.show();
+  		} catch (Exception e) {
+  			e.printStackTrace();
+  		}
+  	}
 }

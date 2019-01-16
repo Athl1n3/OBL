@@ -3,11 +3,10 @@ package entities;
 public class LoggedUser {
 	
 	public static Boolean logged = false;
-	private int userID;
 	private Account account;
-	private BookLendList bookLendList;
-	private BookOrderList BookOrderList;
-	
+	private LentBook[] lentBook;
+	private BookOrder[] bookOrder;
+
 	/**
 	 * 
 	 * @return account
@@ -24,52 +23,25 @@ public class LoggedUser {
 		this.account = account;
 	}
 
-	/**
-	 * 
-	 * @return BookLendList
-	 */
-	public BookLendList getBookLendList() {
-		return bookLendList;
-	}
 
 	/**
-	 * 
-	 * @param bookLendList
+	 * return lent Books list
+	 * @return lentBook 
 	 */
-	public void setBookLendList(BookLendList bookLendList) {
-		this.bookLendList = bookLendList;
+	public LentBook[] getLentBook() {
+		return lentBook;
 	}
 
-	/**
-	 * 
-	 * @return BookOrderList
-	 */
-	public BookOrderList getBookOrderList() {
-		return BookOrderList;
+	public void setLentBook(LentBook[] lentBook) {
+		this.lentBook = lentBook;
 	}
 
-	/**
-	 * 
-	 * @param bookOrderList
-	 */
-	public void setBookOrderList(BookOrderList bookOrderList) {
-		BookOrderList = bookOrderList;
+	public BookOrder[] getBookOrder() {
+		return bookOrder;
 	}
 
-	/**
-	 * 
-	 * @return userID
-	 */
-	public int getUserID() {
-		return userID;
-	}
-
-	/**
-	 * 
-	 * @param userID
-	 */
-	public void setUserID(int userID) {
-		this.userID = userID;
+	public void setBookOrder(BookOrder[] bookOrder) {
+		this.bookOrder = bookOrder;
 	}
 
 }

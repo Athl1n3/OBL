@@ -4,13 +4,12 @@ import java.util.ArrayList;
 
 import client.ClientConnection;
 import entities.*;
+import entities.Account.UserType;
+import entities.UserAccount.accountStatus;
 
 public class DatabaseController {
-<<<<<<< HEAD
+
 	private static ClientConnection clientConnection;
-=======
-	private static ClientConnection ClientConnection;
->>>>>>> branch 'master' of https://github.com/Athl1n3/OBL-Project.git
 	
 	static LoggedUser loggedUser;
 	
@@ -18,22 +17,23 @@ public class DatabaseController {
 	
 	/**
 	 * create new account
-	 * @param newAccount
+	 * @param arr
 	 */
-	public static void AddAccount(Account newAccount)
+	public static void AddAccount(UserAccount newAccount)
 	{
+		ArrayList<String> arr = new ArrayList<String>(); 
 		users.add(newAccount);
-		ArrayList<Object> arr = new ArrayList<Object>(); 
-		String query = "INSERT INTO person(ID, firstName, lastName, eMail, mobileNum, userID, userName, password, userType)VALUES (?,?,?,?,?,?,?,?,?)";
-		arr.add(newAccount.getID());
+		String query = "INSERT INTO account(ID, firstName, lastName, eMail, mobileNum, userID, userName, password, userType, status)VALUES (?,?,?,?,?,?,?,?,?,?)";
+		arr.add(String.valueOf(newAccount.getID()));
 		arr.add(newAccount.getFirstName());
 		arr.add(newAccount.getLastName());
-		arr.add(newAccount.geteMail());
-		arr.add(newAccount.getMobileNum());
-		arr.add(newAccount.getUserID());
+		arr.add(newAccount.getEmail());
+		arr.add(String.valueOf(newAccount.getMobileNum()));
+		arr.add(String.valueOf(newAccount.getAccountID()));
 		arr.add(newAccount.getUserName());
 		arr.add(newAccount.getPassword());
-		arr.add(newAccount.getUserType());
+		arr.add(newAccount.getUserType().toString());
+		arr.add(newAccount.getStatus().toString());
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 	}
@@ -45,10 +45,10 @@ public class DatabaseController {
 	public static void EditAccount(Account existingAccount)
 	{
 		String query = "UPDATE account SET firstName = '" + existingAccount.getFirstName() +
-				"' lastName = '" + existingAccount.getLastName() + "' eMail = '" + existingAccount.geteMail()
+				"' lastName = '" + existingAccount.getLastName() + "' eMail = '" + existingAccount.getEmail()
 				+ "' mobileNum = '" + existingAccount.getMobileNum() +
 				"' userName = '" + existingAccount.getUserName() + "' password = '" + existingAccount.getPassword() + 
-				"' WHERE userID = '" + existingAccount.getUserID() +"';";
+				"' WHERE userID = '" + existingAccount.getAccountID() +"';";
 		clientConnection.executeQuery(query);
 	}
 	
@@ -57,11 +57,22 @@ public class DatabaseController {
 	 * @param userID
 	 * @return Account
 	 */
-	public static Account GetUserAccount(int userID)
+	public static UserAccount GetUserAccount(int userID)
 	{
-		Account userAccount = new Account();
-		clientConnection.executeQuery("SELECT * FROM Account WHERE userID = '"+userID+"';");
+		UserAccount userAccount = new UserAccount();
+		clientConnection.executeQuery("SELECT * FROM Account WHERE userID = '" + userID + "';");
 		ArrayList<String> res = clientConnection.getList(); 
+		
+		userAccount.setID(Integer.parseInt(res.get(0)));
+		userAccount.setFirstName(res.get(1));
+		userAccount.setLastName(res.get(2));
+		userAccount.setEmail(res.get(3));
+		userAccount.setMobileNum(Integer.parseInt(res.get(4)));
+		userAccount.setAccountID(Integer.parseInt(res.get(5)));
+		userAccount.setUserName(res.get(6));
+    	userAccount.setPassword(res.get(7));
+    	userAccount.setUserTypeString(res.get(8));
+    	userAccount.setStatus(res.get(9));
 		return userAccount;
 	}
 	
@@ -75,12 +86,14 @@ public class DatabaseController {
 		
 	}
 	public static Archive getArchiveData(int id) {
+		
 		return null;
 		
 	}
 	
 	public static void initLoggedUser(String userName, String Password) {
 		loggedUser = new LoggedUser();
+		//loggedUser.setAccount();
 		
 	}
 	

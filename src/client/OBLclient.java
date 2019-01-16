@@ -2,6 +2,8 @@ package client;
 
 import ocsf.client.*;
 import common.*;
+import entities.Account;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -39,7 +41,7 @@ public class OBLclient extends AbstractClient {
 	}
 
 	// This method handles all data coming from the UI
-	public void handleMessageFromClientUI(ArrayList<Object> arr) {
+	public void handleMessageFromClientUI(ArrayList<String> arr) {
 		try {
 			sendToServer(arr);
 		} catch (IOException e) {

@@ -9,15 +9,15 @@ public class UserAccount extends Account {
 		Active, Locked, Suspended
 	};
 
-	private accountStatus status;
+	public accountStatus status;
 
 	public UserAccount() {
 
 	}
 
-	public UserAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
+	public UserAccount(int id, String firstName, String lastName, String eMail, int mobileNum, int userID,
 			String userName, String password, accountStatus status, int delays, int lostBooks, boolean logged) {
-		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, userType.User, logged);
+		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, UserType.User);
 		this.status = status;
 		this.delays = delays;
 		this.lostBooks = lostBooks;
@@ -33,8 +33,15 @@ public class UserAccount extends Account {
 	/**
 	 * @param status the status to set
 	 */
-	public void setStatus(accountStatus status) {
-		this.status = status;
+	public void setStatus(String status) {
+		if(accountStatus.Active.equals(status))
+			this.status = accountStatus.Active;
+		else
+			if(accountStatus.Locked.equals(status))
+				this.status = accountStatus.Locked;
+			else
+				if(accountStatus.Suspended.equals(status))
+					this.status = accountStatus.Suspended;
 	}
 
 	/**

@@ -1,40 +1,31 @@
 package entities;
 
-/**
- * @author азог
- *
- */
+import entities.UserAccount.accountStatus;
+
 public abstract class Account extends Person {
 
 	private int accountID;
 	private String userName;
 	private String password;
-<<<<<<< HEAD
-	private String userType;
-	private String status;
-	//private Vector accountData = new Vector();
-=======
 	private boolean logged;
->>>>>>> branch 'master' of https://github.com/Athl1n3/OBL-Project.git
 
-	public enum userType {
+	public enum UserType {
 		User, Librarian, Manager
 	};
 
-	private userType userType;
+	public UserType userType;
 
 	public Account() {
 		// super();
 	}
 
-	public Account(int id, String firstName, String lastName, String eMail, String mobileNum, int accountID,
-			String userName, String password, userType userType, boolean logged) {
+	public Account(int id, String firstName, String lastName, String eMail, int mobileNum, int accountID,
+			String userName, String password, UserType userType) {
 		super(id, firstName, lastName, eMail, mobileNum);
 		this.accountID = accountID;
 		this.userName = userName;
 		this.password = password;
 		this.userType = userType;
-		this.logged = logged;
 	}
 
 	/**
@@ -54,15 +45,30 @@ public abstract class Account extends Person {
 	/**
 	 * @return the userType
 	 */
-	public userType getUserType() {
+	public UserType getUserType() {
 		return userType;
 	}
 
 	/**
 	 * @param userType the userType to set
 	 */
-	public void setUserType(userType userType) {
+	public void setUserType(UserType userType) {
 		this.userType = userType;
+	}
+	
+	/**
+	 * 
+	 * @param userType the Sttring userType to set
+	 */
+	public void setUserTypeString(String userType) {
+		if (UserType.User.equals(userType))
+			this.userType = UserType.User;
+		else 
+			if (UserType.Librarian.equals(userType))
+				this.userType = UserType.Librarian;
+			else
+				if (UserType.Manager.equals(userType))
+					this.userType = UserType.Manager;
 	}
 
 	/**
@@ -114,35 +120,5 @@ public abstract class Account extends Person {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-<<<<<<< HEAD
 
-	/**
-	 * Gets the user Type.
-	 * 
-	 * @return userType
-	 */
-	public String getUserType() {
-		return userType;
-	}
-
-	/**
-	 * Instantiates the user Type.
-	 * 
-	 * @param set the userType
-	 */
-	public void setUserType(String userType) {
-		this.userType = userType;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-
-=======
->>>>>>> branch 'master' of https://github.com/Athl1n3/OBL-Project.git
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import client.*;
 import common.*;
+import controllers.DatabaseController;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -41,7 +42,7 @@ public class ClientConnection implements OBLclientIF {
 		}
 	}
 
-	public void executeQuery(ArrayList<Object> arr) {
+	public void executeQuery(ArrayList<String> arr) {
 		client.handleMessageFromClientUI(arr);
 	}
 
@@ -100,6 +101,10 @@ public class ClientConnection implements OBLclientIF {
 	public void executeQuery(String string) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void init() {
+		DatabaseController.InitiateClient(this);
 	}
 
 }
