@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.gluonhq.charm.glisten.control.TextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -33,7 +33,7 @@
                         <Image url="@../images/Logo.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="44.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgBack" fitHeight="44.0" fitWidth="57.0" onMouseClicked="#imgBackClicked" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@..\images\baseline_arrow_back_black_48dp.png" />
                      </image>
@@ -97,7 +97,7 @@
                                     <Label text="First Name:" GridPane.rowIndex="2" />
                                     <Label text="Last Name:" GridPane.rowIndex="3" />
                                     <Label text="User ID:" />
-                                    <Label fx:id="lblUserID" text="----" textFill="#da1212" GridPane.columnIndex="1">
+                                    <Label fx:id="lblUserID" prefHeight="19.0" prefWidth="80.0" text="----" textFill="#da1212" GridPane.columnIndex="1">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
@@ -107,7 +107,7 @@
                                     </Label>
                                     <Label text="Status:" GridPane.columnIndex="1">
                                        <GridPane.margin>
-                                          <Insets left="50.0" />
+                                          <Insets left="80.0" />
                                        </GridPane.margin>
                                     </Label>
                                     <Label fx:id="lblStatus" text="Active" textFill="#14b22b" GridPane.columnIndex="1">
@@ -115,7 +115,7 @@
                                           <Font name="Bell MT Bold" size="15.0" />
                                        </font>
                                        <GridPane.margin>
-                                          <Insets left="95.0" />
+                                          <Insets left="125.0" />
                                        </GridPane.margin>
                                     </Label>
                                     <Button fx:id="btnApplyChanges" mnemonicParsing="false" onAction="#btnApplyChangesPressed" text="Apply Changes" GridPane.columnIndex="1" GridPane.rowIndex="6">
@@ -154,9 +154,9 @@
                                     </Label>
                                     <Label text="Password:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                     <Label text="Confirm Password:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                    <TextField fx:id="txtUsername" floatText="New Login Username" maxHeight="-Infinity" prefHeight="30.0" GridPane.columnIndex="3" />
-                                    <TextField fx:id="txtVerPassword" floatText="Verify New Password" maxHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="179.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                    <TextField fx:id="txtPassword" floatText="New Password" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" prefWidth="137.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                    <TextField fx:id="txtUsername" maxHeight="-Infinity" prefHeight="30.0" GridPane.columnIndex="3" />
+                                    <TextField fx:id="txtVerPassword" maxHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="179.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                    <TextField fx:id="txtPassword" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" prefWidth="137.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                     <Button fx:id="btnUpdateLogin" mnemonicParsing="false" onAction="#btnUpdateLoginPressed" text="Update Login Details" GridPane.columnIndex="3" GridPane.rowIndex="3">
                                        <GridPane.margin>
                                           <Insets right="20.0" />

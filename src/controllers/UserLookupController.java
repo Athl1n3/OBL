@@ -29,7 +29,7 @@ import javafx.stage.Stage;
 /**
  * 
  * @author Adam Mahameed
- * @version 1.2 [12.1.2019]
+ * @version 1.4 [16.1.2019]
  * 
  */
 public class UserLookupController {
@@ -281,7 +281,10 @@ public class UserLookupController {
 
 	@FXML
 	void imgBackClicked(MouseEvent event) {
-
+		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+		Scene scene = SceneController.pop();
+		stage.setScene(scene);
+		stage.setTitle("Users Management");
 	}
 
 	/**
@@ -312,12 +315,11 @@ public class UserLookupController {
 		});
 	}
 
-	void start(Stage primaryStage, Account acc, Account librarian) throws Exception {
-		// lookupAccount = (UserAccount) acc;// FOR TEST ONLY
+	void start(Stage primaryStage, Account librarian) throws Exception {
 		librarianAccount = (LibrarianAccount) librarian;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/UserLookupForm.fxml"));
 		Scene scene = new Scene(root);
-		primaryStage.setTitle("Userlookup");
+		primaryStage.setTitle("User lookup");
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.show();

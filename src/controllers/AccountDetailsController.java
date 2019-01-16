@@ -3,16 +3,23 @@ package controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import entities.Account;
 import entities.UserAccount;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class AccountDetailsController implements Initializable {
 
@@ -52,20 +59,20 @@ public class AccountDetailsController implements Initializable {
 	@FXML
 	private Button btnUpdateLogin;
 
-	private static UserAccount changesinAccount;
+	private static UserAccount loggedAccount;
 
 	@FXML
 	void btnApplyChangesPressed(ActionEvent event) {
 		Alert msg = new Alert(AlertType.CONFIRMATION, "Are you sure to update user details?", ButtonType.YES,
 				ButtonType.CANCEL);
 		if (msg.showAndWait().get() == ButtonType.YES)
-			if (validateinput()) {
+			if (validateInput()) {
 
-				changesinAccount.setFirstName(txtFirstName.getText());
-				changesinAccount.setLastName(txtLastName.getText());
-				changesinAccount.setMobileNum(txtMobileNum.getText());
-				changesinAccount.setEmail(txtEmail.getText());
-				// DatabaseController.LoggedUser(changesinAccount);
+				loggedAccount.setFirstName(txtFirstName.getText());
+				loggedAccount.setLastName(txtLastName.getText());
+				loggedAccount.setMobileNum(txtMobileNum.getText());
+				loggedAccount.setEmail(txtEmail.getText());
+				// DatabaseController.LoggedUser(loggedAccount);
 				new Alert(AlertType.INFORMATION, "User details was changes successfully!", ButtonType.OK).show();
 			}
 
@@ -77,31 +84,31 @@ public class AccountDetailsController implements Initializable {
 				ButtonType.CANCEL);
 		if (msg.showAndWait().get() == ButtonType.YES)
 			if (validatepasswordinput()) {
-				changesinAccount.setPassword(txtPassword.getText());
-				// DatabaseController.LoggedUser(changesinAccount);
+				loggedAccount.setPassword(txtPassword.getText());
+				// DatabaseController.LoggedUser(loggedAccount);
 				new Alert(AlertType.INFORMATION, "password changed successfully!", ButtonType.OK).show();
 			}
 	}
 
 	@FXML
-	void goback(ActionEvent event) {
-
+	void imgBackClicked(MouseEvent event) {
+		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+		Scene scene = SceneController.pop();
+		stage.setScene(scene);
+		stage.setTitle("Main");
 	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
-
-		lblUserID.setText(String.valueOf(changesinAccount.getID()));
-
-		txtUserID.setText(String.valueOf(changesinAccount.getID()));
+		lblUserID.setText(String.valueOf(loggedAccount.getAccountID()));
+		txtUserID.setText(String.valueOf(loggedAccount.getID()));
 		txtUserID.setDisable(true);
-		txtFirstName.setText(changesinAccount.getFirstName());
-		txtLastName.setText(changesinAccount.getLastName());
-		txtMobileNum.setText(changesinAccount.getMobileNum());
-		txtEmail.setText(changesinAccount.getEmail());
+		txtFirstName.setText(loggedAccount.getFirstName());
+		txtLastName.setText(loggedAccount.getLastName());
+		txtMobileNum.setText(loggedAccount.getMobileNum());
+		txtEmail.setText(loggedAccount.getEmail());
 
-		switch (changesinAccount.getStatus()) {
+		switch (loggedAccount.getStatus()) {
 		case Active:
 			lblStatus.setTextFill(javafx.scene.paint.Color.GREEN);
 			break;
@@ -112,10 +119,10 @@ public class AccountDetailsController implements Initializable {
 			lblStatus.setTextFill(javafx.scene.paint.Color.RED);
 			break;
 		}
-		lblStatus.setText(changesinAccount.getStatus().toString());
+		lblStatus.setText(loggedAccount.getStatus().toString());
 
 		// login details
-		txtUsername.setText(changesinAccount.getUserName());
+		txtUsername.setText(loggedAccount.getUserName());
 	}
 
 	/**
@@ -124,17 +131,11 @@ public class AccountDetailsController implements Initializable {
 	 * @return true in case of a valid input
 	 */
 	@FXML
-	public boolean validateinput() {
+	public boolean validateInput() {
 
 		Alert msg = new Alert(AlertType.ERROR, "", ButtonType.OK);// Prepare alert box
 		msg.setHeaderText("Input Error");
 
-		/*
-		 * for (char c : txtUserID.getText().toCharArray())// Parse text field into
-		 * chars array and validate if (Character.isLetter(c)) {
-		 * msg.setContentText("User id must contain numbers only!"); msg.show();
-		 * txtUserID.requestFocus(); return false; }
-		 */
 		for (char c : txtFirstName.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isDigit(c)) {
 				msg.setContentText("First name must contain letters only!");
@@ -198,7 +199,16 @@ public class AccountDetailsController implements Initializable {
 
 		// success confirm password
 		return true;
+	}
 
+	void start(Stage primaryStage, Account acc) throws Exception {
+		loggedAccount = (UserAccount) acc;
+		Parent root = FXMLLoader.load(getClass().getResource("../gui/AccountDetailsForm.fxml"));
+		Scene scene = new Scene(root);
+		primaryStage.setTitle("Userlookup");
+		primaryStage.setScene(scene);
+		primaryStage.setResizable(false);
+		primaryStage.show();
 	}
 
 }

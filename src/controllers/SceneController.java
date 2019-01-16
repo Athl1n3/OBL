@@ -7,17 +7,19 @@ import javafx.scene.Scene;
 /**
  * 
  * @author Adam Mahameed
- * @version 1.2 [12.1.2019]
+ * @version 1.4 [16.1.2019]
  * 
  */
 public class SceneController {
 	private static ArrayList<Scene> stageList = new ArrayList<>();
 
 	public static Scene pop() {
-		return stageList.get(0);
+		Scene scene = stageList.get(0);
+		stageList.remove(0);
+		return scene;
 	}
 
 	public static void push(Scene scene) {
-		stageList.add(scene);
+		stageList.add(0, scene);
 	}
 }

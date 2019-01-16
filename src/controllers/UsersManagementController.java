@@ -2,47 +2,87 @@ package controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import entities.Account;
+import entities.LibrarianAccount;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class UsersManagementController {
 
-    @FXML
-    private ResourceBundle resources;
+	@FXML
+	private ResourceBundle resources;
 
-    @FXML
-    private URL location;
+	@FXML
+	private URL location;
 
-    @FXML
-    private ImageView imgBack;
+	@FXML
+	private ImageView imgBack;
 
-    @FXML
-    private ImageView imgUserLookup;
+	@FXML
+	private ImageView imgUserLookup;
 
-    @FXML
-    private ImageView imgCreateAccount;
+	@FXML
+	private ImageView imgCreateAccount;
 
-    @FXML
-    void imgBackClicked(MouseEvent event) {
+	private static LibrarianAccount librarianAccount;
 
-    }
+	@FXML
+	void imgBackClicked(MouseEvent event) {
+		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+		Scene scene = SceneController.pop();
+		stage.setScene(scene);
+		stage.setTitle("Main Window");
+	}
 
-    @FXML
-    void imgCreateAccountClicked(MouseEvent event) {
+	@FXML
+	void imgCreateAccountClicked(MouseEvent event) {
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		Scene scene = (Scene) ((Node) event.getSource()).getScene();
+		SceneController.push(scene);
+		// stage.initModality(Modality.APPLICATION_MODAL);
+		NewAccountController newAccountForm = new NewAccountController();
+		try {
+			newAccountForm.start(stage);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-    }
+	@FXML
+	void imgUserLookupClicked(MouseEvent event) {
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		Scene scene = (Scene) ((Node) event.getSource()).getScene();
+		SceneController.push(scene);
+		// stage.initModality(Modality.APPLICATION_MODAL);
+		UserLookupController userLookupForm = new UserLookupController();
+		try {
+			userLookupForm.start(stage, librarianAccount);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-    @FXML
-    void imgUserLookupClicked(MouseEvent event) {
+	void start(Stage primaryStage, Account librarian) throws Exception {
+		librarianAccount = (LibrarianAccount) librarian;
+		Parent root = FXMLLoader.load(getClass().getResource("../gui/UsersManagementForm.fxml"));
+		Scene scene = new Scene(root);
+		primaryStage.setTitle("Users Management");
+		primaryStage.setScene(scene);
+		primaryStage.setResizable(false);
+		primaryStage.show();
+	}
 
-    }
+	@FXML
+	void initialize() {
 
-    @FXML
-    void initialize() {
-        assert imgBack != null : "fx:id=\"imgBack\" was not injected: check your FXML file 'UsersManagementForm.fxml'.";
-        assert imgUserLookup != null : "fx:id=\"imgUserLookup\" was not injected: check your FXML file 'UsersManagementForm.fxml'.";
-        assert imgCreateAccount != null : "fx:id=\"imgCreateAccount\" was not injected: check your FXML file 'UsersManagementForm.fxml'.";
-
-    }
+	}
 }
