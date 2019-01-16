@@ -84,7 +84,7 @@ public class ExtendLendController {
 
 		// check account status if suspended ..
 		if (selectedBook.getBookType().equals("Wanted")) {
-			Alert alert = new Alert(AlertType.WARNING, "This book "  + tmpBook.getName() + " is a 'Wanted' book and cannot be extended.",ButtonType.OK);
+			Alert alert = new Alert(AlertType.WARNING, "This book "  + selectedBook.getBookName() + " is a 'Wanted' book and cannot be extended.",ButtonType.OK);
 			alert.show();
 		}
 		else {
