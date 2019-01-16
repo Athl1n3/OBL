@@ -46,7 +46,7 @@
                         <Insets right="45.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="lblStatus" text="Active" textFill="#10bd15" GridPane.rowIndex="1">
+                  <Label fx:id="lblStatus" prefHeight="19.0" prefWidth="81.0" text="---" textFill="#10bd15" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets left="45.0" />
                      </GridPane.margin>
@@ -83,12 +83,12 @@
                         <Insets bottom="60.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="lblUserID" text="Label" textFill="#241ea8" GridPane.rowIndex="1">
+                  <Label fx:id="lblUserID" prefHeight="21.0" prefWidth="99.0" text="---" textFill="#241ea8" GridPane.rowIndex="1">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
                      <GridPane.margin>
-                        <Insets bottom="60.0" left="55.0" />
+                        <Insets bottom="60.0" left="45.0" />
                      </GridPane.margin>
                      <font>
                         <Font name="System Bold" size="15.0" />
