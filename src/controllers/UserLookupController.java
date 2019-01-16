@@ -71,7 +71,7 @@ public class UserLookupController {
 	private Button btnArchive;
 
 	@FXML
-	private TextField txtUserID;
+	private TextField txtID;
 
 	@FXML
 	private TextField txtFirstName;
@@ -96,7 +96,7 @@ public class UserLookupController {
 
 	@FXML
 	void btnArchivePressed(ActionEvent event) {
-		if (txtUserID.isDisabled()) {
+		if (txtID.isDisabled()) {
 			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 			Scene scene = (Scene) ((Node) event.getSource()).getScene();
 			SceneController.push(scene);
@@ -120,13 +120,15 @@ public class UserLookupController {
 	 */
 	@FXML
 	void btnClearPressed(ActionEvent event) {
-		txtUserID.clear();
+		txtUsername.clear();
+		txtID.clear();
 		txtFirstName.clear();
 		txtLastName.clear();
 		txtMobileNum.clear();
 		txtEmail.clear();
 		lblStatus.setText("---");
-		txtUserID.setDisable(false);
+		lblUserID.setText("---");
+		txtID.setDisable(false);
 	}
 
 	@FXML
@@ -135,6 +137,7 @@ public class UserLookupController {
 				ButtonType.CANCEL);
 		if (msg.showAndWait().get() == ButtonType.YES)
 			if (validateInput()) {
+				lookupAccount.setUserName(txtUsername.getText());
 				lookupAccount.setFirstName(txtFirstName.getText());
 				lookupAccount.setLastName(txtLastName.getText());
 				lookupAccount.setMobileNum(txtMobileNum.getText());
@@ -194,7 +197,7 @@ public class UserLookupController {
 		boolean status;
 		Alert statMsg = new Alert(AlertType.INFORMATION, "", ButtonType.OK);
 
-		if (txtUserID.isDisabled()) {
+		if (txtID.isDisabled()) {
 			if (lookupAccount.getStatus() == accountStatus.Locked) {
 				lookupAccount.setStatus(accountStatus.Active);
 				status = true;
@@ -208,7 +211,7 @@ public class UserLookupController {
 		} else {
 			statMsg.setAlertType(AlertType.WARNING);
 			statMsg.setContentText("A user must be looked up first!");
-			txtUserID.requestFocus();
+			txtID.requestFocus();
 		}
 		statMsg.show();
 	}
@@ -218,7 +221,7 @@ public class UserLookupController {
 		boolean status;
 		Alert statMsg = new Alert(AlertType.INFORMATION, "", ButtonType.OK);
 
-		if (txtUserID.isDisabled()) {
+		if (txtID.isDisabled()) {
 			if (lookupAccount.getStatus() == accountStatus.Suspended) {
 				lookupAccount.setStatus(accountStatus.Active);
 				status = true;
@@ -233,7 +236,7 @@ public class UserLookupController {
 		} else {
 			statMsg.setAlertType(AlertType.WARNING);
 			statMsg.setContentText("A user must be looked up first!");
-			txtUserID.requestFocus();
+			txtID.requestFocus();
 		}
 		statMsg.show();
 	}
@@ -241,16 +244,20 @@ public class UserLookupController {
 	@FXML
 	void btnView(ActionEvent event) {
 
-		if (txtUserID.getText().isEmpty()) {
+		if (txtID.getText().isEmpty()) {
 			Alert msg = new Alert(AlertType.WARNING, "User ID must be inserted", ButtonType.OK);
 			msg.show();
 		} else {
 			try {
-				Integer.parseInt((txtUserID.getText()));
-				// lookupAccount = DatabaseController.getAccount(txtUserID.getText());
-				LoadUserData();
-				txtUserID.setDisable(true);
-			} catch (Exception exc) {
+				Integer.parseInt((txtID.getText()));
+				lookupAccount = (UserAccount) DatabaseController.getAccount(Integer.parseInt(txtID.getText()));
+				if (lookupAccount != null) {
+					LoadUserData();
+					txtID.setDisable(true);
+				} else
+					new Alert(AlertType.WARNING, "User doesn't exist!", ButtonType.OK).show();
+			} catch (NumberFormatException exc) {
+				exc.printStackTrace();
 				new Alert(AlertType.WARNING, "ID must contain numbers only", ButtonType.OK).show();
 			}
 		}
@@ -258,7 +265,7 @@ public class UserLookupController {
 
 	@FXML
 	void btnViewHistoryPressed(ActionEvent event) {
-		if (txtUserID.isDisabled()) {
+		if (txtID.isDisabled()) {
 			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 			Scene scene = (Scene) ((Node) event.getSource()).getScene();
 			SceneController.push(scene);
@@ -306,7 +313,7 @@ public class UserLookupController {
 	}
 
 	void start(Stage primaryStage, Account acc, Account librarian) throws Exception {
-		lookupAccount = (UserAccount) acc;// FOR TEST ONLY
+		// lookupAccount = (UserAccount) acc;// FOR TEST ONLY
 		librarianAccount = (LibrarianAccount) librarian;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/UserLookupForm.fxml"));
 		Scene scene = new Scene(root);

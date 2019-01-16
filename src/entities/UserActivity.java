@@ -1,14 +1,14 @@
 package entities;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class UserActivity {
 
 	private int userID;
 	private String activityName;
-	private Date date;
+	private LocalDate date;
 
-	public UserActivity(int userID, String activityName, Date date) {
+	public UserActivity(int userID, String activityName, LocalDate date) {
 		this.userID = userID;
 		this.activityName = activityName;
 		this.date = date;
@@ -53,14 +53,14 @@ public class UserActivity {
 	/**
 	 * @return the date
 	 */
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
 	/**
 	 * @param date the date to set
 	 */
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 }
