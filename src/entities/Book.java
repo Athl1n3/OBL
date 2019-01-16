@@ -13,9 +13,11 @@ public class Book {
 	private String shelf;
 	private int copiesNumber;
 	private String type;
+	private int availableCopies;
+	private int bookOrders;
 	
 	public Book(int bookID, String name, String author, String edition, int printYear, String subject,
-			String description, int catalog, String tableOfContents, String shelf, int copiesNumber, String type) {
+			String description, int catalog, String tableOfContents, String shelf, int copiesNumber, String type, int availableCopies,int bookOrders) {
 		super();
 		this.bookID = bookID;
 		this.name = name;
@@ -29,6 +31,8 @@ public class Book {
 		this.shelf = shelf;
 		this.copiesNumber = copiesNumber;
 		this.type = type;
+		this.availableCopies = availableCopies;
+		this.bookOrders = bookOrders;
 	}
 	
   	/**
@@ -208,6 +212,22 @@ public class Book {
 	
 	public void setBookType(String type) {
 		this.type = type;
+	}
+	
+	public int getAvailableCopies() {
+		return availableCopies;
+	}
+	
+	public void setAvailableCopies(int availableCopies) {
+		this.availableCopies = availableCopies;
+	}
+	
+	public int getBookOrders() {
+		return bookOrders;
+	}
+	
+	public void setBookOrders(int bookOrders) {
+		this.bookOrders = bookOrders;
 	}
 
 }

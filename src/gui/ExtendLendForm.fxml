@@ -85,9 +85,9 @@
                         <Font name="Bell MT Bold" size="18.0" />
                      </font>
                   </Label>
-                  <TableView prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
+                  <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
                     <columns>
-                        <TableColumn prefWidth="75.0" text="Book Details">
+                        <TableColumn fx:id="bookDetails" prefWidth="75.0" text="Book Details">
                            <columns>
                             <TableColumn fx:id="bookNameCol" prefWidth="101.60003054141998" text="Book Name" />
                               <TableColumn fx:id="bookTopicCol" prefWidth="103.59991455078125" text="Topic" />
