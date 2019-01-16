@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class LentBook {
-	public LentBook(int userID, int bookID, LocalDate issueDate, LocalDate dueDate, boolean late, String bookName , String bookEdition , String bookAuthor, String bookTopic) {
+	public LentBook(int userID, int bookID, LocalDate issueDate, LocalDate dueDate, boolean late, String bookName , String bookEdition , String bookAuthor, String bookTopic, String bookType) {
 		this.userID = userID;
 		this.bookID = bookID;
 		IssueDate = issueDate;
@@ -14,11 +14,13 @@ public class LentBook {
 		this.bookEdition = bookEdition;
 		this.bookTopic = bookTopic;
 		this.bookAuthor = bookAuthor;
+		this.bookType = bookType;
 	}
 	private String bookName;
 	private String bookEdition;
 	private String bookAuthor;
 	private String bookTopic;
+	private String bookType;
 	private int userID;
 	private int bookID;
 	private LocalDate IssueDate;
@@ -111,5 +113,9 @@ public class LentBook {
 	
 	public String getBookTopic() {
 		return bookTopic;
+	}
+	
+	public String getBookType() {
+		return bookType;
 	}
 }
