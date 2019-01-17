@@ -3,11 +3,12 @@ package controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
-public class UserMainController {
+public class UserMainController implements Initializable {
 
     @FXML
     private ResourceBundle resources;
@@ -61,8 +62,8 @@ public class UserMainController {
 
     }
 
-    @FXML
-    void initialize() {
-
-    }
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		lblUsername.setText(DatabaseController.loggedAccount.getAccount().getFirstName());
+	}
 }

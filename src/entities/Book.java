@@ -4,29 +4,35 @@ public class Book {
 	private int bookID;
 	private String name;
 	private String author;
-	private double edition;
+	private String edition;
 	private int  printYear;
-	private String Subject;
+	private String subject;
 	private String description;
 	private int catalog;
 	private String tableOfContents;
 	private String shelf;
 	private int copiesNumber;
+	private String type;
+	private int availableCopies;
+	private int bookOrders;
 	
-	public Book(int bookID, String name, String author, double edition, int printYear, String subject,
-			String description, int catalog, String tableOfContents, String shelf, int copiesNumber) {
+	public Book(int bookID, String name, String author, String edition, int printYear, String subject,
+			String description, int catalog, String tableOfContents, String shelf, int copiesNumber, String type, int availableCopies) {
 		super();
 		this.bookID = bookID;
 		this.name = name;
 		this.author = author;
 		this.edition = edition;
 		this.printYear = printYear;
-		Subject = subject;
+		this.subject = subject;
 		this.description = description;
 		this.catalog = catalog;
 		this.tableOfContents = tableOfContents;
 		this.shelf = shelf;
 		this.copiesNumber = copiesNumber;
+		this.type = type;
+		this.availableCopies = availableCopies;
+		this.bookOrders = bookOrders;
 	}
 	
   	/**
@@ -85,14 +91,14 @@ public class Book {
   	 * 
   	 * @return  edition.
   	 */
-	public double getEdition() {
+	public String getEdition() {
 		return edition;
 	}
 	/**
 	 * Instantiates the edition
 	 * @param  edition 
 	 */
-	public void setEdition(double edition) {
+	public void setEdition(String edition) {
 		this.edition = edition;
 	}
 
@@ -115,14 +121,14 @@ public class Book {
   	 * @return  Subject.
   	 */
 	public String getSubject() {
-		return Subject;
+		return subject;
 	}
 	/**
 	 * Instantiates the Subject
 	 * @param  Subject 
 	 */
 	public void setSubject(String subject) {
-		Subject = subject;
+		this.subject = subject;
 	}
   	/**
   	 * Gets   description.
@@ -198,6 +204,30 @@ public class Book {
 	 */
 	public void setCopiesNumber(int copiesNumber) {
 		this.copiesNumber = copiesNumber;
+	}
+	
+	public String getBookType() {
+		return type;
+	}
+	
+	public void setBookType(String type) {
+		this.type = type;
+	}
+	
+	public int getAvailableCopies() {
+		return availableCopies;
+	}
+	
+	public void setAvailableCopies(int availableCopies) {
+		this.availableCopies = availableCopies;
+	}
+	
+	public int getBookOrders() {
+		return bookOrders;
+	}
+	
+	public void setBookOrders(int bookOrders) {
+		this.bookOrders = bookOrders;
 	}
 
 }

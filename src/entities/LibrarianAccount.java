@@ -8,7 +8,7 @@ public class LibrarianAccount extends Account {
 
 	}
 
-	public LibrarianAccount(int id, String firstName, String lastName, String eMail, int mobileNum, int userID,
+	public LibrarianAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
 			String userName, String password, int workerID) {
 		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, UserType.Librarian);
 		if (this instanceof ManagerAccount)

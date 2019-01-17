@@ -45,6 +45,11 @@ public class ClientConnection implements OBLclientIF {
 	public void executeQuery(ArrayList<String> arr) {
 		client.handleMessageFromClientUI(arr);
 	}
+	
+	public void executeQuery(String str) {
+		client.handleMessageFromClientUI(str);
+
+	}
 
 	// **************************************//
 	private Object obj;
@@ -56,31 +61,24 @@ public class ClientConnection implements OBLclientIF {
 	}
 
 	public Object getObject() {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setContentText("Loading data from server");
-		alert.show();
 		try {
-			Thread.sleep(1500, 1);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		alert.close();
 		return this.obj;
 	}
 	
 	public ArrayList<String> getList()
 	{
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setContentText("Loading data from server");
-		alert.show();
+
 		try {
-			Thread.sleep(1500, 1);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		alert.close();
 		return (ArrayList<String>) this.obj;
 	}
 
@@ -96,11 +94,6 @@ public class ClientConnection implements OBLclientIF {
 
 	public void terminate() {
 		client.quit();
-	}
-
-	public void executeQuery(String string) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	public void init() {

@@ -25,7 +25,7 @@ public class MainTest extends Application{
 		//else
 			//host = list.get(0);
 		ClientConnection cc = new ClientConnection(host, 5555);
-		NewAccountController mFrame = new NewAccountController();
+		LoginController mFrame = new LoginController();
 		cc.init();
 		mFrame.cc = cc;
 		mFrame.start(stage);

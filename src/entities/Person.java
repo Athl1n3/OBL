@@ -5,12 +5,12 @@ public class Person {
 	protected String firstName;
 	protected String lastName;
 	protected String eMail;
-	protected int mobileNum;
+	protected String mobileNum;
 
 	public Person() {
 	}
 
-	public Person(int ID, String firstName, String lastName, String eMail, int mobileNum) {
+	public Person(int ID, String firstName, String lastName, String eMail, String mobileNum) {
 		this.ID = ID;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -95,7 +95,7 @@ public class Person {
 	 * 
 	 * @return mobileNum
 	 */
-	public int getMobileNum() {
+	public String getMobileNum() {
 		return mobileNum;
 	}
 
@@ -104,7 +104,7 @@ public class Person {
 	 * 
 	 * @param set the mobileNum
 	 */
-	public void setMobileNum(int i) {
-		this.mobileNum = i;
+	public void setMobileNum(String str) {
+		this.mobileNum = str;
 	}
 }

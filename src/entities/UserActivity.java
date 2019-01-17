@@ -1,46 +1,50 @@
 package entities;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class UserActivity {
-	
-	
+
 	private int userID;
 	private String activityName;
-	private Date date;
-	
-	public UserActivity(int userID, String activityName, Date date) {
+	private LocalDate date;
+
+	public UserActivity(int userID, String activityName, LocalDate date) {
 		this.userID = userID;
 		this.activityName = activityName;
 		this.date = date;
 	}
-	
+
 	/**
 	 * Gets the user ID.
 	 * 
-	 * @return  userID
+	 * @return userID
 	 */
 	public int getUserID() {
 		return userID;
 	}
+
 	/**
 	 * Instantiates user ID
-	 * @param  userID 
+	 * 
+	 * @param userID
 	 */
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}
+
 	/**
 	 * Gets the activity Name.
 	 * 
-	 * @return  activityName
+	 * @return activityName
 	 */
 	public String getActivityName() {
 		return activityName;
 	}
+
 	/**
 	 * Instantiates activity Name
-	 * @param  activityName 
+	 * 
+	 * @param activityName
 	 */
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
@@ -49,14 +53,14 @@ public class UserActivity {
 	/**
 	 * @return the date
 	 */
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
 	/**
 	 * @param date the date to set
 	 */
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 }

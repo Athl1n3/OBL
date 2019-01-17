@@ -40,8 +40,8 @@ public class OBLclient extends AbstractClient {
 		clientUI.serverObj(msg);
 	}
 
-	// This method handles all data coming from the UI
-	public void handleMessageFromClientUI(ArrayList<String> arr) {
+	// This method handles all data coming from the UI as arrayList
+	public void handleMessageFromClientUI(Object arr) {
 		try {
 			sendToServer(arr);
 		} catch (IOException e) {
@@ -49,6 +49,7 @@ public class OBLclient extends AbstractClient {
 			quit();
 		}
 	}
+	
 
 	/**
 	 * This method terminates the client.

@@ -7,12 +7,15 @@ import entities.*;
 import entities.Account.UserType;
 import entities.UserAccount.accountStatus;
 import client.ClientConnection;
+import entities.Account;
+import entities.UserAccount;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -20,50 +23,53 @@ import javafx.stage.Stage;
 
 public class NewAccountController {
 
-    @FXML
-    private ResourceBundle resources;
+	@FXML
+	private ResourceBundle resources;
 
-    @FXML
-    private URL location;
+	@FXML
+	private URL location;
 
-    @FXML
-    private Button btnCreateAccount;
+	@FXML
+	private Button btnCreateAccount;
 
-    @FXML
-    private Button btnClear;
+	@FXML
+	private Button btnClear;
 
-    @FXML
-    private ImageView imgBack;
+	@FXML
+	private ImageView imgBack;
 
-    @FXML
-    private TextField txtID;
+	@FXML
+	private TextField txtID;
 
-    @FXML
-    private TextField txtFirstName;
+	@FXML
+	private TextField txtFirstName;
 
-    @FXML
-    private TextField txtLastName;
+	@FXML
+	private TextField txtLastName;
 
-    @FXML
-    private TextField txtMobileNum;
+	@FXML
+	private TextField txtMobileNum;
 
-    @FXML
-    private TextField txtEmail;
+	@FXML
+	private TextField txtEmail;
+
 
     @FXML
     private TextField txtUsername;
+	@FXML
+	private Label lblUserID;
 
-    @FXML
-    private TextField txtConPassword;
+	@FXML
+	private TextField txtConPassword;
 
-    @FXML
-    private TextField txtPassword;
+	@FXML
+	private TextField txtPassword;
+
 
 	public ClientConnection cc;
 
     @FXML
     void btnClearPressed(ActionEvent event) {
-
     }
 
     @FXML
@@ -72,20 +78,19 @@ public class NewAccountController {
     	newAccount.setID(Integer.parseInt(txtID.getText()));
     	newAccount.setFirstName(txtFirstName.getText());
     	newAccount.setLastName(txtLastName.getText());
-    	newAccount.setMobileNum(Integer.parseInt(txtMobileNum.getText()));
+    	newAccount.setMobileNum(txtMobileNum.getText());
     	newAccount.setEmail(txtEmail.getText());
     	newAccount.setAccountID(1);
     	newAccount.setUserName(txtUsername.getText());
     	newAccount.setPassword(txtPassword.getText());
     	newAccount.userType = UserType.User;
     	newAccount.status = accountStatus.Active;
-    	DatabaseController.AddAccount(newAccount);
+    	DatabaseController.addAccount(newAccount);
     }
 
-    @FXML
-    void imgBackClicked(MouseEvent event) {
-
-    }
+	@FXML
+	void imgBackClicked(MouseEvent event) {
+	}
 
     @FXML
     void initialize() {
@@ -102,4 +107,5 @@ public class NewAccountController {
   			e.printStackTrace();
   		}
   	}
+
 }

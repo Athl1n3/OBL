@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.ArrayList;
+
 public class UserAccount extends Account {
 
 	private int delays;
@@ -12,10 +14,10 @@ public class UserAccount extends Account {
 	public accountStatus status;
 
 	public UserAccount() {
-
+		this.setUserType(userType.User);
 	}
 
-	public UserAccount(int id, String firstName, String lastName, String eMail, int mobileNum, int userID,
+	public UserAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
 			String userName, String password, accountStatus status, int delays, int lostBooks, boolean logged) {
 		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, UserType.User);
 		this.status = status;
@@ -33,7 +35,11 @@ public class UserAccount extends Account {
 	/**
 	 * @param status the status to set
 	 */
-	public void setStatus(String status) {
+	public void setStatus(accountStatus status) {
+		this.status = status;
+	}
+	
+	public void setStatusString(String status) {
 		if(accountStatus.Active.equals(status))
 			this.status = accountStatus.Active;
 		else
@@ -78,5 +84,19 @@ public class UserAccount extends Account {
 	 */
 	public void setLostBooks(int lostBooks) {
 		this.lostBooks = lostBooks;
+	}
+	
+	public void parseArrayIntoAccount(ArrayList<String> accountArray) {
+		this.setID(Integer.parseInt(accountArray.get(0)));
+		this.setFirstName(accountArray.get(1));
+		this.setLastName(accountArray.get(2));
+		this.setEmail(accountArray.get(3));
+		this.setMobileNum(accountArray.get(4));
+		this.setAccountID(Integer.parseInt(accountArray.get(5)));
+		this.setUserName(accountArray.get(6));
+		this.setPassword(accountArray.get(7));
+		this.setUserTypeString(accountArray.get(8));
+		this.setStatusString(accountArray.get(9));
+		this.setDelays(Integer.parseInt(accountArray.get(10)));
 	}
 }

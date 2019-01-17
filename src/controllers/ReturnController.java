@@ -64,17 +64,7 @@ public class ReturnController {
 
     @FXML
     void initialize() {
-        assert txtBookID != null : "fx:id=\"txtBookID\" was not injected: check your FXML file 'ReturnForm.fxml'.";
-        assert dtIssueDate != null : "fx:id=\"dtIssueDate\" was not injected: check your FXML file 'ReturnForm.fxml'.";
-        assert dtReturnDate != null : "fx:id=\"dtReturnDate\" was not injected: check your FXML file 'ReturnForm.fxml'.";
-        assert txtBookName != null : "fx:id=\"txtBookName\" was not injected: check your FXML file 'ReturnForm.fxml'.";
-        assert txtUserID != null : "fx:id=\"txtUserID\" was not injected: check your FXML file 'ReturnForm.fxml'.";
-        assert dtDueDate != null : "fx:id=\"dtDueDate\" was not injected: check your FXML file 'ReturnForm.fxml'.";
-        assert txtName != null : "fx:id=\"txtName\" was not injected: check your FXML file 'ReturnForm.fxml'.";
-        assert btnBookLookup != null : "fx:id=\"btnBookLookup\" was not injected: check your FXML file 'ReturnForm.fxml'.";
-        assert btnReturnBook != null : "fx:id=\"btnReturnBook\" was not injected: check your FXML file 'ReturnForm.fxml'.";
-        assert btnClear != null : "fx:id=\"btnClear\" was not injected: check your FXML file 'ReturnForm.fxml'.";
-
+       
     }
 }
 

@@ -1,20 +1,31 @@
 package entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
+//need to extend from book
 public class LentBook {
-	public LentBook(int userID, int bookID, Date issueDate, Date dueDate, boolean late) {
-		super();
+	public LentBook(int userID, int bookID, LocalDate issueDate, LocalDate dueDate, boolean late, String bookName , String bookEdition , String bookAuthor, String bookTopic, String bookType) {
 		this.userID = userID;
 		this.bookID = bookID;
 		IssueDate = issueDate;
 		DueDate = dueDate;
 		this.late = late;
+		this.bookName = bookName;
+		this.bookEdition = bookEdition;
+		this.bookTopic = bookTopic;
+		this.bookAuthor = bookAuthor;
+		this.bookType = bookType;
 	}
+	private String bookName;
+	private String bookEdition;
+	private String bookAuthor;
+	private String bookTopic;
+	private String bookType;
 	private int userID;
 	private int bookID;
-	private Date IssueDate;
-	private Date DueDate;
+	private LocalDate IssueDate;
+	private LocalDate DueDate;
 	private boolean  late;
 	
 	/**
@@ -66,25 +77,46 @@ public class LentBook {
 	/**
 	 * @return the issueDate
 	 */
-	public Date getIssueDate() {
+	public LocalDate getIssueDate() {
 		return IssueDate;
 	}
 	/**
 	 * @param issueDate the issueDate to set
 	 */
-	public void setIssueDate(Date issueDate) {
+	public void setIssueDate(LocalDate issueDate) {
 		IssueDate = issueDate;
 	}
 	/**
 	 * @return the dueDate
 	 */
-	public Date getDueDate() {
+	public LocalDate getDueDate() {
 		return DueDate;
 	}
 	/**
 	 * @param dueDate the dueDate to set
 	 */
-	public void setDueDate(Date dueDate) {
+	public void setDueDate(LocalDate dueDate) {
 		DueDate = dueDate;
+	}
+	
+	public String getBookName() {
+		return bookName;
+	}
+	
+	
+	public String getBookEdition() {
+		return bookEdition;
+	}
+	
+	public String getBookAuthor() {
+		return bookAuthor;
+	}
+	
+	public String getBookTopic() {
+		return bookTopic;
+	}
+	
+	public String getBookType() {
+		return bookType;
 	}
 }

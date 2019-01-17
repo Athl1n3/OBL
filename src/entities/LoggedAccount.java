@@ -1,6 +1,6 @@
 package entities;
 
-public class LoggedUser {
+public class LoggedAccount {
 	
 	public static Boolean logged = false;
 	private Account account;
