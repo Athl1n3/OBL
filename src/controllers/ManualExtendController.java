@@ -29,6 +29,13 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * @author Alaa Grable
+ * @version 1.0 [17.1.2019]
+ * 
+ */
+
 public class ManualExtendController {
 	
 	UserAccount acc;
@@ -85,25 +92,36 @@ public class ManualExtendController {
     @FXML
     private Button btnExtendLend;
 
+	/**
+	 * When ExtendLend button is pressed , this method will be called
+	 * @param event
+	 */
     @FXML
     void btnExtendLendPressed(ActionEvent event) {
+    	// get the selected book from the tableView
     	LentBook selectedBook = tableView.getSelectionModel().getSelectedItem();
     	
-		// check account status if suspended ..
-		if (selectedBook.getBookType().equals("Wanted")) {
-			Alert alert = new Alert(AlertType.WARNING, "This book "  + selectedBook.getBookName() + " is a 'Wanted' book and cannot be extended.",ButtonType.OK);
-			alert.show();
-		}
+    	// validate if the book type is equal to "wanted" or not
+		if (selectedBook.getBookType().equals("Wanted")) 
+			// if the book type is "Wanted" then let the user know that he can't extend the book return time
+			alertWarningMessage("This book "  + selectedBook.getBookName() + " is a 'Wanted' book and cannot be extended.");
 		else {
-			//tmpBook = DatabaseController.getBook(selectedBook.getBookID());
+			/*
+			 * tmpBook = DatabaseController.getBook(selectedBook.getBookID());
+			 */
+			// validate if the orders on that book is lesser than the actual available copies in the library
 			if(tmpBook.getAvailableCopies() <= tmpBook.getBookOrders()) {
-				Alert alert = new Alert(AlertType.WARNING , "There is a lot of orders on that book , \nTherefore the book " + tmpBook.getName() +" cannot be extended.",ButtonType.OK);
-				alert.show();
+				// if not , then let the user know that he can't extend the book return time
+				alertWarningMessage("There is a lot of orders on that book , \nTherefore the book " + tmpBook.getName() +" cannot be extended.");
 			}
 			else {
+				// extend the book return time to 1 more weeks
 				selectedBook.setDueDate(selectedBook.getDueDate().plusWeeks(1));
 				
-				//DatabaseController.updateLentBook(selectedBook);
+				/*
+				 * DatabaseController.updateLentBook(selectedBook);
+				 */
+				// let the user know that the return time for the his book has been extended successfully
 				Alert alert = new Alert(AlertType.INFORMATION, "The book"  + tmpBook.getName() + " Due time has been extended successfully.", ButtonType.OK);
 				alert.show();
 			}
@@ -112,30 +130,49 @@ public class ManualExtendController {
 
     }
 
+	/**
+	 * When UserLookUp button is pressed , this method will be called
+	 * @param event
+	 */
     @FXML
     void btnUserLookupPressed(ActionEvent event) {
     	
-    	  try {
+    		  // get the inputed ID
     		  String usrID = txtID.getText();
-    	      Integer num = Integer.valueOf(usrID);
-    	      //acc = DatabaseController.getAccount(usrID);
+    	      /*
+    	       * acc = DatabaseController.getAccount(usrID);
+    	       */
     	      acc = new UserAccount(316544345,"ALAA", "Grable", "alaatg.7@gmail.com", "0522985313", 123,"Zerox", "asd123", accountStatus.Active, 0,0,true);
+    	      // display the user details according to the inserted ID
     	      txtUserID.setText(String.valueOf(acc.getID()));
     	      txtUsername.setText(acc.getUserName());
     	      txtName.setText(acc.getFirstName()+" " +acc.getLastName() );
     	      lblStatus.setText(String.valueOf(acc.getStatus()));
+    	      // get the books of the user as an observableList to display it in the table
     	      ObservableList<LentBook> list = getLentBookList(usrID);
+    	      // display the data in the tableView
     	      tableView.setItems(list);
-    	       
-    	    } catch (NumberFormatException e) {
-    	        Alert alert = new Alert(AlertType.WARNING,"The user ID must contain only numbers", ButtonType.OK);
-    	        alert.show();
-    	    }
     }
 
     @FXML
+	/**
+	 * Initialise the current screen
+	 */
     void initialize() {
-        
+    	
+    	// a listener to validate if the ID length is not greater than 9 digits and if it's only contain numbers
+    	txtID.textProperty().addListener((observable, oldValue, newValue) -> {
+    	        if (!newValue.matches("\\d*")) {
+    	        	txtID.setText(newValue.replaceAll("[^\\d]", ""));
+    	        	alertWarningMessage("The ID must contain only numbers");
+    	        }
+    	        if(txtID.getLength()>9) {
+    	        	txtID.setText(oldValue);
+    	        	alertWarningMessage("The ID must be 9 numbers");
+    	        }
+    	    });
+    	
+    	// Defines how to fill data for each cell
 		bookNameCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookName"));
 		bookEditionCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookEdition"));
 		bookAuthorCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookAuthor"));
@@ -144,18 +181,25 @@ public class ManualExtendController {
 		dueDateCol.setCellValueFactory(new PropertyValueFactory<LentBook,LocalDate>("DueDate"));
 		btnExtendLend.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
         
+		// Enable UserLookUp button only when the user ID textfield is not empty
         BooleanBinding booleanBind = txtID.textProperty().isEmpty();
         btnUserLookup.disableProperty().bind(booleanBind);
-
     }
     
+	/*
+	 * Create an ObservableList that contains the lent books for that user
+	 */
 	private ObservableList<LentBook> getLentBookList(String userID) {
 
-		// DatabaseController.getExtendBookList(userID) ** & send it to the
-		// next code line
+		/*
+		 * DatabaseController.getExtendBookList(userID) ** & send it
+		 */
 		LentBook LntBK1 = new LentBook(123,111,LocalDate.now(),LocalDate.now().plusWeeks(2), false,"Marshood","2st", "ALAA", "Calculus","Wanted" );
 		LentBook LntBK2 = new LentBook(777,999,LocalDate.now(),LocalDate.now().plusWeeks(2), false,"Fucker","7st", "ahmad", "notur","Regular" );
+		
+		// create an observablelist that contains the user let books
 		ObservableList<LentBook> list = FXCollections.observableArrayList(LntBK1,LntBK2);
+		// return the observablelist
 		return list;
 	}
 	
@@ -167,5 +211,13 @@ public class ManualExtendController {
 		stage.sizeToScene();
 		stage.setScene(scene);
 		stage.show();
+	}
+    
+	/**
+	 * Show an appropriate alert to the user when an error occur
+	 * @param msg
+	 */
+	private void alertWarningMessage(String msg) {
+		new Alert(AlertType.WARNING,msg,ButtonType.OK).show();
 	}
 }
