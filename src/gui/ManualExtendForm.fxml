@@ -3,9 +3,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TreeTableColumn?>
-<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="518.0" prefWidth="701.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ManualExtendController">
+<VBox prefHeight="518.0" prefWidth="701.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ManualExtendController">
    <children>
       <BorderPane prefHeight="517.0" prefWidth="640.0">
          <top>
@@ -52,20 +52,6 @@
                   <RowConstraints maxHeight="374.0" minHeight="10.0" prefHeight="261.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <TreeTableView fx:id="treeTableView" prefHeight="304.0" prefWidth="602.0" tableMenuButtonVisible="true" GridPane.rowIndex="3">
-                     <columns>
-                        <TreeTableColumn editable="false" minWidth="-Infinity" prefWidth="500.0" sortable="false" text="Book Details">
-                           <columns>
-                              <TreeTableColumn editable="false" prefWidth="88.0" sortable="false" text="Book Name" />
-                              <TreeTableColumn editable="false" prefWidth="57.0" sortable="false" text="Edition" />
-                              <TreeTableColumn editable="false" prefWidth="88.0" sortable="false" text="Book Author" />
-                              <TreeTableColumn editable="false" prefWidth="68.0" sortable="false" text="Topic" />
-                           </columns>
-                        </TreeTableColumn>
-                        <TreeTableColumn editable="false" prefWidth="200.0" sortable="false" text="Issued Date" />
-                        <TreeTableColumn editable="false" prefWidth="98.0" sortable="false" text="Due Date" />
-                     </columns>
-                  </TreeTableView>
                   <Separator prefWidth="200.0" GridPane.rowIndex="1" />
                   <Label text="Lent books list:" textFill="#240fae" underline="true" GridPane.rowIndex="2">
                      <font>
@@ -122,6 +108,20 @@
                         <TextField fx:id="txtID" layoutX="74.0" layoutY="10.0" />
                      </children>
                   </Pane>
+                  <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
+                    <columns>
+                        <TableColumn fx:id="bookDetailsCol" prefWidth="309.60003054142" text="Book Details">
+                           <columns>
+                              <TableColumn fx:id="bookNameCol" prefWidth="75.0" text="Name" />
+                              <TableColumn fx:id="bookEditionCol" prefWidth="75.0" text="Edition" />
+                              <TableColumn fx:id="bookAuthorCol" prefWidth="75.0" text="Author" />
+                              <TableColumn fx:id="bookTypeCol" prefWidth="75.0" text="Type" />
+                           </columns>
+                        </TableColumn>
+                      <TableColumn fx:id="issuedDateCol" minWidth="0.0" prefWidth="252.80001831054688" text="Issued Date" />
+                      <TableColumn fx:id="dueDateCol" prefWidth="145.9999877929688" text="Due Date" />
+                    </columns>
+                  </TableView>
                </children>
             </GridPane>
          </center>

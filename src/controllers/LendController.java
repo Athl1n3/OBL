@@ -26,12 +26,20 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+/**
+ * 
+ * @author Alaa Grable
+ * @version 1.0 [17.1.2019]
+ * 
+ */
 
 public class LendController {
 
@@ -41,6 +49,9 @@ public class LendController {
     @FXML
     private URL location;
 
+    @FXML
+    private TableView<LentBook> tableView;
+    
     @FXML
     private ImageView imgBack;
 
@@ -82,22 +93,32 @@ public class LendController {
     
     private static UserAccount loggedAccount;
     
+	/**
+	 * When BookLookUp button is pressed , this method will be called
+	 * @param event
+	 */
     @FXML
     void btnBookLookupPressed(ActionEvent event) {
     	
-    	
-    	// lentBook = DataBaseController.getBook(txtBookID.getText());
+    	/*
+    	 *  lentBook = DataBaseController.getBook(txtBookID.getText());
+    	 */
+    	//validate if there is such a book with the inputed book ID
     	if(lentBook == null){
-    		Alert alert = new Alert(AlertType.WARNING,"There is no such book in the library", ButtonType.OK);
-    		alert.show();
+    		// if not , then let the user know
+    		alertWarningMessage("There is no such book in the library");
     	}
     	else {
-    		//lenderBook = DatabaseController.getAccount(txtUserID.getText());
+    		/*
+    		 * lenderBook = DatabaseController.getAccount(txtUserID.getText());
+    		 */
+    		// validate if there is such an account with the inputed ID
     		if(lenderAccount == null) {
-        		Alert alert = new Alert(AlertType.WARNING,"There is no such user", ButtonType.OK);
-        		alert.show();
+    			// if not , then let the user know
+    			alertWarningMessage("There is no such user");
     		}
     		else {
+    			// if the book ID & the user ID is found in the DB , then display the details about the book and the user
     			txtBookName.setText(lentBook.getName());
     			txtBookName.setEditable(false);
     			
@@ -110,16 +131,19 @@ public class LendController {
     			txtName.setText(lenderAccount.getFirstName());
     			txtName.setEditable(false);
     			
+    			// validate if the user account status is not active
     			if(!lenderAccount.getStatus().equals(accountStatus.Active)) {
-    				Alert alert = new Alert(AlertType.WARNING , "This account is " + lenderAccount.getStatus(), ButtonType.OK);
-					alert.show();
+    				// if the user account status is not active then let the user know that
+    				alertWarningMessage("This account is " + lenderAccount.getStatus());
     			}
     			else {
+    				// the user account status is active , then validate if there is copies of that book
     				if(lentBook.getCopiesNumber() == 0) {
-    					Alert alert = new Alert(AlertType.WARNING, "There is no copies of the book " + lentBook.getName());
-    					alert.show();
+    					// if there is no copies of that book then let the user know that
+    					alertWarningMessage("There is no copies of the book " + lentBook.getName());
     				}
     				else {
+    					// if everything is okay then enable the button to let the user be able to lent the book
     					btnLendBook.setDisable(false);
     				}
     			}
@@ -127,6 +151,9 @@ public class LendController {
     	}		
     }
     
+	/*
+	 * Clear all textFields
+	 */
     @FXML
     void btnClearPressed(ActionEvent event) {
     	txtBookID.clear();
@@ -138,53 +165,65 @@ public class LendController {
     	dtDueDate.getEditor().clear();
     }
 
+	/**
+	 * When LendBook button is pressed , this method will be called
+	 * @param event
+	 */
     @FXML
     void btnLendBookPressed(ActionEvent event) {
     	
+    	// get the date of today
     	LocalDate date = LocalDate.now();
-    	if(lentBook.getBookType().equals("Wanted") )    /// the book is wanted
+    	// validate if the book type is wanted or not
+    	if(lentBook.getBookType().equals("Wanted") )
+    		// the book is "wanted" so lent the book for 3 days only
     		date = date.plusDays(3);
-    	else      // the books is regular
+    	else      
+    		// the books is "regular" , then lent the book for 2 weeks
     		date = date.plusWeeks(2);
+    	// set the returning time
     	dtDueDate.setValue(date);
 		
+    	// create the lent book request with the appropriate returning time
     	LentBook lntbook = new LentBook(lenderAccount.getID(),lentBook.getBookID(), LocalDate.now(),date,false , lentBook.getName(), lentBook.getEdition(), lentBook.getAuthor(), lentBook.getSubject(), lentBook.getBookType());
-    	//DataBaseController.setLentBook(lntbook);     needs to be added //
+    	/*
+    	 * DataBaseController.setLentBook(lntbook);     needs to be added //
+    	 */
 		
+    	// let the user know that the lent process has been cone successfully
     	Alert alert = new Alert(AlertType.INFORMATION, "Book has been lent successfully",ButtonType.OK);
     	alert.show();
 
     }
 
+	/**
+	 * Back to the previous screen
+	 */
     @FXML
     void imgBackClicked(MouseEvent event) {
     	Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+    	// get the previous scene
 		Scene scene = SceneController.pop();
 		stage.setScene(scene);
 		stage.setTitle("User Main");
     }
     
+	/**
+	 * Initialise the current screen
+	 */
     @FXML
     void initialize() {
+    	// display the date of today
     	dtIssueDate.setValue(LocalDate.now());
+    	// make this field inedible 
     	dtIssueDate.setEditable(false);
+    	//disable LendBook button
     	btnLendBook.setDisable(true);
     	
+    	// Enable BookLookUp button only when the book ID textfield & user ID textField is not empty
     	BooleanBinding booleanBind = txtBookID.textProperty().isEmpty().or(txtUserID.textProperty().isEmpty());
     	btnBookLookup.disableProperty().bind(booleanBind);
     }
-    
-  /*  @FXML
-    void ChecktxtBookID() {
-    	if(!txtBookID.getText().trim().isEmpty() && !txtUserID.getText().trim().isEmpty())
-    		btnLendBook.setDisable(false);
-    }
-    
-    @FXML
-    void ChecktxtUserID() {
-    	if(!txtBookID.getText().trim().isEmpty() && !txtUserID.getText().trim().isEmpty())
-    		btnLendBook.setDisable(false);
-    }*/
     
     void start(Stage stage, Account loggedAccount) throws Exception {
 		this.loggedAccount = (UserAccount)loggedAccount;
@@ -194,6 +233,14 @@ public class LendController {
 		stage.sizeToScene();
 		stage.setScene(scene);
 		stage.show();
+	}
+    
+	/**
+	 * Show an appropriate alert to the user when an error occur
+	 * @param msg
+	 */
+	private void alertWarningMessage(String msg) {
+		new Alert(AlertType.WARNING,msg,ButtonType.OK).show();
 	}
 }
 
