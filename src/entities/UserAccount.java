@@ -39,15 +39,19 @@ public class UserAccount extends Account {
 		this.status = status;
 	}
 	
-	public void setStatusString(String status) {
-		if(accountStatus.Active.equals(status))
-			this.status = accountStatus.Active;
-		else
-			if(accountStatus.Locked.equals(status))
-				this.status = accountStatus.Locked;
-			else
-				if(accountStatus.Suspended.equals(status))
-					this.status = accountStatus.Suspended;
+	public void setStatusString(String str) {
+		switch(str) {
+		case "Active":
+			this.setStatus(accountStatus.Active);
+			break;
+		case "Suspended":
+			this.setStatus(accountStatus.Suspended);
+			break;
+		case "Locked":
+			this.setStatus(accountStatus.Locked);
+			break;
+			
+		}
 	}
 
 	/**
