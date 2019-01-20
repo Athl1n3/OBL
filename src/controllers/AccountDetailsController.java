@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 
 import entities.Account;
 import entities.UserAccount;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +18,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -51,10 +53,12 @@ public class AccountDetailsController implements Initializable {
 	private TextField txtUsername;
 
 	@FXML
-	private TextField txtVerPassword;
-
+	//private TextField txtVerPassword;
+	private PasswordField  txtVerPassword;
+	
 	@FXML
-	private TextField txtPassword;
+	//private TextField txtPassword;
+	private PasswordField txtPassword;
 
 	@FXML
 	private Button btnUpdateLogin;
@@ -83,7 +87,7 @@ public class AccountDetailsController implements Initializable {
 		Alert msg = new Alert(AlertType.CONFIRMATION, "Are you sure to update Login details?", ButtonType.YES,
 				ButtonType.CANCEL);
 		if (msg.showAndWait().get() == ButtonType.YES)
-			if (validatepasswordinput()) {
+			if (validatePasswordInput()) {
 				loggedAccount.setPassword(txtPassword.getText());
 				// DatabaseController.LoggedUser(loggedAccount);
 				new Alert(AlertType.INFORMATION, "password changed successfully!", ButtonType.OK).show();
@@ -98,6 +102,9 @@ public class AccountDetailsController implements Initializable {
 		stage.setTitle("Main");
 	}
 
+	/**
+	 * Initialize the Account details 
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		lblUserID.setText(String.valueOf(loggedAccount.getAccountID()));
@@ -120,11 +127,27 @@ public class AccountDetailsController implements Initializable {
 			break;
 		}
 		lblStatus.setText(loggedAccount.getStatus().toString());
+		
+		//disable the btnApplyChanges button until all Textfields are not empty
+		 BooleanBinding booleanBind =txtUserID.textProperty().isEmpty()
+				 .or(txtFirstName.textProperty().isEmpty())
+				 .or(txtLastName.textProperty().isEmpty())
+				 .or(txtMobileNum.textProperty().isEmpty())
+				 .or(txtEmail.textProperty().isEmpty());
+		 btnApplyChanges.disableProperty().bind(booleanBind);
+		
+		
 
 		// login details
 		txtUsername.setText(loggedAccount.getUserName());
+		
+		//disable the btnUpdateLogin button until all passwords textfields are not empty
+		BooleanBinding  btnPasswordBind =txtPassword.textProperty().isEmpty()
+				.or(txtVerPassword.textProperty().isEmpty());
+		btnUpdateLogin.disableProperty().bind(btnPasswordBind);
+		
 	}
-
+	
 	/**
 	 * Validate updated user data
 	 * 
@@ -136,28 +159,48 @@ public class AccountDetailsController implements Initializable {
 		Alert msg = new Alert(AlertType.ERROR, "", ButtonType.OK);// Prepare alert box
 		msg.setHeaderText("Input Error");
 
+		if ((txtUserID.getText().isEmpty()) || (txtFirstName.getText().isEmpty()) || (txtLastName.getText().isEmpty())
+				|| (txtMobileNum.getText().isEmpty()) || (txtEmail.getText().isEmpty())) {
+			msg.setContentText("Please fill all requested fields!");
+			msg.show();
+			txtEmail.requestFocus();
+			return false;
+		}
 		for (char c : txtFirstName.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isDigit(c)) {
 				msg.setContentText("First name must contain letters only!");
 				msg.show();
 				txtFirstName.requestFocus();
+				txtFirstName.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
 				return false;
 			}
+		//txtFirstName.setStyle("-fx-border-color: ; -fx-border-width: 2px ;");
+		
 		for (char c : txtLastName.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isDigit(c)) {
 				msg.setContentText("Last name must contain letters only!");
 				msg.show();
 				txtLastName.requestFocus();
+				txtLastName.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
 				return false;
 			}
+		//txtLastName.setStyle("-fx-border-color: green ; -fx-border-width: 2px ;");
+		
 		for (char c : txtMobileNum.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isAlphabetic(c)) {
 				msg.setContentText("Mobile number must contain numbers only!");
 				msg.show();
 				txtMobileNum.requestFocus();
+				txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+
 				return false;
 			}
-		// Validate email format using
+		//txtMobileNum.setStyle("-fx-border-color: green ; -fx-border-width: 2px ;");
+
+		/**
+		 * Validate the inputed email address
+		 * @return Boolean value
+		 */
 		String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
 		java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
 		java.util.regex.Matcher m = p.matcher(txtEmail.getText());
@@ -165,37 +208,38 @@ public class AccountDetailsController implements Initializable {
 			msg.setContentText("Invalid email format!");
 			msg.show();
 			txtEmail.requestFocus();
+			txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
 			return false;
 		}
+   		txtEmail.setStyle("-fx-border-color: green ; -fx-border-width: 2px ;");
 
-		if ((txtUserID.getText() == null) || (txtFirstName.getText() == null) || (txtLastName.getText() == null)
-				|| (txtMobileNum.getText() == null) || (txtEmail.getText() == null)) {
-			msg.setContentText("Please fill all requested fields!");
-			msg.show();
-			txtEmail.requestFocus();
-			return false;
-		}
 
 		return true;// If all inputs are valid
 
 	}
 
-	boolean validatepasswordinput() {
+	boolean validatePasswordInput() {
 		Alert msg = new Alert(AlertType.ERROR, "", ButtonType.OK);// Prepare alert box
 		msg.setHeaderText("Input Error");
-		if (txtPassword.getLength() < 8) {
+		if (txtPassword.getLength() < 6) {
 			msg.setContentText("Password length must be at least 8 character !");
 			msg.show();
 			txtUserID.requestFocus();
+			txtPassword.clear();
+			txtVerPassword.clear();
 			return false;
 		}
 
-		if (txtPassword.getText() != txtVerPassword.getText()) {
+		if (!txtPassword.getText().equals(txtVerPassword.getText())) {
 			msg.setContentText("Password are not matching !");
 			msg.show();
 			txtUserID.requestFocus();
+			txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+			txtVerPassword.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
 			return false;
 		}
+		txtPassword.setStyle("-fx-border-color: green ; -fx-border-width: 2px ;");
+		txtVerPassword.setStyle("-fx-border-color: green ; -fx-border-width: 2px ;");
 
 		// success confirm password
 		return true;
