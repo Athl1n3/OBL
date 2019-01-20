@@ -174,7 +174,7 @@ public class AccountDetailsController implements Initializable {
 				txtFirstName.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
 				return false;
 			}
-		//txtFirstName.setStyle("-fx-border-color: ; -fx-border-width: 2px ;");
+		txtFirstName.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		
 		for (char c : txtLastName.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isDigit(c)) {
@@ -184,7 +184,7 @@ public class AccountDetailsController implements Initializable {
 				txtLastName.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
 				return false;
 			}
-		//txtLastName.setStyle("-fx-border-color: green ; -fx-border-width: 2px ;");
+		txtLastName.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		
 		for (char c : txtMobileNum.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isAlphabetic(c)) {
@@ -195,7 +195,7 @@ public class AccountDetailsController implements Initializable {
 
 				return false;
 			}
-		//txtMobileNum.setStyle("-fx-border-color: green ; -fx-border-width: 2px ;");
+		txtMobileNum.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 
 		/**
 		 * Validate the inputed email address
@@ -211,7 +211,7 @@ public class AccountDetailsController implements Initializable {
 			txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
 			return false;
 		}
-   		txtEmail.setStyle("-fx-border-color: green ; -fx-border-width: 2px ;");
+   		txtEmail.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 
 
 		return true;// If all inputs are valid
