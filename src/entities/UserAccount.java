@@ -50,7 +50,6 @@ public class UserAccount extends Account {
 		case "Locked":
 			this.setStatus(accountStatus.Locked);
 			break;
-			
 		}
 	}
 
