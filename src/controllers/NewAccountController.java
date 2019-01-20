@@ -3,16 +3,17 @@ package controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import entities.*;
-import entities.UserAccount.accountStatus;
 import client.ClientConnection;
+import entities.Account;
+import entities.UserAccount;
+import entities.UserAccount.accountStatus;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -132,7 +133,7 @@ public class NewAccountController {
 						// inputed
 						Account newAccount = new UserAccount(Integer.parseInt(txtID.getText()), txtFirstName.getText(),
 								txtLastName.getText(), txtEmail.getText(), txtMobileNum.getText(), 111,
-								txtUsername.getText(), txtPassword.getText(), accountStatus.Active, 0, 0, false);
+								txtUsername.getText(), txtPassword.getText(), accountStatus.Active, 0, 0);
 						/**
 						 * DatabaseController.createAccount(newAccount);
 						 */
@@ -250,9 +251,10 @@ public class NewAccountController {
 
 	/**
 	 * Show an appropriate alert to the user when an error occur
+	 * 
 	 * @param msg
 	 */
 	private void alertWarningMessage(String msg) {
-		new Alert(AlertType.WARNING,msg,ButtonType.OK).show();
+		new Alert(AlertType.WARNING, msg, ButtonType.OK).show();
 	}
 }

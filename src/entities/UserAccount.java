@@ -18,7 +18,7 @@ public class UserAccount extends Account {
 	}
 
 	public UserAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
-			String userName, String password, accountStatus status, int delays, int lostBooks, boolean logged) {
+			String userName, String password, accountStatus status, int delays, int lostBooks) {
 		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, UserType.User);
 		this.status = status;
 		this.delays = delays;
@@ -38,9 +38,9 @@ public class UserAccount extends Account {
 	public void setStatus(accountStatus status) {
 		this.status = status;
 	}
-	
+
 	public void setStatusString(String str) {
-		switch(str) {
+		switch (str) {
 		case "Active":
 			this.setStatus(accountStatus.Active);
 			break;
@@ -88,7 +88,7 @@ public class UserAccount extends Account {
 	public void setLostBooks(int lostBooks) {
 		this.lostBooks = lostBooks;
 	}
-	
+
 	public void parseArrayIntoAccount(ArrayList<String> accountArray) {
 		this.setID(Integer.parseInt(accountArray.get(0)));
 		this.setFirstName(accountArray.get(1));
