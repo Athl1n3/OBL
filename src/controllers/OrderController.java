@@ -1,74 +1,108 @@
 package controllers;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
+import entities.Book;
+import entities.LoggedAccount;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
-public class OrderController {
+public class OrderController implements Initializable {
 
-    @FXML
-    private ResourceBundle resources;
+	@FXML
+	private ResourceBundle resources;
 
-    @FXML
-    private URL location;
+	@FXML
+	private URL location;
 
-    @FXML
-    private ImageView imgBack;
+	@FXML
+	private ImageView imgBack;
 
-    @FXML
-    private TextField txtBookName;
+	@FXML
+	private TextField txtBookName;
 
-    @FXML
-    private TextField txtBookType;
+	@FXML
+	private TextField txtBookType;
 
-    @FXML
-    private TextField txtBookID;
+	@FXML
+	private TextField txtBookID;
 
-    @FXML
-    private DatePicker dtOrderDate;
+	@FXML
+	private DatePicker dtOrderDate;
 
-    @FXML
-    private TextField txtUserID;
+	@FXML
+	private TextField txtUserID;
 
-    @FXML
-    private TextField txtName;
+	@FXML
+	private TextField txtName;
 
-    @FXML
-    private Label lblStatus;
+	@FXML
+	private Label lblStatus;
 
-    @FXML
-    private Button btnPlaceOrder;
+	@FXML
+	private Button btnPlaceOrder;
 
-    @FXML
-    void btnPlaceOrderPressed(ActionEvent event) {
+	private static Book orderedBook;
 
-    }
+	@FXML
+	void btnPlaceOrderPressed(ActionEvent event) {
+		
+	}
 
-    @FXML
-    void imgBackClicked(MouseEvent event) {
+	@FXML
+	void imgBackClicked(MouseEvent event) {
 
-    }
+	}
 
-    @FXML
-    void initialize() {
-        assert imgBack != null : "fx:id=\"imgBack\" was not injected: check your FXML file 'OrderForm.fxml'.";
-        assert txtBookName != null : "fx:id=\"txtBookName\" was not injected: check your FXML file 'OrderForm.fxml'.";
-        assert txtBookType != null : "fx:id=\"txtBookType\" was not injected: check your FXML file 'OrderForm.fxml'.";
-        assert txtBookID != null : "fx:id=\"txtBookID\" was not injected: check your FXML file 'OrderForm.fxml'.";
-        assert dtOrderDate != null : "fx:id=\"dtOrderDate\" was not injected: check your FXML file 'OrderForm.fxml'.";
-        assert txtUserID != null : "fx:id=\"txtUserID\" was not injected: check your FXML file 'OrderForm.fxml'.";
-        assert txtName != null : "fx:id=\"txtName\" was not injected: check your FXML file 'OrderForm.fxml'.";
-        assert lblStatus != null : "fx:id=\"lblStatus\" was not injected: check your FXML file 'OrderForm.fxml'.";
-        assert btnPlaceOrder != null : "fx:id=\"btnPlaceOrder\" was not injected: check your FXML file 'OrderForm.fxml'.";
+	public void start(Book orderedBook) {
+		
+		OrderController.orderedBook = orderedBook;
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("../gui/OrderForm.fxml"));
+			Scene scene = new Scene(root);
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			stage.setTitle("Book Order Form");
+			stage.show();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-    }
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		txtBookID.setDisable(true);
+		txtBookName.setDisable(true);
+		txtBookType.setDisable(true);
+		txtBookName.setDisable(true);
+		dtOrderDate.setDisable(true);
+		txtUserID.setDisable(true);
+		txtName.setDisable(true);
+		txtBookID.setText(String.valueOf(orderedBook.getBookID()));
+		txtBookName.setText(orderedBook.getName());
+		txtBookType.setText(orderedBook.getBookType());
+		txtBookName.setText(orderedBook.getName());
+		dtOrderDate.setValue(LocalDate.now());
+		//txtUserID.setText(String.valueOf(DatabaseController.loggedAccount.getAccount().getID()));
+		//txtName.setText(String.valueOf(DatabaseController.loggedAccount.getAccount().getFullName()));		
+
+
+		
+
+	}
 }
-

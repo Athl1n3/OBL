@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import entities.Account;
-import entities.Account.userType;
+import entities.Account.UserType;
 import entities.LibrarianAccount;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
@@ -143,7 +143,7 @@ public class UserLookupController {
 				lookupAccount.setMobileNum(txtMobileNum.getText());
 				lookupAccount.setEmail(txtEmail.getText());
 				LoadUserData();
-				// DatabaseController.UpdateAccount(lookupAccount);
+				DatabaseController.updateAccount(lookupAccount);
 				new Alert(AlertType.INFORMATION, "User data was updated successfully!", ButtonType.OK).show();
 			}
 	}
@@ -293,7 +293,7 @@ public class UserLookupController {
 	 */
 	@FXML
 	void initialize() {
-		if (librarianAccount.getUserType() == userType.Librarian) {
+		if (librarianAccount.getUserType() == UserType.Librarian) {
 			btnLock.setVisible(false);
 			btnSuspend.setVisible(false);
 			btnArchive.setVisible(false);

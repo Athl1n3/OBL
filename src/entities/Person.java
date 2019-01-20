@@ -104,7 +104,7 @@ public class Person {
 	 * 
 	 * @param set the mobileNum
 	 */
-	public void setMobileNum(String mobileNum) {
-		this.mobileNum = mobileNum;
+	public void setMobileNum(String str) {
+		this.mobileNum = str;
 	}
 }

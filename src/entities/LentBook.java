@@ -3,6 +3,7 @@ package entities;
 import java.time.LocalDate;
 import java.util.Date;
 
+//need to extend from book
 public class LentBook {
 	public LentBook(int userID, int bookID, LocalDate issueDate, LocalDate dueDate, boolean late, String bookName , String bookEdition , String bookAuthor, String bookTopic, String bookType) {
 		this.userID = userID;

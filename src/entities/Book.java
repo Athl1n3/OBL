@@ -6,7 +6,7 @@ public class Book {
 	private String author;
 	private String edition;
 	private int  printYear;
-	private String Subject;
+	private String subject;
 	private String description;
 	private int catalog;
 	private String tableOfContents;
@@ -17,14 +17,14 @@ public class Book {
 	private int bookOrders;
 	
 	public Book(int bookID, String name, String author, String edition, int printYear, String subject,
-			String description, int catalog, String tableOfContents, String shelf, int copiesNumber, String type, int availableCopies,int bookOrders) {
+			String description, int catalog, String tableOfContents, String shelf, int copiesNumber, String type, int availableCopies) {
 		super();
 		this.bookID = bookID;
 		this.name = name;
 		this.author = author;
 		this.edition = edition;
 		this.printYear = printYear;
-		Subject = subject;
+		this.subject = subject;
 		this.description = description;
 		this.catalog = catalog;
 		this.tableOfContents = tableOfContents;
@@ -35,7 +35,10 @@ public class Book {
 		this.bookOrders = bookOrders;
 	}
 	
-  	/**
+  	public Book() {
+	}
+
+	/**
   	 * Gets the book ID.
   	 * 
   	 * @return  bookID
@@ -121,14 +124,14 @@ public class Book {
   	 * @return  Subject.
   	 */
 	public String getSubject() {
-		return Subject;
+		return subject;
 	}
 	/**
 	 * Instantiates the Subject
 	 * @param  Subject 
 	 */
 	public void setSubject(String subject) {
-		Subject = subject;
+		this.subject = subject;
 	}
   	/**
   	 * Gets   description.

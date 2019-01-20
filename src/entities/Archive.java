@@ -5,26 +5,26 @@ public class Archive {
 	
 	
 	private int Id;
-	private int UserId;
+	private int userID;
 	private String username;
 	private String password;
-	private String firstname;
-	private String lastname;
+	private String firstName;
+	private String lastName;
 	private String mobileNum;
-	private String eMail;
+	private String Email;
 	
 	
-	public Archive(int id, int userId, String username, String password, String firstname, String lastname,
-			String mobileNum, String eMail) {
+	public Archive(int userID, int id, String username, String password, String firstName, String lastName,
+			String mobileNum, String Email) {
 		super();
 		Id = id;
-		UserId = userId;
+		this.userID = userID;
 		this.username = username;
 		this.password = password;
-		this.firstname = firstname;
-		this.lastname = lastname;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.mobileNum = mobileNum;
-		this.eMail = eMail;
+		this.Email = Email;
 	}
 	/**
 	 * 
@@ -52,14 +52,14 @@ public class Archive {
 	 * @return  userId
 	 */
 	public int getUserId() {
-		return UserId;
+		return userID;
 	}
 	/**
 	 * Instantiates the user Id
 	 * @param setUserId set the user id
 	 */
 	public void setUserId(int userId) {
-		UserId = userId;
+		userID = userId;
 	}
 	/**
 	 * Gets the user name.
@@ -97,14 +97,14 @@ public class Archive {
 	 * @return  firstname
 	 */
 	public String getFirstname() {
-		return firstname;
+		return firstName;
 	}
 	/**
 	 * Instantiates the first name
 	 * @param firstname set the first name
 	 */
 	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+		this.firstName = firstname;
 	}
 	/**
 	 * Gets the last name.
@@ -112,14 +112,14 @@ public class Archive {
 	 * @return  lastname
 	 */
 	public String getLastname() {
-		return lastname;
+		return lastName;
 	}
 	/**
 	 * Instantiates the last name
 	 * @param lastname set the last name
 	 */
 	public void setLastname(String lastname) {
-		this.lastname = lastname;
+		this.lastName = lastname;
 	}
 	/**
 	 * Gets the phone number.
@@ -142,14 +142,14 @@ public class Archive {
 	 * @return  eMail
 	 */
 	public String getEmail() {
-		return eMail;
+		return Email;
 	}
 	/**
 	 * Instantiates the Email.
 	 * @param email set the Email
 	 */
 	public void setEmail(String eMail) {
-		this.eMail = eMail;
+		this.Email = eMail;
 	}
 	
 	

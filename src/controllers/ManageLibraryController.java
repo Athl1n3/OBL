@@ -95,7 +95,7 @@ public class ManageLibraryController {
 				confirmation.showAndWait().ifPresent(response -> {
 					if (response == ButtonType.OK) {
 						// delete this book from DB
-						// DBController.DeleteBook(selectedForDelete);
+						// DBController.deleteBook(selectedForDelete);
 					}
 				});
 
@@ -174,7 +174,7 @@ public class ManageLibraryController {
 
 		ObservableList<Book> books = FXCollections.observableArrayList();
 		// need to add the books from DB
-		books.add(new Book(123, "book1", "fadi", "1", 6, "action", "anananana", 1, "annon", "shelf", 12, "regular"));
+	//	books.add(new Book(123, "book1", "fadi", "1", 6, "action", "anananana", 1, "annon", "shelf", 12, "regular"));
 
 		return books;
 	}

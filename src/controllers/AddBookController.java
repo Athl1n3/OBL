@@ -3,6 +3,7 @@ package controllers;
 import java.io.File;
 import java.io.IOException;
 
+import client.ClientConnection;
 import entities.Book;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
@@ -71,6 +72,8 @@ public class AddBookController {
 	@FXML
 	private TextField txtPath;
 
+	public ClientConnection cc;
+
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
 
@@ -85,9 +88,9 @@ public class AddBookController {
 			Book newBook = new Book(Integer.parseInt(txtBookID.getText()), txtBookName.getText(), txtAuthor.getText(),
 					txtEdition.getText(), Integer.parseInt(txtPrintYear.getText()), txtBookSubject.getText(),
 					txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()), txtTableOfContents.getText(),
-					txtShelf.getText(), Integer.parseInt(txtCopies.getText()), null);
+					txtShelf.getText(), Integer.parseInt(txtCopies.getText()), null,  Integer.parseInt(txtCopies.getText()));
 
-			// write this book to DB (DBController.addbook(newBook));
+			DatabaseController.addBook(newBook);
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Succsess");
 			alert.setHeaderText("The book has added successfully");
@@ -191,6 +194,17 @@ public class AddBookController {
 		// Enable "add book button" after fill all the fields
 		btnAddBook.disableProperty().bind(bb);
 
+	}
+	public void start(Stage stage) {
+		try {
+  			Parent root = FXMLLoader.load(getClass().getResource("../gui/AddBookForm.fxml"));
+  			Scene scene = new Scene(root);
+  			stage.setScene(scene);
+  			stage.setTitle("Add Book Form");
+  			stage.show();
+  		} catch (Exception e) {
+  			e.printStackTrace();
+  		}		
 	}
 
 }

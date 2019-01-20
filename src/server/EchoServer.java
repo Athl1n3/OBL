@@ -32,7 +32,7 @@ public class EchoServer extends AbstractServer {
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("Message received: " + msg.toString() + " from " + client);
 		obj = DBcon.executeQuery(msg);
-		//if(obj!=null)
+		if(obj!=null) {
 		try {
 			client.sendToClient(obj);
 		}
@@ -41,7 +41,9 @@ public class EchoServer extends AbstractServer {
 			
 		}
 		//this.sendToAllClients(obj);
+		}
 	}
+
 
 	/**
 	 * This method overrides the one in the superclass. Called when the server
