@@ -35,7 +35,10 @@ public class Book {
 		this.bookOrders = bookOrders;
 	}
 	
-  	/**
+  	public Book() {
+	}
+
+	/**
   	 * Gets the book ID.
   	 * 
   	 * @return  bookID

@@ -104,7 +104,7 @@ public class MySQLConnection {
 				while (i <= rsmd.getColumnCount()) {
 					arr.add(rs.getString(i++));
 				}
-				arr.add("\n");
+				//arr.add("\n");
 			}
 		} catch (SQLException Exception) {
 			System.out.println("ERROR while parsing array!");

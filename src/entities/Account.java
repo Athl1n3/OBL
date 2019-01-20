@@ -55,7 +55,7 @@ public abstract class Account extends Person {
 	public void setUserType(UserType userType) {
 		this.userType = userType;
 	}
-	
+
 	/**
 	 * 
 	 * @param userType the Sttring userType to set
@@ -63,12 +63,10 @@ public abstract class Account extends Person {
 	public void setUserTypeString(String userType) {
 		if (UserType.User.equals(userType))
 			this.userType = UserType.User;
-		else 
-			if (UserType.Librarian.equals(userType))
-				this.userType = UserType.Librarian;
-			else
-				if (UserType.Manager.equals(userType))
-					this.userType = UserType.Manager;
+		else if (UserType.Librarian.equals(userType))
+			this.userType = UserType.Librarian;
+		else if (UserType.Manager.equals(userType))
+			this.userType = UserType.Manager;
 	}
 
 	/**
@@ -119,6 +117,10 @@ public abstract class Account extends Person {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getFullName() {
+		return getFirstName() + " " + getLastName();
 	}
 
 }
