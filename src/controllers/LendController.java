@@ -4,7 +4,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
-import entities.Account;
 import entities.Book;
 import entities.LentBook;
 import entities.UserAccount;
@@ -84,8 +83,6 @@ public class LendController {
 	UserAccount lenderAccount = new UserAccount(316544345, "ALAA", "Grable", "alaatg.7@gmail.com", "0522985313", 111,
 			"Zerox", "asd123", accountStatus.Active, 0, 0);
 	Book lentBook = new Book(123, "Aces", "Zbe", "1st", 1992, "Fucking adam", "Fuck", 1, "Sex", "7", 15, "Wanted", 10);
-
-	private static UserAccount loggedAccount;
 
 	/**
 	 * When BookLookUp button is pressed , this method will be called
@@ -202,7 +199,7 @@ public class LendController {
 		// get the previous scene
 		Scene scene = SceneController.pop();
 		stage.setScene(scene);
-		stage.setTitle("User Main");
+		stage.setTitle("Main");
 	}
 
 	/**
@@ -223,8 +220,7 @@ public class LendController {
 		btnBookLookup.disableProperty().bind(booleanBind);
 	}
 
-	void start(Stage stage, Account loggedAccount) throws Exception {
-		this.loggedAccount = (UserAccount) loggedAccount;
+	void start(Stage stage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
 		Scene scene = new Scene(root);
 		stage.setTitle("Lend book");

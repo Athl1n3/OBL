@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -26,6 +27,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
@@ -45,6 +48,9 @@ public class ManualExtendController {
 
 	@FXML
 	private URL location;
+
+	@FXML
+	private ImageView imgBack;
 
 	@FXML
 	private TableView<LentBook> tableView;
@@ -214,7 +220,6 @@ public class ManualExtendController {
 	}
 
 	void start(Stage stage) throws Exception {
-		// this.loggedAccount = (UserAccount)loggedAccount;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/ManualExtendForm.fxml"));
 		Scene scene = new Scene(root);
 		stage.setTitle("Manual Extend Lend book");
@@ -230,5 +235,13 @@ public class ManualExtendController {
 	 */
 	private void alertWarningMessage(String msg) {
 		new Alert(AlertType.WARNING, msg, ButtonType.OK).show();
+	}
+
+	@FXML
+	void imgBackClicked(MouseEvent event) {
+		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+		Scene scene = SceneController.pop();
+		stage.setScene(scene);
+		stage.setTitle("Main");
 	}
 }

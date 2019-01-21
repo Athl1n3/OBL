@@ -53,11 +53,11 @@ public class AccountDetailsController implements Initializable {
 	private TextField txtUsername;
 
 	@FXML
-	//private TextField txtVerPassword;
-	private PasswordField  txtVerPassword;
-	
+	// private TextField txtVerPassword;
+	private PasswordField txtVerPassword;
+
 	@FXML
-	//private TextField txtPassword;
+	// private TextField txtPassword;
 	private PasswordField txtPassword;
 
 	@FXML
@@ -103,7 +103,7 @@ public class AccountDetailsController implements Initializable {
 	}
 
 	/**
-	 * Initialize the Account details 
+	 * Initialize the Account details
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -127,27 +127,24 @@ public class AccountDetailsController implements Initializable {
 			break;
 		}
 		lblStatus.setText(loggedAccount.getStatus().toString());
-		
-		//disable the btnApplyChanges button until all Textfields are not empty
-		 BooleanBinding booleanBind =txtUserID.textProperty().isEmpty()
-				 .or(txtFirstName.textProperty().isEmpty())
-				 .or(txtLastName.textProperty().isEmpty())
-				 .or(txtMobileNum.textProperty().isEmpty())
-				 .or(txtEmail.textProperty().isEmpty());
-		 btnApplyChanges.disableProperty().bind(booleanBind);
-		
-		
+
+		// disable the btnApplyChanges button until all Textfields are not empty
+		BooleanBinding booleanBind = txtUserID.textProperty().isEmpty().or(txtFirstName.textProperty().isEmpty())
+				.or(txtLastName.textProperty().isEmpty()).or(txtMobileNum.textProperty().isEmpty())
+				.or(txtEmail.textProperty().isEmpty());
+		btnApplyChanges.disableProperty().bind(booleanBind);
 
 		// login details
 		txtUsername.setText(loggedAccount.getUserName());
-		
-		//disable the btnUpdateLogin button until all passwords textfields are not empty
-		BooleanBinding  btnPasswordBind =txtPassword.textProperty().isEmpty()
+
+		// disable the btnUpdateLogin button until all passwords textfields are not
+		// empty
+		BooleanBinding btnPasswordBind = txtPassword.textProperty().isEmpty()
 				.or(txtVerPassword.textProperty().isEmpty());
 		btnUpdateLogin.disableProperty().bind(btnPasswordBind);
-		
+
 	}
-	
+
 	/**
 	 * Validate updated user data
 	 * 
@@ -175,7 +172,7 @@ public class AccountDetailsController implements Initializable {
 				return false;
 			}
 		txtFirstName.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
-		
+
 		for (char c : txtLastName.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isDigit(c)) {
 				msg.setContentText("Last name must contain letters only!");
@@ -185,7 +182,7 @@ public class AccountDetailsController implements Initializable {
 				return false;
 			}
 		txtLastName.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
-		
+
 		for (char c : txtMobileNum.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isAlphabetic(c)) {
 				msg.setContentText("Mobile number must contain numbers only!");
@@ -199,6 +196,7 @@ public class AccountDetailsController implements Initializable {
 
 		/**
 		 * Validate the inputed email address
+		 * 
 		 * @return Boolean value
 		 */
 		String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
@@ -211,8 +209,7 @@ public class AccountDetailsController implements Initializable {
 			txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
 			return false;
 		}
-   		txtEmail.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
-
+		txtEmail.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 
 		return true;// If all inputs are valid
 
@@ -249,7 +246,7 @@ public class AccountDetailsController implements Initializable {
 		loggedAccount = (UserAccount) acc;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/AccountDetailsForm.fxml"));
 		Scene scene = new Scene(root);
-		primaryStage.setTitle("Userlookup");
+		primaryStage.setTitle("Account Details");
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.show();

@@ -24,9 +24,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -49,9 +46,9 @@ public class ExtendLendController {
 
 	@FXML
 	private URL location;
-	
-    @FXML
-    private ImageView imgBack;
+
+	@FXML
+	private ImageView imgBack;
 
 	@FXML
 	private TableView<LentBook> tableView;
@@ -73,9 +70,9 @@ public class ExtendLendController {
 
 	@FXML
 	private TableColumn<LentBook, LocalDate> bookDueDate;
-	
+
 	@FXML
-	private TableColumn<LentBook , String> bookDetails;
+	private TableColumn<LentBook, String> bookDetails;
 
 	@FXML
 	private Label txtUsername;
@@ -86,8 +83,11 @@ public class ExtendLendController {
 	@FXML
 	private Button btnExtendBook;
 
+	private static UserAccount loggedAccount;
+
 	/**
 	 * When ExtendBook button is pressed , this method will be called
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -97,32 +97,36 @@ public class ExtendLendController {
 
 		// validate if the book type is equal to "wanted" or not
 		if (selectedBook.getBookType().equals("Wanted")) {
-			// if the book type is "Wanted" then let the user know that he can't extend the book return time
-			alertWarningMessage("This book "  + selectedBook.getBookName() + " is a 'Wanted' book and cannot be extended.");
-		}
-		else {
+			// if the book type is "Wanted" then let the user know that he can't extend the
+			// book return time
+			alertWarningMessage(
+					"This book " + selectedBook.getBookName() + " is a 'Wanted' book and cannot be extended.");
+		} else {
 			/*
 			 * tmpBook = DatabaseController.getBook(selectedBook.getBookID());
 			 */
-			// validate if the orders on that book is lesser than the actual available copies in the library
-			if(tmpBook.getAvailableCopies() <= tmpBook.getBookOrders()) {
+			// validate if the orders on that book is lesser than the actual available
+			// copies in the library
+			if (tmpBook.getAvailableCopies() <= tmpBook.getBookOrders()) {
 				// if not , then let the user know that he can't extend the book return time
-				alertWarningMessage("There is a lot of orders on that book , \nTherefore the book " + tmpBook.getName() +" cannot be extended.");
-			}
-			else {
+				alertWarningMessage("There is a lot of orders on that book , \nTherefore the book " + tmpBook.getName()
+						+ " cannot be extended.");
+			} else {
 				// extend the book return time to 1 more weeks
 				selectedBook.setDueDate(selectedBook.getDueDate().plusWeeks(1));
-				
+
 				/*
 				 * DatabaseController.updateLentBook(selectedBook);
 				 */
-				// let the user know that the return time for the his book has been extended successfully
-				Alert alert = new Alert(AlertType.INFORMATION, "The book"  + tmpBook.getName() + " Due time has been extended successfully.", ButtonType.OK);
+				// let the user know that the return time for the his book has been extended
+				// successfully
+				Alert alert = new Alert(AlertType.INFORMATION,
+						"The book" + tmpBook.getName() + " Due time has been extended successfully.", ButtonType.OK);
 				alert.show();
 			}
-			
+
 		}
-		
+
 	}
 
 	/**
@@ -130,15 +134,15 @@ public class ExtendLendController {
 	 */
 	@FXML
 	void initialize() {
-		
-	    // Defines how to fill data for each cell
-		bookNameCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookName"));
-		bookTopicCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookTopic"));
-		bookEditionCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookEdition"));
-		bookAuthorCol.setCellValueFactory(new PropertyValueFactory<LentBook,String>("bookAuthor"));
-		bookIssuedDate.setCellValueFactory(new PropertyValueFactory<LentBook,LocalDate>("IssueDate"));
-		bookDueDate.setCellValueFactory(new PropertyValueFactory<LentBook,LocalDate>("DueDate"));
-		
+
+		// Defines how to fill data for each cell
+		bookNameCol.setCellValueFactory(new PropertyValueFactory<LentBook, String>("bookName"));
+		bookTopicCol.setCellValueFactory(new PropertyValueFactory<LentBook, String>("bookTopic"));
+		bookEditionCol.setCellValueFactory(new PropertyValueFactory<LentBook, String>("bookEdition"));
+		bookAuthorCol.setCellValueFactory(new PropertyValueFactory<LentBook, String>("bookAuthor"));
+		bookIssuedDate.setCellValueFactory(new PropertyValueFactory<LentBook, LocalDate>("IssueDate"));
+		bookDueDate.setCellValueFactory(new PropertyValueFactory<LentBook, LocalDate>("DueDate"));
+
 		// get the books of the user as an observableList to display it in the table
 		ObservableList<LentBook> list = getLentBookList();
 		// display the data in the tableView
@@ -153,32 +157,34 @@ public class ExtendLendController {
 	private ObservableList<LentBook> getLentBookList() {
 
 		/*
-		 *  DatabaseController.getExtendBookList(account.getID()) ** & send it
+		 * DatabaseController.getExtendBookList(account.getID()) ** & send it
 		 */
-		LentBook LntBK1 = new LentBook(123,111,LocalDate.now(),LocalDate.now().plusWeeks(2), false,"Marshood","2st", "ALAA", "Calculus","Math" );
-		LentBook LntBK2 = new LentBook(777,999,LocalDate.now(),LocalDate.now().plusWeeks(2), false,"Fucker","7st", "ahmad", "notur","prog" );
-		
+		LentBook LntBK1 = new LentBook(123, 111, LocalDate.now(), LocalDate.now().plusWeeks(2), false, "Marshood",
+				"2st", "ALAA", "Calculus", "Math");
+		LentBook LntBK2 = new LentBook(777, 999, LocalDate.now(), LocalDate.now().plusWeeks(2), false, "Fucker", "7st",
+				"ahmad", "notur", "prog");
+
 		// create an observablelist that contains the user let books
-		ObservableList<LentBook> list = FXCollections.observableArrayList(LntBK1,LntBK2);
-		
+		ObservableList<LentBook> list = FXCollections.observableArrayList(LntBK1, LntBK2);
+
 		// return the observablelist
 		return list;
 	}
-	
+
 	/**
 	 * Back to the previous screen
 	 */
-    @FXML
-    void imgBackClicked(MouseEvent event) {
+	@FXML
+	void imgBackClicked(MouseEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 		// get the previous scene
 		Scene scene = SceneController.pop();
 		stage.setScene(scene);
-		stage.setTitle("User Main");
-    }
-    
-    void start(Stage stage) throws Exception {
-		//this.loggedAccount = (UserAccount)loggedAccount;
+		stage.setTitle("Main");
+	}
+
+	void start(Stage stage, Account loggedAccount) throws Exception {
+		this.loggedAccount = (UserAccount) loggedAccount;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/ExtendLendForm.fxml"));
 		Scene scene = new Scene(root);
 		stage.setTitle("Extend Lend book");
@@ -186,12 +192,13 @@ public class ExtendLendController {
 		stage.setScene(scene);
 		stage.show();
 	}
-    
+
 	/**
 	 * Show an appropriate alert to the user when an error occur
+	 * 
 	 * @param msg
 	 */
 	private void alertWarningMessage(String msg) {
-		new Alert(AlertType.WARNING,msg,ButtonType.OK).show();
+		new Alert(AlertType.WARNING, msg, ButtonType.OK).show();
 	}
 }

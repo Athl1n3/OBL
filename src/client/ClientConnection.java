@@ -1,13 +1,10 @@
 package client;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import client.*;
-import common.*;
+import common.OBLclientIF;
 import controllers.DatabaseController;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 public class ClientConnection implements OBLclientIF {
 
@@ -45,7 +42,7 @@ public class ClientConnection implements OBLclientIF {
 	public void executeQuery(ArrayList<String> arr) {
 		client.handleMessageFromClientUI(arr);
 	}
-	
+
 	public void executeQuery(String str) {
 		client.handleMessageFromClientUI(str);
 
@@ -69,16 +66,8 @@ public class ClientConnection implements OBLclientIF {
 		}
 		return this.obj;
 	}
-	
-	public ArrayList<String> getList()
-	{
 
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public ArrayList<String> getList() {
 		return (ArrayList<String>) this.obj;
 	}
 
@@ -95,7 +84,7 @@ public class ClientConnection implements OBLclientIF {
 	public void terminate() {
 		client.quit();
 	}
-	
+
 	public void init() {
 		DatabaseController.InitiateClient(this);
 	}
