@@ -1,11 +1,16 @@
 package entities;
 
+import java.util.ArrayList;
+
 public class LibrarianAccount extends Account {
 
 	private int workerID;
 
 	public LibrarianAccount() {
-
+		if (this instanceof ManagerAccount)
+			this.userType = UserType.Manager;
+		else
+			this.userType = UserType.Librarian;
 	}
 
 	public LibrarianAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
@@ -32,6 +37,18 @@ public class LibrarianAccount extends Account {
 	 */
 	public void setWorkerID(int workerID) {
 		this.workerID = workerID;
+	}
+
+	public void parseArrayIntoAccount(ArrayList<String> accountArray) {////////// NEEDS MODIFICATION
+		this.setID(Integer.parseInt(accountArray.get(0)));
+		this.setFirstName(accountArray.get(1));
+		this.setLastName(accountArray.get(2));
+		this.setEmail(accountArray.get(3));
+		this.setMobileNum(accountArray.get(4));
+		this.setAccountID(Integer.parseInt(accountArray.get(5)));
+		this.setUserName(accountArray.get(6));
+		this.setPassword(accountArray.get(7));
+		this.setUserTypeString(accountArray.get(8));
 	}
 
 }

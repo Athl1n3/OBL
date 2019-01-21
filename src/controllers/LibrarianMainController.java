@@ -123,6 +123,7 @@ public class LibrarianMainController {
 
 	@FXML
 	void initialize() {
+		lblUsername.setText(loggedLibAccount.getFirstName());
 	}
 
 	void start(Stage primaryStage, Account loggedLibAccount) throws Exception {

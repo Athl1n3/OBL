@@ -1,10 +1,8 @@
 package controllers;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import client.ClientConnection;
 import entities.Account;
 import entities.Account.UserType;
 import javafx.event.ActionEvent;
@@ -21,78 +19,78 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class LoginController implements Initializable{
+public class LoginController implements Initializable {
 
-    @FXML
-    private ResourceBundle resources;
+	@FXML
+	private ResourceBundle resources;
 
-    @FXML
-    private URL location;
+	@FXML
+	private URL location;
 
-    @FXML
-    private TextField txtUsername;
+	@FXML
+	private TextField txtUsername;
 
-    @FXML
-    private PasswordField txtPassword;
+	@FXML
+	private PasswordField txtPassword;
 
-    @FXML
-    private Button btnLogin;
-    
-    @FXML
-    private Label lblUsername;
-    
-    @FXML
-    private Label lblPassword;
-    
+	@FXML
+	private Button btnLogin;
 
-	public ClientConnection cc;
+	@FXML
+	private Label lblUsername;
 
-    @FXML
-    void btnCancelPressed(ActionEvent event) {
-    	((Node) event.getSource()).getScene().getWindow().hide();
-    }
+	@FXML
+	private Label lblPassword;
 
-    @FXML
-    void btnLoginPressed(ActionEvent event) {
-    	Account account;
-    	try {
-    		account = DatabaseController.getAccount(txtUsername.getText(), txtPassword.getText());
-    		DatabaseController.initLoggedAccount(account);
-    		if(account.getUserType() == UserType.User) 
-    			openNewForm("../gui/UserMainForm.fxml", "User Main Form");
-    		else
-    			openNewForm("../gui/LibrarianMainForm.fxml", "Librarian Main Form");
-    		((Node) event.getSource()).getScene().getWindow().hide();
+	private Account account;
 
-    		System.out.println(account.getFirstName());
-    	}
-    	catch(NullPointerException e) {
+	@FXML
+	void btnCancelPressed(ActionEvent event) {
+		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+		Scene scene = SceneController.pop();
+		stage.setScene(scene);
+		stage.setTitle("Main Window");
+	}
 
-    		Alert alert = new Alert(AlertType.WARNING, "Incorrect Username or Password!!!\n\n Please Try Agian.");
-    		alert.setHeaderText("Login Faild");
-    		alert.show();
-    		lblUsername.setText("*"+ lblUsername.getText());
-    		lblPassword.setText("*"+lblPassword.getText());
-    		txtUsername.clear(); 
-    		txtPassword.clear();
-    		btnLogin.setDisable(true);
-    		txtPassword.setDisable(true);
-    	}
-    }
+	@FXML
+	void btnLoginPressed(ActionEvent event) {
+		try {
+			account = DatabaseController.getAccount(txtUsername.getText(), txtPassword.getText());
+			Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+			try {
+				if (account.getUserType() == UserType.User)
+					openNewForm("User", stage);
+				else
+					openNewForm("Librarian", stage);
+			} catch (Exception exc) {
 
-    @FXML
-    void checkPasswordTextField(KeyEvent event) {
-    	btnLogin.setDisable(false);
-    }
+			}
 
-    @FXML
-    void checkUserNameTextField(KeyEvent event) {
-    	txtPassword.setDisable(false);
-    }
+			System.out.println(account.getFirstName());
+		} catch (NullPointerException e) {
+			Alert alert = new Alert(AlertType.WARNING, "Incorrect Username or Password!!!\n\n Please Try Agian.");
+			alert.setHeaderText("Login Failed");
+			alert.show();
+			lblUsername.setText("*" + lblUsername.getText());
+			lblPassword.setText("*" + lblPassword.getText());
+			txtUsername.clear();
+			txtPassword.clear();
+			btnLogin.setDisable(true);
+			txtPassword.setDisable(true);
+		}
+	}
 
+	@FXML
+	void checkPasswordTextField(KeyEvent event) {
+		btnLogin.setDisable(false);
+	}
+
+	@FXML
+	void checkUserNameTextField(KeyEvent event) {
+		txtPassword.setDisable(false);
+	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -102,26 +100,29 @@ public class LoginController implements Initializable{
 
 	public void start(Stage stage) {
 		try {
-  			Parent root = FXMLLoader.load(getClass().getResource("../gui/LoginForm.fxml"));
-  			Scene scene = new Scene(root);
-  			stage.setScene(scene);
-  			stage.setTitle("Login Form");
-  			stage.show();
-  		} catch (Exception e) {
-  			e.printStackTrace();
-  		}		
-	}
-	public void openNewForm(String resource, String title) {
-		try {
-			Parent root = FXMLLoader.load(getClass().getResource(resource));
-			Stage stage = new Stage();
-  			Scene scene = new Scene(root);
-  			stage.setScene(scene);
-  			stage.setTitle(title);
-  			stage.show();
-		} catch (IOException e) {
+			Parent root = FXMLLoader.load(getClass().getResource("../gui/LoginForm.fxml"));
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setTitle("Login");
+			stage.show();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-}
 
+	public void openNewForm(String userType, Stage primaryStage) {
+		try {
+			if (userType.equals("User")) {
+				UserMainController MainForm = new UserMainController();
+				MainForm.start(primaryStage, account);
+			} else {
+				LibrarianMainController MainForm = new LibrarianMainController();
+				MainForm.start(primaryStage, account);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+}

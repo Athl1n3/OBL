@@ -81,6 +81,7 @@ public class ReturnController {
 		primaryStage.show();
 	}
 
+	@FXML
 	void imgBackClicked(MouseEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 		Scene scene = SceneController.pop();

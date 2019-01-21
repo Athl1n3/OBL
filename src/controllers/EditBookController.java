@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class EditBookController {
@@ -66,6 +67,8 @@ public class EditBookController {
 	@FXML
 	private TextField txtPath;
 
+	private static Book selectedBook;
+
 	@FXML
 	void btnBrowsePathPressed(ActionEvent event) {
 		FileChooser fc = new FileChooser();
@@ -95,34 +98,23 @@ public class EditBookController {
 		alert.setTitle("Success");
 		alert.setContentText("this changes has updated successfully");
 		alert.showAndWait();
-
+		((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
 	}
 
+	/**
+	 * back to the previous screen
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
-		/*
-		 * back to the previous screen
-		 */
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/ManageLibraryForm.fxml"));
-		Stage stage = new Stage();
-		stage.setScene(new Scene((Parent) loader.load()));
-		stage.show();
-		((Node) event.getSource()).getScene().getWindow().hide();
-
+		((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
 	}
 
-	@FXML
-	void initialize() {
-
-	}
-
-	/*
+	/**
 	 * this function initialize the fields in the new window previous window
 	 * selected book
 	 */
-	public void initFields(Book selectedBook) {
-
-		editedBook = selectedBook;
+	@FXML
+	void initialize() {
 		txtBookName.setText(selectedBook.getName());
 		txtAuthor.setText(selectedBook.getAuthor());
 		txtBookID.setText(Integer.toString(selectedBook.getBookID()));
@@ -132,6 +124,21 @@ public class EditBookController {
 		txtCatalog.setText(Integer.toString(selectedBook.getCatalog()));
 		txtCopies.setText(Integer.toString(selectedBook.getCopiesNumber()));
 		txtShelf.setText(selectedBook.getShelf());
+	}
 
+	public void start(Stage primaryStage, Book selectedBook) {
+		try {
+			this.selectedBook = selectedBook;
+			Parent root = FXMLLoader.load(getClass().getResource("../gui/EditBookForm.fxml"));
+			Stage stage = new Stage();
+			stage.initOwner(primaryStage);
+			stage.initModality(Modality.WINDOW_MODAL);
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setTitle("Add Book Form");
+			stage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

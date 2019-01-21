@@ -3,20 +3,19 @@ package controllers;
 import java.util.ArrayList;
 
 import client.ClientConnection;
-import entities.*;
-import entities.Account.UserType;
-import entities.UserAccount.accountStatus;
 import entities.Account;
+import entities.Archive;
 import entities.Book;
+import entities.LentBook;
+import entities.LibrarianAccount;
+import entities.ManagerAccount;
 import entities.UserAccount;
 
 public class DatabaseController {
 
 	private static ClientConnection clientConnection;
 
-	static LoggedAccount loggedAccount;
-
-	private static ArrayList<Account> users = new ArrayList<Account>();
+	static Account loggedAccount;
 
 	/**
 	 * create new account
@@ -25,7 +24,6 @@ public class DatabaseController {
 	 */
 	public static void addAccount(UserAccount newAccount) {
 		ArrayList<String> arr = new ArrayList<String>();
-		users.add(newAccount);
 		String query = "INSERT INTO account(ID, firstName, lastName, eMail, mobileNum, userID, userName, password, userType, status, delays)VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 		arr.add(String.valueOf(newAccount.getID()));
 		arr.add(newAccount.getFirstName());
@@ -86,9 +84,18 @@ public class DatabaseController {
 		clientConnection.executeQuery(query);
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
-			Account userAccount = new UserAccount();
-			((UserAccount) userAccount).parseArrayIntoAccount(res);
-			return userAccount;
+			Account loggedAccount;
+			if (res.get(8).equals("User")) {
+				loggedAccount = new UserAccount();
+				((UserAccount) loggedAccount).parseArrayIntoAccount(res);
+			} else {
+				if (res.get(8).equals("Librarian"))
+					loggedAccount = new LibrarianAccount();
+				else
+					loggedAccount = new ManagerAccount();
+				((LibrarianAccount) loggedAccount).parseArrayIntoAccount(res);
+			}
+			return loggedAccount;
 		} else
 			return null;
 	}
@@ -136,7 +143,7 @@ public class DatabaseController {
 	 * 
 	 * @param bookToDelete
 	 */
-	public static void deleteBook(int  bookID) {
+	public static void deleteBook(int bookID) {
 		clientConnection.executeQuery("DELETE FROM book WHERE bookID = '" + bookID + "';");
 	}
 
@@ -160,7 +167,7 @@ public class DatabaseController {
 
 		return null;
 	}
-	
+
 	public static ArrayList<Book> bookSearch(String str, String searchBy) {
 		switch (searchBy.toLowerCase()) {
 		case "name":
@@ -180,11 +187,11 @@ public class DatabaseController {
 		}
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<Book> bookList = new ArrayList<Book>();
-		while(res.size() != 0) {
-			Book book= new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
+		while (res.size() != 0) {
+			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
 					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), res.get(8),
 					res.get(9), Integer.parseInt(res.get(10)), res.get(11), Integer.parseInt(res.get(12)));
-				res.subList(0,13).clear();
+			res.subList(0, 13).clear();
 			bookList.add(book);
 		}
 
@@ -222,11 +229,6 @@ public class DatabaseController {
 
 		return null;
 
-	}
-
-	public static void initLoggedAccount(Account account) {
-		loggedAccount = new LoggedAccount();
-		loggedAccount.setAccount(account);
 	}
 
 	public static void InitiateClient(ClientConnection newClientConnection) {

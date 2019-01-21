@@ -7,7 +7,6 @@ import entities.Account;
 import entities.LibrarianAccount;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -37,7 +36,6 @@ public class LibraryManagementController {
 
 	@FXML
 	void imgBackClicked(MouseEvent event) {
-		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 		Scene scene = SceneController.pop();
 		stage.setScene(scene);
 		stage.setTitle("Main");
@@ -45,8 +43,6 @@ public class LibraryManagementController {
 
 	@FXML
 	void imgManageBooksClicked(MouseEvent event) {
-		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		Scene scene = (Scene) ((Node) event.getSource()).getScene();
 		SceneController.push(scene);
 		// stage.initModality(Modality.APPLICATION_MODAL);
 		ManageLibraryController ManageLibraryForm = new ManageLibraryController();
@@ -60,8 +56,6 @@ public class LibraryManagementController {
 
 	@FXML
 	void imgReportsClicked(MouseEvent event) {
-		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		Scene scene = (Scene) ((Node) event.getSource()).getScene();
 		SceneController.push(scene);
 		// stage.initModality(Modality.APPLICATION_MODAL);
 		ReportsController ReportsForm = new ReportsController();
