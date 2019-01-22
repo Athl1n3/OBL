@@ -7,8 +7,12 @@ import entities.Account;
 import entities.LibrarianAccount;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -85,7 +89,16 @@ public class LibrarianMainController {
 
 	@FXML
 	void imgLogoutClicked(MouseEvent event) {
-
+		// DatabaseController Log user out ***********
+		Alert confirmLogout = new Alert(AlertType.CONFIRMATION, "Are you sure you want to log out of this account?",
+				ButtonType.YES, ButtonType.CANCEL);
+		if (confirmLogout.showAndWait().get() == ButtonType.YES) {
+			Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+			// get the previous scene
+			Scene scene = SceneController.pop();
+			stage.setScene(scene);
+			stage.setTitle("Main Form");
+		}
 	}
 
 	@FXML
@@ -123,7 +136,7 @@ public class LibrarianMainController {
 
 	@FXML
 	void initialize() {
-		lblUsername.setText(loggedLibAccount.getFirstName());
+		lblUsername.setText(loggedLibAccount.getFirstName() + " " + loggedLibAccount.getLastName());
 	}
 
 	void start(Stage primaryStage, Account loggedLibAccount) throws Exception {

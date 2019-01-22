@@ -5,6 +5,8 @@ import java.util.ResourceBundle;
 
 import entities.Account;
 import entities.Account.UserType;
+import entities.UserAccount;
+import entities.UserAccount.accountStatus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -56,22 +58,29 @@ public class LoginController implements Initializable {
 
 	@FXML
 	void btnLoginPressed(ActionEvent event) {
+		Alert alert = new Alert(AlertType.WARNING);
 		try {
 			account = DatabaseController.getAccount(txtUsername.getText(), txtPassword.getText());
-			Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
-			try {
-				if (account.getUserType() == UserType.User)
-					openNewForm("User", stage);
-				else
+			if (!account.isLogged()) {
+				Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+				if (account.getUserType() == UserType.User) {
+					if (!((UserAccount) account).getStatus().equals(accountStatus.Locked))
+						openNewForm("User", stage);
+					else {
+						alert.setContentText("Account is \"Locked\"! \n Contact library for appeal.");
+						alert.setHeaderText("Locked");
+						alert.show();
+					}
+				} else
 					openNewForm("Librarian", stage);
-			} catch (Exception exc) {
-
+			} else {
+				alert.setContentText("Account is already connected!");
+				alert.setHeaderText("Login Failure");
+				alert.show();
 			}
-
-			System.out.println(account.getFirstName());
 		} catch (NullPointerException e) {
-			Alert alert = new Alert(AlertType.WARNING, "Incorrect Username or Password!!!\n\n Please Try Agian.");
-			alert.setHeaderText("Login Failed");
+			alert.setContentText("Incorrect Username or Password!!!\n\n Please try again.");
+			alert.setHeaderText("Login Failure");
 			alert.show();
 			lblUsername.setText("*" + lblUsername.getText());
 			lblPassword.setText("*" + lblPassword.getText());

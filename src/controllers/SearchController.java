@@ -7,6 +7,8 @@ import java.util.ResourceBundle;
 
 import entities.Account;
 import entities.Book;
+import entities.UserAccount;
+import entities.UserAccount.accountStatus;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -79,6 +81,7 @@ public class SearchController implements Initializable {
 	@FXML
 	private Button btnOrderBook;
 
+	private static Account loggedAccount;
 	ObservableList<String> list;
 	ObservableList<Book> bookList;
 
@@ -106,7 +109,7 @@ public class SearchController implements Initializable {
 			OrderController orderController = new OrderController();
 			// passing the selected book data to order controller
 			Book selectedBook = tableView.getSelectionModel().getSelectedItem();
-			orderController.start(selectedBook);
+			orderController.start(selectedBook, (UserAccount) loggedAccount);
 
 		} catch (NullPointerException e) {
 			showAlert("error", "");
@@ -188,11 +191,15 @@ public class SearchController implements Initializable {
 		// disable the search button if the search text field is empty!
 		BooleanBinding booleanBind = txtSearch.textProperty().isEmpty();
 		btnSearch.disableProperty().bind(booleanBind);
-		// if(!LoggedAccount.logged)
-		// btnOrderBook.setDisable(true);
+		if (loggedAccount instanceof UserAccount && loggedAccount != null) {
+			if (((UserAccount) loggedAccount).getStatus().equals(accountStatus.Suspended))
+				btnOrderBook.setDisable(true);
+		} else
+			btnOrderBook.setVisible(false);
 	}
 
 	public void start(Stage primaryStage, Account loggedAccount) throws IOException {
+		this.loggedAccount = loggedAccount;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/SearchForm.fxml"));
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Search");

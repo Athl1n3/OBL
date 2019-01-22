@@ -8,8 +8,12 @@ import entities.UserAccount;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -78,6 +82,15 @@ public class UserMainController implements Initializable {
 	@FXML
 	void imgLogoutClicked(MouseEvent event) {
 		// DatabaseController.userLogIO();
+		Alert confirmLogout = new Alert(AlertType.CONFIRMATION, "Are you sure you want to log out of this account?",
+				ButtonType.YES, ButtonType.CANCEL);
+		if (confirmLogout.showAndWait().get() == ButtonType.YES) {
+			Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+			// get the previous scene
+			Scene scene = SceneController.pop();
+			stage.setScene(scene);
+			stage.setTitle("Main Form");
+		}
 	}
 
 	@FXML
@@ -108,7 +121,17 @@ public class UserMainController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		lblUsername.setText(loggedAccount.getFirstName());
+		lblUsername.setText(loggedAccount.getFirstName() + " " + loggedAccount.getLastName());
+
+		switch (loggedAccount.getStatus()) {
+		case Active:
+			lblStatus.setTextFill(javafx.scene.paint.Color.GREEN);
+			break;
+		case Suspended:
+			lblStatus.setTextFill(javafx.scene.paint.Color.rgb(153, 153, 0));
+			break;
+		}
+		lblStatus.setText(loggedAccount.getStatus().toString());
 	}
 
 	void start(Stage primaryStage, Account loggedAccount) throws Exception {

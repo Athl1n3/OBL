@@ -49,6 +49,7 @@ public class LibrarianAccount extends Account {
 		this.setUserName(accountArray.get(6));
 		this.setPassword(accountArray.get(7));
 		this.setUserTypeString(accountArray.get(8));
+		this.setLogged(accountArray.get(11).equals("1") ? true : false);
 	}
 
 }
