@@ -108,11 +108,11 @@ public class ManualExtendController {
 		LentBook selectedBook = tableView.getSelectionModel().getSelectedItem();
 
 		// validate if the book type is equal to "wanted" or not
-		if (selectedBook.getBookType().equals("Wanted"))
+		if (selectedBook.getBook().getBookType().equals("Wanted"))
 			// if the book type is "Wanted" then let the user know that he can't extend the
 			// book return time
 			alertWarningMessage(
-					"This book " + selectedBook.getBookName() + " is a 'Wanted' book and cannot be extended.");
+					"This book " + selectedBook.getBook().getName() + " is a 'Wanted' book and cannot be extended.");
 		else {
 			/*
 			 * tmpBook = DatabaseController.getBook(selectedBook.getBookID());
@@ -208,13 +208,27 @@ public class ManualExtendController {
 		/*
 		 * DatabaseController.getExtendBookList(userID) ** & send it
 		 */
-		LentBook LntBK1 = new LentBook(123, 111, LocalDate.now(), LocalDate.now().plusWeeks(2), false, "Marshood",
-				"2st", "ALAA", "Calculus", "Wanted");
-		LentBook LntBK2 = new LentBook(777, 999, LocalDate.now(), LocalDate.now().plusWeeks(2), false, "Fucker", "7st",
-				"ahmad", "notur", "Regular");
+
+		////////////////////////////////////
+
+		////// Hello Alaa, I want to play a game
+		// These lines were tagged by me (219 - 229) and ExtendLendController, LendController
+		//////your acts has done a great impact to you and your future and the destiny of this code
+		// It's time for redemption, get that thing up and running within 48hours, clock is ticking
+		////// the choice is yours live or die
+		///// -JigSaw
+
+		////////////////////////
+		/*
+		 * LentBook LntBK1 = new LentBook(123, 111, LocalDate.now(),
+		 * LocalDate.now().plusWeeks(2), false, "Marshood", "2st", "ALAA", "Calculus",
+		 * "Wanted"); LentBook LntBK2 = new LentBook(777, 999, LocalDate.now(),
+		 * LocalDate.now().plusWeeks(2), false, "Fucker", "7st", "ahmad", "notur",
+		 * "Regular");
+		 */
 
 		// create an observablelist that contains the user let books
-		ObservableList<LentBook> list = FXCollections.observableArrayList(LntBK1, LntBK2);
+		ObservableList<LentBook> list = FXCollections.observableArrayList(/* LntBK1, LntBK2 */);
 		// return the observablelist
 		return list;
 	}
