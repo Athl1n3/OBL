@@ -2,7 +2,6 @@ package controllers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import entities.UserAccount;
 import entities.UserActivity;
@@ -61,12 +60,9 @@ public class ActivityController {
 
 	@FXML
 	void initialize() {
-		userActivityList = new ArrayList<>(Arrays.asList(new UserActivity(5, "hi", LocalDate.now())));
-		// DatabaseController.getActivityList(lookedupAccount.getAccountID());
-
+		userActivityList = DatabaseController.getUserActivity(lookedupAccount.getAccountID());
 		lblUserID.setText(String.valueOf(lookedupAccount.getAccountID()));
 		lblUsername.setText(lookedupAccount.getUserName());
-
 		userActivityOlist = FXCollections.observableArrayList(userActivityList);// userActivityList
 		// MUST be used
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));

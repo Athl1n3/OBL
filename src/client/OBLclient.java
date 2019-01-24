@@ -1,6 +1,7 @@
 package client;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 import common.OBLclientIF;
@@ -49,10 +50,16 @@ public class OBLclient extends AbstractClient {
 	}
 
 	// This method handles all data coming from the UI as arrayList
-	public void handleMessageFromClientUI(Object arr) {
+	public void handleMessageFromClientUI(Object obj) {
 		try {
-			sendToServer(arr);
-			load.show();
+			sendToServer(obj);
+			if (obj instanceof String) {
+				if (((String) obj).startsWith("SELECT"))
+					load.show();
+			} else {
+				if (((ArrayList) obj).get(((ArrayList) obj).size() - 1).toString().startsWith("SELECT"))
+					load.show();
+			}
 			sem.acquire();
 			load.close();
 		} catch (IOException | InterruptedException e) {

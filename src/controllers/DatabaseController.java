@@ -1,5 +1,6 @@
 package controllers;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import client.ClientConnection;
@@ -10,6 +11,7 @@ import entities.LentBook;
 import entities.LibrarianAccount;
 import entities.ManagerAccount;
 import entities.UserAccount;
+import entities.UserActivity;
 
 public class DatabaseController {
 
@@ -238,12 +240,11 @@ public class DatabaseController {
 	public static void terminateClient() {
 		clientConnection.terminate();
 	}
-	
 
 	public static ArrayList<Book> getAllBooks() {
-		
-			clientConnection.executeQuery("SELECT * FROM book");
-	
+
+		clientConnection.executeQuery("SELECT * FROM book");
+
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<Book> bookList = new ArrayList<Book>();
 		while (res.size() != 0) {
@@ -255,5 +256,19 @@ public class DatabaseController {
 		}
 
 		return bookList;
+	}
+
+	public static ArrayList<UserActivity> getUserActivity(int AccountID) {
+		clientConnection.executeQuery("SELECT * FROM useractivity WHERE userID = '" + AccountID + "';");
+		ArrayList<String> res = clientConnection.getList();
+		ArrayList<UserActivity> activityList = new ArrayList<UserActivity>();
+		while (res.size() != 0) {
+			UserActivity activity = new UserActivity(Integer.parseInt(res.get(0)), res.get(1),
+					LocalDate.parse(res.get(2)));
+			res.subList(0, 3).clear();
+			activityList.add(activity);
+		}
+
+		return activityList;
 	}
 }

@@ -98,12 +98,9 @@ public class UserLookupController {
 	void btnArchivePressed(ActionEvent event) {
 		if (txtID.isDisabled()) {
 			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-			Scene scene = (Scene) ((Node) event.getSource()).getScene();
-			SceneController.push(scene);
-			// stage.initModality(Modality.APPLICATION_MODAL);
 			ArchivedDataController archiveForm = new ArchivedDataController();
 			try {
-				archiveForm.start(stage, lookupAccount.getAccountID());
+				archiveForm.start(stage, lookupAccount.getID());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -129,13 +126,22 @@ public class UserLookupController {
 		lblStatus.setText("---");
 		lblUserID.setText("---");
 		txtID.setDisable(false);
+		txtFirstName.setStyle(null);
+		txtLastName.setStyle(null);
+		txtMobileNum.setStyle(null);
+		txtEmail.setStyle(null);
+		cbEditUser.setSelected(false);
 	}
 
 	@FXML
 	void btnEditDataPressed(ActionEvent event) {
 		Alert msg = new Alert(AlertType.CONFIRMATION, "Are you sure to update user data?", ButtonType.YES,
 				ButtonType.CANCEL);
-		if (msg.showAndWait().get() == ButtonType.YES)
+		if (msg.showAndWait().get() == ButtonType.YES) {
+			txtFirstName.setStyle(null);
+			txtLastName.setStyle(null);
+			txtMobileNum.setStyle(null);
+			txtEmail.setStyle(null);
 			if (validateInput()) {
 				lookupAccount.setUserName(txtUsername.getText());
 				lookupAccount.setFirstName(txtFirstName.getText());
@@ -146,6 +152,7 @@ public class UserLookupController {
 				DatabaseController.updateAccount(lookupAccount);
 				new Alert(AlertType.INFORMATION, "User data was updated successfully!", ButtonType.OK).show();
 			}
+		}
 	}
 
 	/**
@@ -156,27 +163,32 @@ public class UserLookupController {
 	private boolean validateInput() {
 		Alert msg = new Alert(AlertType.ERROR, "", ButtonType.OK);// Prepare alert box
 		msg.setHeaderText("Input Error");
+		msg.setContentText("One or more of inputs are in an invalid format!");
+		boolean validInput = true;
 
 		for (char c : txtFirstName.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isDigit(c)) {
-				msg.setContentText("First name must contain letters only!");
-				msg.show();
+				msg.setContentText(msg.getContentText() + "\n*First name must contain letters only!");
 				txtFirstName.requestFocus();
-				return false;
+				txtFirstName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				validInput = false;
+				break;
 			}
 		for (char c : txtLastName.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isDigit(c)) {
-				msg.setContentText("Last name must contain letters only!");
-				msg.show();
+				msg.setContentText(msg.getContentText() + "\n*Last name must contain letters only!");
 				txtLastName.requestFocus();
-				return false;
+				txtLastName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				validInput = false;
+				break;
 			}
 		for (char c : txtMobileNum.getText().toCharArray())// Parse text field into chars array and validate
 			if (Character.isAlphabetic(c)) {
-				msg.setContentText("Mobile number must contain numbers only!");
-				msg.show();
+				msg.setContentText(msg.getContentText() + "\n*Mobile number must contain numbers only!");
 				txtMobileNum.requestFocus();
-				return false;
+				txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				validInput = false;
+				break;
 			}
 
 		// Validate email format using
@@ -184,12 +196,14 @@ public class UserLookupController {
 		java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
 		java.util.regex.Matcher m = p.matcher(txtEmail.getText());
 		if (!m.matches()) {
-			msg.setContentText("Invalid email format!");
-			msg.show();
+			msg.setContentText(msg.getContentText() + "\n*Invalid email format!");
 			txtEmail.requestFocus();
-			return false;
+			txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
 		}
-		return true;// If all inputs are valid
+		if (!validInput)
+			msg.show();
+		return validInput;// If all inputs are valid
 	}
 
 	@FXML
@@ -251,13 +265,16 @@ public class UserLookupController {
 			try {
 				Integer.parseInt((txtID.getText()));
 				lookupAccount = (UserAccount) DatabaseController.getAccount(Integer.parseInt(txtID.getText()));
-				if (lookupAccount != null) {
-					LoadUserData();
-					txtID.setDisable(true);
+				if (!(lookupAccount.getStatus() == null)) {
+					if (lookupAccount != null) {
+						LoadUserData();
+						txtID.setDisable(true);
+					} else
+						new Alert(AlertType.WARNING, "User doesn't exist!", ButtonType.OK).show();
 				} else
-					new Alert(AlertType.WARNING, "User doesn't exist!", ButtonType.OK).show();
+					new Alert(AlertType.WARNING, "Unable to lookup for a librarian/manager account!", ButtonType.OK)
+							.show();
 			} catch (NumberFormatException exc) {
-				exc.printStackTrace();
 				new Alert(AlertType.WARNING, "ID must contain numbers only", ButtonType.OK).show();
 			}
 		}
@@ -304,13 +321,18 @@ public class UserLookupController {
 		cbEditUser.setOnAction(new EventHandler<ActionEvent>() {// Edit user checkbox event handler
 			@Override
 			public void handle(ActionEvent event) {
-				btnEditData.setDisable(cbEditUser.isSelected() ? false : true);
-				txtFirstName.setEditable(cbEditUser.isSelected() ? true : false);
-				txtLastName.setEditable(cbEditUser.isSelected() ? true : false);
-				txtMobileNum.setEditable(cbEditUser.isSelected() ? true : false);
-				txtEmail.setEditable(cbEditUser.isSelected() ? true : false);
-				if (cbEditUser.isSelected() == false && lookupAccount != null)// Revert looked up user data
-					LoadUserData();
+				if (txtID.isDisabled()) {
+					btnEditData.setDisable(cbEditUser.isSelected() ? false : true);
+					txtFirstName.setEditable(cbEditUser.isSelected() ? true : false);
+					txtLastName.setEditable(cbEditUser.isSelected() ? true : false);
+					txtMobileNum.setEditable(cbEditUser.isSelected() ? true : false);
+					txtEmail.setEditable(cbEditUser.isSelected() ? true : false);
+					if (cbEditUser.isSelected() == false && lookupAccount != null)// Revert looked up user data
+						LoadUserData();
+				} else {
+					new Alert(AlertType.WARNING, "A user must be looked up first!", ButtonType.OK).show();
+					cbEditUser.setSelected(false);
+				}
 			}
 		});
 	}

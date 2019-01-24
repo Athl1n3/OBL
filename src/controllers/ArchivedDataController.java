@@ -10,9 +10,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -56,39 +59,40 @@ public class ArchivedDataController {
 	@FXML
 	private TextField txtUsername;
 
-	private static Archive userArcData;
-	private int ID;
+	private Archive userArcData;
+	private static int ID;
 
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
-		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
-		Scene scene = SceneController.pop();
-		stage.setScene(scene);
-		stage.setTitle("User lookup");
+		((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
 	}
 
 	@FXML
 	void initialize() {
-		// DatabaseController.getArchived(ID);
-
-		/*
-		 * txtUserID.setText(String.valueOf(userArcData.getUserId()));
-		 * txtID.setText(String.valueOf(userArcData.getId()));
-		 * txtUsername.setText(userArcData.getUsername());
-		 * txtFirstName.setText(userArcData.getFirstname());
-		 * txtLastName.setText(userArcData.getLastname());
-		 * txtMobileNum.setText(userArcData.getMobileNum());
-		 * txtEmail.setText(userArcData.getEmail());
-		 */
+		userArcData = DatabaseController.getArchiveData(ID);
+		if (userArcData != null) {
+			txtUserID.setText(String.valueOf(userArcData.getUserId()));
+			txtID.setText(String.valueOf(userArcData.getId()));
+			txtUsername.setText(userArcData.getUsername());
+			txtFirstName.setText(userArcData.getFirstname());
+			txtLastName.setText(userArcData.getLastname());
+			txtPassword.setText(userArcData.getPassword());
+			txtMobileNum.setText(userArcData.getMobileNum());
+			txtEmail.setText(userArcData.getEmail());
+		} else
+			new Alert(AlertType.ERROR, "An error has occured getting archived data!").show();
 
 	}
 
 	void start(Stage primaryStage, int ID) throws Exception {
 		this.ID = ID;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/ArchivedDataForm.fxml"));
+		Stage stage = new Stage();
+		stage.initOwner(primaryStage);
+		stage.initModality(Modality.WINDOW_MODAL);
 		Scene scene = new Scene(root);
-		primaryStage.setTitle("User Archived Data");
-		primaryStage.sizeToScene();
-		primaryStage.setScene(scene);
+		stage.setTitle("User Archived Data");
+		stage.setScene(scene);
+		stage.show();
 	}
 }
