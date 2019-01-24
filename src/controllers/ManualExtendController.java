@@ -155,7 +155,7 @@ public class ManualExtendController {
 		 * acc = DatabaseController.getAccount(usrID);
 		 */
 		acc = new UserAccount(316544345, "ALAA", "Grable", "alaatg.7@gmail.com", "0522985313", 123, "Zerox", "asd123",
-				accountStatus.Active, 0, 0);
+				accountStatus.Active, 0, 0, false);
 		// display the user details according to the inserted ID
 		txtUserID.setText(String.valueOf(acc.getID()));
 		txtUsername.setText(acc.getUserName());

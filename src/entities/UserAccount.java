@@ -18,8 +18,8 @@ public class UserAccount extends Account {
 	}
 
 	public UserAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
-			String userName, String password, accountStatus status, int delays, int lostBooks) {
-		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, UserType.User);
+			String userName, String password, accountStatus status, int delays, int lostBooks, boolean logged) {
+		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, UserType.User, logged);
 		this.status = status;
 		this.delays = delays;
 		this.lostBooks = lostBooks;

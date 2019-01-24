@@ -81,7 +81,7 @@ public class LendController {
 	private Button btnClear;
 
 	UserAccount lenderAccount = new UserAccount(316544345, "ALAA", "Grable", "alaatg.7@gmail.com", "0522985313", 111,
-			"Zerox", "asd123", accountStatus.Active, 0, 0);
+			"Zerox", "asd123", accountStatus.Active, 0, 0, false);
 	Book lentBook = new Book(123, "Aces", "Zbe", "1st", 1992, "Fucking adam", "Fuck", 1, "Sex", "7", 15, "Wanted", 10);
 
 	/**

@@ -133,7 +133,7 @@ public class NewAccountController {
 						// inputed
 						Account newAccount = new UserAccount(Integer.parseInt(txtID.getText()), txtFirstName.getText(),
 								txtLastName.getText(), txtEmail.getText(), txtMobileNum.getText(), 111,
-								txtUsername.getText(), txtPassword.getText(), accountStatus.Active, 0, 0);
+								txtUsername.getText(), txtPassword.getText(), accountStatus.Active, 0, 0, false);
 						/**
 						 * DatabaseController.createAccount(newAccount);
 						 */

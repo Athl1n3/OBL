@@ -26,7 +26,7 @@ public class DatabaseController {
 	 */
 	public static void addAccount(UserAccount newAccount) {
 		ArrayList<String> arr = new ArrayList<String>();
-		String query = "INSERT INTO account(ID, firstName, lastName, eMail, mobileNum, userID, userName, password, userType, status, delays)VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+		String query = "INSERT INTO account(ID, firstName, lastName, eMail, mobileNum, userID, userName, password, userType, status, delays,logged)VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 		arr.add(String.valueOf(newAccount.getID()));
 		arr.add(newAccount.getFirstName());
 		arr.add(newAccount.getLastName());
@@ -38,6 +38,7 @@ public class DatabaseController {
 		arr.add(newAccount.getUserType().toString());
 		arr.add(newAccount.getStatus().toString());
 		arr.add(String.valueOf(newAccount.getDelays()));
+		arr.add(String.valueOf(newAccount.isLogged()));
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 	}

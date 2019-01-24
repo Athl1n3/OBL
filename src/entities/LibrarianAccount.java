@@ -14,8 +14,8 @@ public class LibrarianAccount extends Account {
 	}
 
 	public LibrarianAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
-			String userName, String password, int workerID) {
-		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, UserType.Librarian);
+			String userName, String password, int workerID, boolean logged) {
+		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, UserType.Librarian, logged);
 		if (this instanceof ManagerAccount)
 			this.userType = UserType.Manager;
 		this.workerID = workerID;
