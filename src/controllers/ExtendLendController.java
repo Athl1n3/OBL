@@ -98,38 +98,43 @@ public class ExtendLendController {
         // get the selected book from the tableView
         LentBook selectedBook = tableView.getSelectionModel().getSelectedItem();
  
-        // validate if the book type is equal to "wanted" or not
-        if (selectedBook.getBook().getBookType().equals(bookType.Wanted)) {
-            // if the book type is "Wanted" then let the user know that he can't extend the
-            // book return time
-            alertWarningMessage(
-                    "This book " + selectedBook.getBook().getName() + " is a 'Wanted' book and cannot be extended.");
-        } else {
-             
-            // validate if the orders on that book is lesser than the actual available
-            // copies in the library
-            if (selectedBook.getBook().getAvailableCopies() <= selectedBook.getBook().getBookOrders()) {
-                // if not , then let the user know that he can't extend the book return time
-                alertWarningMessage("There is a lot of orders on that book , \nTherefore the book " + selectedBook.getBook().getName()
-                        + " cannot be extended.");
-            } else {
-                // extend the book return time to 1 more weeks
-                selectedBook.setDueDate(selectedBook.getDueDate().plusWeeks(1));
- 
-               
-               //  DatabaseController.updateLentBook(selectedBook);
-                 
-                // let the user know that the return time for the his book has been extended
-                // successfully
-                Alert alert = new Alert(AlertType.INFORMATION,
-                        "The book" + selectedBook.getBook().getName() + " Due time has been extended successfully.", ButtonType.OK);
-                alert.show();
-            }
- 
+        // validate if there is a week or less to return that book
+        if(LocalDate.now().isAfter(selectedBook.getIssueDate().plusWeeks(1)) == false && LocalDate.now().isEqual(selectedBook.getIssueDate().plusWeeks(1)) == false) {
+        	// if not then let the user know that he can't extend the book return time
+        	alertWarningMessage("You have more than 1 week left to return this book, therefore you can extend this book returning time.");
         }
- 
+        else {   // if there is one week or left then 
+            // validate if the book type is equal to "wanted" or not
+            if (selectedBook.getBook().getBookType().equals(bookType.Wanted)) {
+                // if the book type is "Wanted" then let the user know that he can't extend the
+                // book return time
+                alertWarningMessage(
+                        "This book " + selectedBook.getBook().getName() + " is a 'Wanted' book and cannot be extended.");
+            } else {
+                 
+                // validate if the orders on that book is lesser than the actual available
+                // copies in the library
+                if (selectedBook.getBook().getAvailableCopies() <= selectedBook.getBook().getBookOrders()) {
+                    // if not , then let the user know that he can't extend the book return time
+                    alertWarningMessage("There is a lot of orders on that book , \nTherefore the book " + selectedBook.getBook().getName()
+                            + " cannot be extended.");
+                } else {
+                    // extend the book return time to 1 more weeks
+                    selectedBook.setDueDate(selectedBook.getDueDate().plusWeeks(1));
+     
+                   
+                   //  DatabaseController.updateLentBook(selectedBook);
+                     
+                    // let the user know that the return time for the his book has been extended
+                    // successfully
+                    Alert alert = new Alert(AlertType.INFORMATION,
+                            "The book" + selectedBook.getBook().getName() + " Due time has been extended successfully.", ButtonType.OK);
+                    alert.show();
+                }
+            }
+        }
     }
- 
+    
     /**
      * Initialise the current screen
      */
