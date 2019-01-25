@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import entities.Account;
+import entities.Book.bookType;
 import entities.LentBook;
 import entities.UserAccount;
 import javafx.beans.binding.Bindings;
@@ -98,7 +99,7 @@ public class ExtendLendController {
         LentBook selectedBook = tableView.getSelectionModel().getSelectedItem();
  
         // validate if the book type is equal to "wanted" or not
-        if (selectedBook.getBook().getBookType().equals("Wanted")) {
+        if (selectedBook.getBook().getBookType().equals(bookType.Wanted)) {
             // if the book type is "Wanted" then let the user know that he can't extend the
             // book return time
             alertWarningMessage(
