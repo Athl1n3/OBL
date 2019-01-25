@@ -7,6 +7,7 @@ import client.ClientConnection;
 import entities.Account;
 import entities.Archive;
 import entities.Book;
+import entities.Book.bookType;
 import entities.BookCopy;
 import entities.LentBook;
 import entities.LibrarianAccount;
@@ -216,7 +217,7 @@ public class DatabaseController {
 		if (res.size() != 0) {
 			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
 					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), res.get(8),
-					res.get(9), Integer.parseInt(res.get(10)), res.get(11), Integer.parseInt(res.get(12)));
+					res.get(9), Integer.parseInt(res.get(10)), res.get(11).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(12)));
 
 			return book;
 		}
@@ -238,7 +239,7 @@ public class DatabaseController {
 		while (res.size() != 0) {
 			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
 					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), res.get(8),
-					res.get(9), Integer.parseInt(res.get(10)), res.get(11), Integer.parseInt(res.get(12)));
+					res.get(9), Integer.parseInt(res.get(10)), res.get(11).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(12)));
 			res.subList(0, 13).clear();
 			bookList.add(book);
 		}
@@ -275,7 +276,7 @@ public class DatabaseController {
 		while (res.size() != 0) {
 			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
 					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), res.get(8),
-					res.get(9), Integer.parseInt(res.get(10)), res.get(11), Integer.parseInt(res.get(12)));
+					res.get(9), Integer.parseInt(res.get(10)), res.get(11).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(12)));
 			res.subList(0, 13).clear();
 			bookList.add(book);
 		}
