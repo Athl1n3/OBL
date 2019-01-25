@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import entities.Book;
+import entities.Book.bookType;
+import entities.BookCopy;
 import entities.LentBook;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
@@ -80,9 +82,8 @@ public class LendController {
 	@FXML
 	private Button btnClear;
 
-	UserAccount lenderAccount = new UserAccount(316544345, "ALAA", "Grable", "alaatg.7@gmail.com", "0522985313", 111,
-			"Zerox", "asd123", accountStatus.Active, 0, false);
-	Book lentBook = new Book(123, "Aces", "Zbe", "1st", 1992, "Fucking adam", "Fuck", 1, "Sex", "7", 15, "Wanted", 10);
+	UserAccount lenderAccount;
+	Book lentBook;
 
 	/**
 	 * When BookLookUp button is pressed , this method will be called
@@ -92,17 +93,17 @@ public class LendController {
 	@FXML
 	void btnBookLookupPressed(ActionEvent event) {
 
-		/*
-		 * lentBook = DataBaseController.getBook(txtBookID.getText());
-		 */
+		
+		 lentBook = DatabaseController.getBook(Integer.parseInt(txtBookID.getText()));
+		 
 		// validate if there is such a book with the inputed book ID
 		if (lentBook == null) {
 			// if not , then let the user know
 			alertWarningMessage("There is no such book in the library");
 		} else {
-			/*
-			 * lenderBook = DatabaseController.getAccount(txtUserID.getText());
-			 */
+			
+			lenderAccount = (UserAccount) DatabaseController.getAccount(Integer.parseInt(txtUserID.getText()));
+			 
 			// validate if there is such an account with the inputed ID
 			if (lenderAccount == null) {
 				// if not , then let the user know
@@ -113,7 +114,7 @@ public class LendController {
 				txtBookName.setText(lentBook.getName());
 				txtBookName.setEditable(false);
 
-				txtBookType.setText(lentBook.getBookType());// needs to be added //
+				txtBookType.setText(lentBook.getBookType().toString());
 				txtBookType.setEditable(false);
 
 				txtAvailableCopies.setText(String.valueOf(lentBook.getCopiesNumber()));
@@ -167,7 +168,7 @@ public class LendController {
 		// get the date of today
 		LocalDate date = LocalDate.now();
 		// validate if the book type is wanted or not
-		if (lentBook.getBookType().equals("Wanted"))
+		if (lentBook.getBookType().equals(bookType.Wanted))
 			// the book is "wanted" so lent the book for 3 days only
 			date = date.plusDays(3);
 		else
@@ -177,12 +178,13 @@ public class LendController {
 		dtDueDate.setValue(date);
 
 		// create the lent book request with the appropriate returning time
-		/*LentBook lntbook = new LentBook(lenderAccount.getID(), lentBook.getBookID(), LocalDate.now(), date, false,
-				lentBook.getName(), lentBook.getEdition(), lentBook.getAuthor(), lentBook.getSubject(),
-				lentBook.getBookType());*/ 																						//Jigsaw was here and commented that too
-		/*
-		 * DataBaseController.setLentBook(lntbook); needs to be added //
-		 */
+		
+		BookCopy bookCopy = new BookCopy(lentBook.getBookID(), null, true);  //******* SerialNumner *******//
+		LentBook lntbook = new LentBook(lenderAccount.getID(),lentBook, bookCopy, LocalDate.now(), date, false );
+																				                                                 //Jigsaw was here and commented that too (suckmydick Jigsaw)
+		// lent the book to the user
+		DatabaseController.addLentBook(lntbook);
+
 
 		// let the user know that the lent process has been cone successfully
 		Alert alert = new Alert(AlertType.INFORMATION, "Book has been lent successfully", ButtonType.OK);
@@ -203,7 +205,7 @@ public class LendController {
 	}
 
 	/**
-	 * Initialize the current screen
+	 * Initialise the current screen
 	 */
 	@FXML
 	void initialize() {

@@ -96,7 +96,7 @@ public class OrderController implements Initializable {
 		txtName.setDisable(true);
 		txtBookID.setText(String.valueOf(orderedBook.getBookID()));
 		txtBookName.setText(orderedBook.getName());
-		txtBookType.setText(orderedBook.getBookType());
+		txtBookType.setText(orderedBook.getBookType().toString());
 		txtBookName.setText(orderedBook.getName());
 		dtOrderDate.setValue(LocalDate.now());
 		// txtUserID.setText(String.valueOf(DatabaseController.loggedAccount.getAccount().getID()));
