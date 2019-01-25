@@ -81,7 +81,7 @@ public class LendController {
 	private Button btnClear;
 
 	UserAccount lenderAccount = new UserAccount(316544345, "ALAA", "Grable", "alaatg.7@gmail.com", "0522985313", 111,
-			"Zerox", "asd123", accountStatus.Active, 0, 0, false);
+			"Zerox", "asd123", accountStatus.Active, 0, false);
 	Book lentBook = new Book(123, "Aces", "Zbe", "1st", 1992, "Fucking adam", "Fuck", 1, "Sex", "7", 15, "Wanted", 10);
 
 	/**
@@ -177,7 +177,7 @@ public class LendController {
 		dtDueDate.setValue(date);
 
 		// create the lent book request with the appropriate returning time
-		LentBook lntbook = new LentBook(lenderAccount.getID(), lentBook.getBookID(), LocalDate.now(), date, false,
+		/*LentBook lntbook = new LentBook(lenderAccount.getID(), lentBook.getBookID(), LocalDate.now(), date, false,
 				lentBook.getName(), lentBook.getEdition(), lentBook.getAuthor(), lentBook.getSubject(),
 				lentBook.getBookType());
 		/*
@@ -203,7 +203,7 @@ public class LendController {
 	}
 
 	/**
-	 * Initialise the current screen
+	 * Initialize the current screen
 	 */
 	@FXML
 	void initialize() {

@@ -64,15 +64,24 @@ public class LoginController implements Initializable {
 			if (!account.isLogged()) {
 				Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 				if (account.getUserType() == UserType.User) {
-					if (!((UserAccount) account).getStatus().equals(accountStatus.Locked))
+					if (!((UserAccount) account).getStatus().equals(accountStatus.Locked)) {
+						account.setLogged(true);
+						DatabaseController.loggedAccount = account;
+						DatabaseController.updateAccount(account);
 						openNewForm("User", stage);
+						
+					}
 					else {
 						alert.setContentText("Account is \"Locked\"! \n Contact library for appeal.");
 						alert.setHeaderText("Locked");
 						alert.show();
 					}
-				} else
+				} else {
+					account.setLogged(true);
+					DatabaseController.loggedAccount = account;
+					DatabaseController.updateAccount(account);
 					openNewForm("Librarian", stage);
+				}
 			} else {
 				alert.setContentText("Account is already connected!");
 				alert.setHeaderText("Login Failure");

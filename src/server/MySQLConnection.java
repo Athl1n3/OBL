@@ -66,7 +66,7 @@ public class MySQLConnection {
 
 		} catch (SQLException sqlException) {
 			System.out.println("Couldn't execute query");
-			sqlException.getStackTrace();
+			sqlException.printStackTrace();
 			return null;
 		}
 		return null;
@@ -82,7 +82,7 @@ public class MySQLConnection {
 
 		} catch (SQLException sqlException) {
 			System.out.println("Couldn't execute query");
-			sqlException.getStackTrace();
+			sqlException.printStackTrace();
 			return null;
 		}
 	}
@@ -91,7 +91,7 @@ public class MySQLConnection {
 	 * Parse database result set into an ArrayList with rows separated by commas
 	 * 
 	 * @param rs
-	 * @return arr
+	 * @return  ArrayList<String>
 	 */
 	public ArrayList<String> parseResultSet(ResultSet rs) {
 		ArrayList<String> arr = new ArrayList<>();

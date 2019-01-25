@@ -45,7 +45,6 @@ public class ClientConnection implements OBLclientIF {
 
 	public void executeQuery(String str) {
 		client.handleMessageFromClientUI(str);
-
 	}
 
 	// **************************************//

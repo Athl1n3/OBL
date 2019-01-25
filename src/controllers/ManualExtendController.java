@@ -106,13 +106,12 @@ public class ManualExtendController {
 	void btnExtendLendPressed(ActionEvent event) {
 		// get the selected book from the tableView
 		LentBook selectedBook = tableView.getSelectionModel().getSelectedItem();
-
 		// validate if the book type is equal to "wanted" or not
-		if (selectedBook.getBookType().equals("Wanted"))
+		if (selectedBook.getBook().getBookType().equals("Wanted"))
 			// if the book type is "Wanted" then let the user know that he can't extend the
 			// book return time
 			alertWarningMessage(
-					"This book " + selectedBook.getBookName() + " is a 'Wanted' book and cannot be extended.");
+					"This book " + selectedBook.getBook().getName() + " is a 'Wanted' book and cannot be extended.");
 		else {
 			/*
 			 * tmpBook = DatabaseController.getBook(selectedBook.getBookID());
@@ -155,7 +154,7 @@ public class ManualExtendController {
 		 * acc = DatabaseController.getAccount(usrID);
 		 */
 		acc = new UserAccount(316544345, "ALAA", "Grable", "alaatg.7@gmail.com", "0522985313", 123, "Zerox", "asd123",
-				accountStatus.Active, 0, 0, false);
+				accountStatus.Active, 0, false);
 		// display the user details according to the inserted ID
 		txtUserID.setText(String.valueOf(acc.getID()));
 		txtUsername.setText(acc.getUserName());
@@ -208,15 +207,18 @@ public class ManualExtendController {
 		/*
 		 * DatabaseController.getExtendBookList(userID) ** & send it
 		 */
+		/*
 		LentBook LntBK1 = new LentBook(123, 111, LocalDate.now(), LocalDate.now().plusWeeks(2), false, "Marshood",
 				"2st", "ALAA", "Calculus", "Wanted");
 		LentBook LntBK2 = new LentBook(777, 999, LocalDate.now(), LocalDate.now().plusWeeks(2), false, "Fucker", "7st",
 				"ahmad", "notur", "Regular");
-
 		// create an observablelist that contains the user let books
 		ObservableList<LentBook> list = FXCollections.observableArrayList(LntBK1, LntBK2);
 		// return the observablelist
+		
 		return list;
+		*/
+		return null;
 	}
 
 	void start(Stage stage) throws Exception {

@@ -93,6 +93,9 @@ public class LibrarianMainController {
 		Alert confirmLogout = new Alert(AlertType.CONFIRMATION, "Are you sure you want to log out of this account?",
 				ButtonType.YES, ButtonType.CANCEL);
 		if (confirmLogout.showAndWait().get() == ButtonType.YES) {
+			loggedLibAccount.setLogged(false);
+			DatabaseController.updateAccount(loggedLibAccount);
+			DatabaseController.loggedAccount = null;
 			Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 			// get the previous scene
 			Scene scene = SceneController.pop();

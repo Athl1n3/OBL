@@ -85,6 +85,9 @@ public class UserMainController implements Initializable {
 		Alert confirmLogout = new Alert(AlertType.CONFIRMATION, "Are you sure you want to log out of this account?",
 				ButtonType.YES, ButtonType.CANCEL);
 		if (confirmLogout.showAndWait().get() == ButtonType.YES) {
+			loggedAccount.setLogged(false);
+			DatabaseController.updateAccount(loggedAccount);
+			DatabaseController.loggedAccount = null;
 			Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 			// get the previous scene
 			Scene scene = SceneController.pop();
