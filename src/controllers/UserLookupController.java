@@ -56,6 +56,9 @@ public class UserLookupController {
 	private TextField txtUsername;
 
 	@FXML
+	private TextField txtPassword;
+
+	@FXML
 	private CheckBox cbEditUser;
 
 	@FXML
@@ -107,7 +110,6 @@ public class UserLookupController {
 			}
 		} else
 			new Alert(AlertType.WARNING, "A user must be looked up first!", ButtonType.OK).show();
-
 	}
 
 	/**
@@ -123,6 +125,7 @@ public class UserLookupController {
 		txtLastName.clear();
 		txtMobileNum.clear();
 		txtEmail.clear();
+		txtPassword.clear();
 		lblStatus.setText("---");
 		lblUserID.setText("---");
 		txtID.setDisable(false);
@@ -130,6 +133,7 @@ public class UserLookupController {
 		txtLastName.setStyle(null);
 		txtMobileNum.setStyle(null);
 		txtEmail.setStyle(null);
+		txtPassword.setStyle(null);
 		cbEditUser.setSelected(false);
 	}
 
@@ -144,11 +148,13 @@ public class UserLookupController {
 			txtEmail.setStyle(null);
 			if (validateInput()) {
 				lookupAccount.setUserName(txtUsername.getText());
+				lookupAccount.setPassword(txtPassword.getText());
 				lookupAccount.setFirstName(txtFirstName.getText());
 				lookupAccount.setLastName(txtLastName.getText());
 				lookupAccount.setMobileNum(txtMobileNum.getText());
 				lookupAccount.setEmail(txtEmail.getText());
 				LoadUserData();
+				cbEditUser.setSelected(false);
 				DatabaseController.updateAccount(lookupAccount);
 				new Alert(AlertType.INFORMATION, "User data was updated successfully!", ButtonType.OK).show();
 			}
@@ -165,42 +171,79 @@ public class UserLookupController {
 		msg.setHeaderText("Input Error");
 		msg.setContentText("One or more of inputs are in an invalid format!");
 		boolean validInput = true;
-
-		for (char c : txtFirstName.getText().toCharArray())// Parse text field into chars array and validate
-			if (Character.isDigit(c)) {
-				msg.setContentText(msg.getContentText() + "\n*First name must contain letters only!");
-				txtFirstName.requestFocus();
-				txtFirstName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				validInput = false;
-				break;
-			}
-		for (char c : txtLastName.getText().toCharArray())// Parse text field into chars array and validate
-			if (Character.isDigit(c)) {
-				msg.setContentText(msg.getContentText() + "\n*Last name must contain letters only!");
-				txtLastName.requestFocus();
-				txtLastName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				validInput = false;
-				break;
-			}
-		for (char c : txtMobileNum.getText().toCharArray())// Parse text field into chars array and validate
-			if (Character.isAlphabetic(c)) {
-				msg.setContentText(msg.getContentText() + "\n*Mobile number must contain numbers only!");
-				txtMobileNum.requestFocus();
-				txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				validInput = false;
-				break;
-			}
-
-		// Validate email format using
-		String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
-		java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
-		java.util.regex.Matcher m = p.matcher(txtEmail.getText());
-		if (!m.matches()) {
-			msg.setContentText(msg.getContentText() + "\n*Invalid email format!");
-			txtEmail.requestFocus();
-			txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+		////////////
+		if (!txtFirstName.getText().isEmpty()) {
+			for (char c : txtFirstName.getText().toCharArray())// Parse text field into chars array and validate
+				if (Character.isDigit(c)) {
+					msg.setContentText(msg.getContentText() + "\n*First name must contain letters only!");
+					;
+					txtFirstName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+					validInput = false;
+					break;
+				}
+		} else {
+			msg.setContentText(msg.getContentText() + "\n*First name can't be empty!");
+			txtFirstName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			validInput = false;
 		}
+		////////////
+		if (!txtLastName.getText().isEmpty()) {
+			for (char c : txtLastName.getText().toCharArray())// Parse text field into chars array and validate
+				if (Character.isDigit(c)) {
+					msg.setContentText(msg.getContentText() + "\n*Last name must contain letters only!");
+					txtLastName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+					validInput = false;
+					break;
+				}
+		} else {
+			msg.setContentText(msg.getContentText() + "\n*Last name can't be empty!");
+			txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
+		}
+		//////////
+		if (!txtMobileNum.getText().isEmpty()) {
+			for (char c : txtMobileNum.getText().toCharArray())// Parse text field into chars array and validate
+				if (Character.isAlphabetic(c)) {
+					msg.setContentText(msg.getContentText() + "\n*Mobile number must contain numbers only!");
+					txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+					validInput = false;
+					break;
+				}
+		} else {
+			msg.setContentText(msg.getContentText() + "\n*Mobile number can't be empty!");
+			txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
+		}
+		////////////
+		if (txtUsername.getText().isEmpty()) {
+			msg.setContentText(msg.getContentText() + "\n*Username can't be empty!");
+			txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
+		}
+		////////////
+		if (txtPassword.getText().length() < 6) {
+			msg.setContentText(msg.getContentText() + "\n*Password must be 6 characters minimum!");
+			txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
+		}
+		////////////
+		if (!txtMobileNum.getText().isEmpty()) {
+			// Validate email format using
+			String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+			java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+			java.util.regex.Matcher m = p.matcher(txtEmail.getText());
+			if (!m.matches()) {
+				msg.setContentText(msg.getContentText() + "\n*Invalid email format!");
+				txtEmail.requestFocus();
+				txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				validInput = false;
+			}
+		} else {
+			msg.setContentText(msg.getContentText() + "\n*Email can't be empty!");
+			txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
+		}
+		////////////
 		if (!validInput)
 			msg.show();
 		return validInput;// If all inputs are valid
@@ -352,6 +395,7 @@ public class UserLookupController {
 	 */
 	void LoadUserData() {
 		txtUsername.setText(lookupAccount.getUserName());
+		txtPassword.setText(lookupAccount.getPassword());
 		txtFirstName.setText(lookupAccount.getFirstName());
 		txtLastName.setText(lookupAccount.getLastName());
 		txtMobileNum.setText(String.valueOf(lookupAccount.getMobileNum()));

@@ -212,12 +212,29 @@ public class ManualExtendController {
 				"2st", "ALAA", "Calculus", "Wanted");
 		LentBook LntBK2 = new LentBook(777, 999, LocalDate.now(), LocalDate.now().plusWeeks(2), false, "Fucker", "7st",
 				"ahmad", "notur", "Regular");
+
+		////////////////////////////////////
+
+		////// Hello Alaa, I want to play a game
+		// These lines were tagged by me (219 - 229) and ExtendLendController, LendController
+		//////your acts has done a great impact to you and your future and the destiny of this code
+		// It's time for redemption, get that thing up and running within 48hours, clock is ticking
+		////// the choice is yours live or die
+		///// -JigSaw
+
+		////////////////////////
+		/*
+		 * LentBook LntBK1 = new LentBook(123, 111, LocalDate.now(),
+		 * LocalDate.now().plusWeeks(2), false, "Marshood", "2st", "ALAA", "Calculus",
+		 * "Wanted"); LentBook LntBK2 = new LentBook(777, 999, LocalDate.now(),
+		 * LocalDate.now().plusWeeks(2), false, "Fucker", "7st", "ahmad", "notur",
+		 * "Regular");
+		 */
 		// create an observablelist that contains the user let books
-		ObservableList<LentBook> list = FXCollections.observableArrayList(LntBK1, LntBK2);
+		ObservableList<LentBook> list = FXCollections.observableArrayList(/* LntBK1, LntBK2 */);
 		// return the observablelist
 		
-		return list;
-		*/
+		//return list;
 		return null;
 	}
 

@@ -179,7 +179,7 @@ public class LendController {
 		// create the lent book request with the appropriate returning time
 		/*LentBook lntbook = new LentBook(lenderAccount.getID(), lentBook.getBookID(), LocalDate.now(), date, false,
 				lentBook.getName(), lentBook.getEdition(), lentBook.getAuthor(), lentBook.getSubject(),
-				lentBook.getBookType());
+				lentBook.getBookType());*/ 																						//Jigsaw was here and commented that too
 		/*
 		 * DataBaseController.setLentBook(lntbook); needs to be added //
 		 */

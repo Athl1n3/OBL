@@ -159,19 +159,16 @@ public class ExtendLendController {
 		/*
 		 * DatabaseController.getExtendBookList(account.getID()) ** & send it
 		 */
-/*
-		LentBook LntBK1 = new LentBook(123, 111, LocalDate.now(), LocalDate.now().plusWeeks(2), false, "Marshood",
+		/*LentBook LntBK1 = new LentBook(123, 111, LocalDate.now(), LocalDate.now().plusWeeks(2), false, "Marshood",
 				"2st", "ALAA", "Calculus", "Math");
 		LentBook LntBK2 = new LentBook(777, 999, LocalDate.now(), LocalDate.now().plusWeeks(2), false, "Fucker", "7st",
-				"ahmad", "notur", "prog");
+				"ahmad", "notur", "prog");*/
 
 		// create an observablelist that contains the user let books
-		ObservableList<LentBook> list = FXCollections.observableArrayList(LntBK1, LntBK2);
+		ObservableList<LentBook> list = FXCollections.observableArrayList(/*LntBK1, LntBK2*/);//Jigsaw commented that
 
 		// return the observablelist
 		return list;
-*/
-		return null;
 	}
 
 	/**
