@@ -133,6 +133,7 @@ public class UserLookupController {
 		txtLastName.setStyle(null);
 		txtMobileNum.setStyle(null);
 		txtEmail.setStyle(null);
+		txtUsername.setStyle(null);
 		txtPassword.setStyle(null);
 		cbEditUser.setSelected(false);
 	}
@@ -155,6 +156,7 @@ public class UserLookupController {
 				lookupAccount.setEmail(txtEmail.getText());
 				LoadUserData();
 				cbEditUser.setSelected(false);
+				btnEditData.setDisable(true);
 				DatabaseController.updateAccount(lookupAccount);
 				new Alert(AlertType.INFORMATION, "User data was updated successfully!", ButtonType.OK).show();
 			}
@@ -197,7 +199,7 @@ public class UserLookupController {
 				}
 		} else {
 			msg.setContentText(msg.getContentText() + "\n*Last name can't be empty!");
-			txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			txtLastName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			validInput = false;
 		}
 		//////////
@@ -217,17 +219,21 @@ public class UserLookupController {
 		////////////
 		if (txtUsername.getText().isEmpty()) {
 			msg.setContentText(msg.getContentText() + "\n*Username can't be empty!");
-			txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			txtUsername.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
+		} else if (DatabaseController.ifExists("account", "username", txtUsername.getText()) && !lookupAccount.getUserName().equals(txtUsername.getText())) {
+			msg.setContentText(msg.getContentText() + "\n*Username already exists!");
+			txtUsername.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			validInput = false;
 		}
 		////////////
 		if (txtPassword.getText().length() < 6) {
 			msg.setContentText(msg.getContentText() + "\n*Password must be 6 characters minimum!");
-			txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			validInput = false;
 		}
 		////////////
-		if (!txtMobileNum.getText().isEmpty()) {
+		if (!txtEmail.getText().isEmpty()) {
 			// Validate email format using
 			String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
 			java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
@@ -240,7 +246,7 @@ public class UserLookupController {
 			}
 		} else {
 			msg.setContentText(msg.getContentText() + "\n*Email can't be empty!");
-			txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			validInput = false;
 		}
 		////////////
@@ -361,7 +367,6 @@ public class UserLookupController {
 			btnArchive.setVisible(false);
 		}
 		lblStatus.setText("---");
-
 		btnEditData.setDisable(true);
 		cbEditUser.setOnAction(new EventHandler<ActionEvent>() {// Edit user checkbox event handler
 			@Override
@@ -370,6 +375,8 @@ public class UserLookupController {
 					btnEditData.setDisable(cbEditUser.isSelected() ? false : true);
 					txtFirstName.setEditable(cbEditUser.isSelected() ? true : false);
 					txtLastName.setEditable(cbEditUser.isSelected() ? true : false);
+					txtUsername.setEditable(cbEditUser.isSelected() ? true : false);
+					txtPassword.setEditable(cbEditUser.isSelected() ? true : false);
 					txtMobileNum.setEditable(cbEditUser.isSelected() ? true : false);
 					txtEmail.setEditable(cbEditUser.isSelected() ? true : false);
 					if (cbEditUser.isSelected() == false && lookupAccount != null)// Revert looked up user data

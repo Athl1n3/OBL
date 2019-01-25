@@ -80,23 +80,8 @@ public class NewAccountController {
 		txtMobileNum.clear();
 		txtEmail.clear();
 		txtUsername.clear();
-		txtConPassword.clear();
-		txtPassword.clear();
+		clearPassFields();
 	}
-
-	/*
-	 * @FXML void btnCreateAccountPressed(ActionEvent event) { UserAccount
-	 * newAccount = new UserAccount();
-	 * newAccount.setID(Integer.parseInt(txtID.getText()));
-	 * newAccount.setFirstName(txtFirstName.getText());
-	 * newAccount.setLastName(txtLastName.getText());
-	 * newAccount.setMobileNum(txtMobileNum.getText());
-	 * newAccount.setEmail(txtEmail.getText()); newAccount.setAccountID(1);
-	 * newAccount.setUserName(txtUsername.getText());
-	 * newAccount.setPassword(txtPassword.getText()); newAccount.userType =
-	 * UserType.User; newAccount.status = accountStatus.Active;
-	 * DatabaseController.addAccount(newAccount); }
-	 */
 
 	/**
 	 * When CreateAccount Button is pressed , this method will be called
@@ -110,7 +95,7 @@ public class NewAccountController {
 		if (txtUsername.getText().length() <= 5) {
 			// if not , inform the user that the username must be at least 6 characters
 			alertWarningMessage("Username length must be longer than 5 characters");
-			clearPassFields();
+			txtUsername.requestFocus();
 		} else {
 			// validate if the inputed password length is greather than 6
 			if (txtConPassword.getText().length() < 6 || txtPassword.getText().length() < 6) {
@@ -128,20 +113,19 @@ public class NewAccountController {
 					if (!validateEmail()) {
 						// inform the user that the email is invalid
 						alertWarningMessage("Invalid email address");
-						clearPassFields();
+						txtEmail.requestFocus();
 					} else {
 						// if every textfield is valid , then create a new account with all the details
 						// inputed
-						Account newAccount = new UserAccount(Integer.parseInt(txtID.getText()), txtFirstName.getText(),
-								txtLastName.getText(), txtEmail.getText(), txtMobileNum.getText(),
-								Integer.parseInt(lblUserID.getText()), txtUsername.getText(), txtPassword.getText(),
-								accountStatus.Active, 0, false);
-
 						if (DatabaseController.ifExists("account", "id", txtID.getText())) {
 							new Alert(AlertType.INFORMATION, "ID already exists", ButtonType.OK).show();
 						} else if (DatabaseController.ifExists("account", "username", txtUsername.getText())) {
 							new Alert(AlertType.INFORMATION, "Username already exists", ButtonType.OK).show();
 						} else {
+							Account newAccount = new UserAccount(Integer.parseInt(txtID.getText()),
+									txtFirstName.getText(), txtLastName.getText(), txtEmail.getText(),
+									txtMobileNum.getText(), Integer.parseInt(lblUserID.getText()),
+									txtUsername.getText(), txtPassword.getText(), accountStatus.Active, 0, false);
 							DatabaseController.addAccount((UserAccount) newAccount);
 							// inform the user that the creation has been done successfully
 							new Alert(AlertType.INFORMATION, "Account has been created successfully", ButtonType.OK)
@@ -151,7 +135,6 @@ public class NewAccountController {
 				}
 			}
 		}
-
 	}
 
 	void start(Stage primaryStage) throws Exception {
@@ -222,7 +205,7 @@ public class NewAccountController {
 			}
 			if (txtMobileNum.getLength() > 10) {
 				txtMobileNum.setText(oldValue);
-				alertWarningMessage("Mobile number must be of 10 digits");
+				alertWarningMessage("Mobile number must be 10 digits maximum");
 			}
 		});
 

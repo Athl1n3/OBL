@@ -127,7 +127,7 @@
                         <Insets />
                      </GridPane.margin>
                   </TextField>
-                  <TextField fx:id="txtUsername" prefHeight="31.0" prefWidth="249.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="txtUsername" editable="false" prefHeight="31.0" prefWidth="249.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <TextField fx:id="txtFirstName" editable="false" focusTraversable="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets />
@@ -154,7 +154,7 @@
                      </GridPane.margin>
                   </Button>
                   <Label text="Password" GridPane.rowIndex="4" />
-                  <TextField fx:id="txtPassword" prefHeight="31.0" prefWidth="249.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <TextField fx:id="txtPassword" editable="false" prefHeight="31.0" prefWidth="249.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                </children>
             </GridPane>
             <Label layoutX="273.0" layoutY="5.0" text="User Lookup">
