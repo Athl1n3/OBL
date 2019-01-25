@@ -97,6 +97,7 @@ public class NewAccountController {
 	 * UserType.User; newAccount.status = accountStatus.Active;
 	 * DatabaseController.addAccount(newAccount); }
 	 */
+	
 	/**
 	 * When CreateAccount Button is pressed , this method will be called
 	 * 
@@ -132,11 +133,11 @@ public class NewAccountController {
 						// if every textfield is valid , then create a new account with all the details
 						// inputed
 						Account newAccount = new UserAccount(Integer.parseInt(txtID.getText()), txtFirstName.getText(),
-								txtLastName.getText(), txtEmail.getText(), txtMobileNum.getText(), 111,
+								txtLastName.getText(), txtEmail.getText(), txtMobileNum.getText(), Integer.parseInt(lblUserID.getText()),
 								txtUsername.getText(), txtPassword.getText(), accountStatus.Active, 0, false);
-						/**
-						 * DatabaseController.createAccount(newAccount);
-						 */
+						
+						 DatabaseController.addAccount((UserAccount)newAccount);
+						 
 						// inform the user that the creation has been done successfully
 						Alert alert = new Alert(AlertType.INFORMATION, "Account has been created successfully",
 								ButtonType.OK);
@@ -177,6 +178,7 @@ public class NewAccountController {
 	void initialize() {
 		// a listener to validate if the ID length is not greater than 9 digits and if
 		// it's only contain numbers
+		lblUserID.setText(String.valueOf(DatabaseController.generateAccountID()));
 		txtID.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("\\d*")) {
 				txtID.setText(newValue.replaceAll("[^\\d]", ""));
@@ -187,7 +189,7 @@ public class NewAccountController {
 				alertWarningMessage("The ID must be 9 numbers");
 			}
 		});
-
+		
 		// a listener to validate if the FirstName textfield contains only alphabetic
 		// characters
 		txtFirstName.textProperty().addListener((observable, oldValue, newValue) -> {

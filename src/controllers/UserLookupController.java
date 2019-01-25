@@ -264,6 +264,7 @@ public class UserLookupController {
 			}
 			statMsg.setContentText(status ? "User account was successfully set to 'Active'"
 					: "User account was successfully set to 'Locked'");
+			DatabaseController.updateUserStatus(lookupAccount);
 			LoadUserData();
 		} else {
 			statMsg.setAlertType(AlertType.WARNING);
@@ -289,6 +290,7 @@ public class UserLookupController {
 
 			statMsg.setContentText(status ? "User account was successfully set to 'Active'"
 					: "User account was successfully set to 'Suspended'");
+			DatabaseController.updateUserStatus(lookupAccount);
 			LoadUserData();
 		} else {
 			statMsg.setAlertType(AlertType.WARNING);
@@ -327,7 +329,7 @@ public class UserLookupController {
 	void btnViewHistoryPressed(ActionEvent event) {
 		if (txtID.isDisabled()) {
 			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-			Scene scene = (Scene) ((Node) event.getSource()).getScene();
+			Scene scene = ((Node) event.getSource()).getScene();
 			SceneController.push(scene);
 			ActivityController activityForm = new ActivityController();
 			try {

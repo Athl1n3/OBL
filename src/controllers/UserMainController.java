@@ -86,7 +86,7 @@ public class UserMainController implements Initializable {
 				ButtonType.YES, ButtonType.CANCEL);
 		if (confirmLogout.showAndWait().get() == ButtonType.YES) {
 			loggedAccount.setLogged(false);
-			DatabaseController.updateAccount(loggedAccount);
+			DatabaseController.logAccount(loggedAccount);
 			DatabaseController.loggedAccount = null;
 			Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 			// get the previous scene

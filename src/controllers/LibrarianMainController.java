@@ -94,7 +94,7 @@ public class LibrarianMainController {
 				ButtonType.YES, ButtonType.CANCEL);
 		if (confirmLogout.showAndWait().get() == ButtonType.YES) {
 			loggedLibAccount.setLogged(false);
-			DatabaseController.updateAccount(loggedLibAccount);
+			DatabaseController.logAccount(loggedLibAccount);
 			DatabaseController.loggedAccount = null;
 			Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 			// get the previous scene

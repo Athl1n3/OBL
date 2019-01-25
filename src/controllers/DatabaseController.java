@@ -39,9 +39,19 @@ public class DatabaseController {
 		arr.add(newAccount.getUserType().toString());
 		arr.add(newAccount.getStatus().toString());
 		arr.add(String.valueOf(newAccount.getDelays()));
-		arr.add(String.valueOf(newAccount.isLogged()));
+		arr.add(String.valueOf(0));
 		arr.add(query);
 		clientConnection.executeQuery(arr);
+	}
+	
+	/**
+	 * Generate a new account ID for the new user
+	 * @return account ID for the new user
+	 */
+	public static int generateAccountID()
+	{
+		clientConnection.executeQuery("SELECT COUNT(*) FROM account;");
+		return (Integer.parseInt(clientConnection.getList().get(0)) + 1)*264 + 759;
 	}
 
 	/**
@@ -50,14 +60,24 @@ public class DatabaseController {
 	 * @param account
 	 */
 	public static void updateAccount(Account account) {
-		String query = "UPDATE account SET firstName = '" + account.getFirstName() + "', lastName = '"
+		/*String query = "UPDATE account SET firstName = '" + account.getFirstName() + "', lastName = '"
 				+ account.getLastName() + "', eMail = '" + account.getEmail() + "', mobileNum = '"
 				+ account.getMobileNum() + "', userName = '" + account.getUserName() + "', password = '"
 				+ account.getPassword() + "', logged = '" + (account.isLogged() == true ? 1:0) + "' WHERE userID = '"
+				+ account.getAccountID() + "';";*/
+		String query = "UPDATE account SET firstName = '" + account.getFirstName() + "', lastName = '"
+				+ account.getLastName() + "', eMail = '" + account.getEmail() + "', mobileNum = '"
+				+ account.getMobileNum() + "', userName = '" + account.getUserName() + "', password = '" 
+				+ account.getPassword() + "' WHERE userID = '"
 				+ account.getAccountID() + "';";
 		clientConnection.executeQuery(query);
 	}
 
+	public static void logAccount(Account account)
+	{
+		clientConnection.executeQuery("UPDATE account SET logged = '" + (account.isLogged() == true ? 1:0) + "' WHERE userID = '"	+ account.getAccountID() + "';");
+	}
+	
 	/**
 	 * update user's status
 	 * 
