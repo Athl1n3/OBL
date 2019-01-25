@@ -97,7 +97,7 @@ public class NewAccountController {
 	 * UserType.User; newAccount.status = accountStatus.Active;
 	 * DatabaseController.addAccount(newAccount); }
 	 */
-	
+
 	/**
 	 * When CreateAccount Button is pressed , this method will be called
 	 * 
@@ -133,15 +133,20 @@ public class NewAccountController {
 						// if every textfield is valid , then create a new account with all the details
 						// inputed
 						Account newAccount = new UserAccount(Integer.parseInt(txtID.getText()), txtFirstName.getText(),
-								txtLastName.getText(), txtEmail.getText(), txtMobileNum.getText(), Integer.parseInt(lblUserID.getText()),
-								txtUsername.getText(), txtPassword.getText(), accountStatus.Active, 0, false);
-						
-						 DatabaseController.addAccount((UserAccount)newAccount);
-						 
-						// inform the user that the creation has been done successfully
-						Alert alert = new Alert(AlertType.INFORMATION, "Account has been created successfully",
-								ButtonType.OK);
-						alert.show();
+								txtLastName.getText(), txtEmail.getText(), txtMobileNum.getText(),
+								Integer.parseInt(lblUserID.getText()), txtUsername.getText(), txtPassword.getText(),
+								accountStatus.Active, 0, false);
+
+						if (DatabaseController.ifExists("account", "id", txtID.getText())) {
+							new Alert(AlertType.INFORMATION, "ID already exists", ButtonType.OK).show();
+						} else if (DatabaseController.ifExists("account", "username", txtUsername.getText())) {
+							new Alert(AlertType.INFORMATION, "Username already exists", ButtonType.OK).show();
+						} else {
+							DatabaseController.addAccount((UserAccount) newAccount);
+							// inform the user that the creation has been done successfully
+							new Alert(AlertType.INFORMATION, "Account has been created successfully", ButtonType.OK)
+									.show();
+						}
 					}
 				}
 			}
@@ -189,7 +194,7 @@ public class NewAccountController {
 				alertWarningMessage("The ID must be 9 numbers");
 			}
 		});
-		
+
 		// a listener to validate if the FirstName textfield contains only alphabetic
 		// characters
 		txtFirstName.textProperty().addListener((observable, oldValue, newValue) -> {
