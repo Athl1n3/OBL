@@ -57,6 +57,11 @@
                         <Image url="@../images/baseline_exit_to_app_black_48dp.png" />
                      </image>
                   </ImageView>
+                  <ImageView fx:id="imgNotification" fitHeight="55.0" fitWidth="60.0" layoutX="14.0" layoutY="2.0" onMouseClicked="#imgNotificationClicked" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/NotificationsIcon.png" />
+                     </image>
+                  </ImageView>
                </children>
             </Pane>
          </bottom>

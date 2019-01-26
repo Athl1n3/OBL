@@ -1,14 +1,14 @@
 package entities;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 public class UserActivity {
 
 	private int userID;
 	private String activityName;
-	private LocalDate date;
+	private Timestamp date;
 
-	public UserActivity(int userID, String activityName, LocalDate date) {
+	public UserActivity(int userID, String activityName, Timestamp date) {
 		this.userID = userID;
 		this.activityName = activityName;
 		this.date = date;
@@ -53,14 +53,14 @@ public class UserActivity {
 	/**
 	 * @return the date
 	 */
-	public LocalDate getDate() {
+	public Timestamp getDate() {
 		return date;
 	}
 
 	/**
 	 * @param date the date to set
 	 */
-	public void setDate(LocalDate date) {
+	public void setDate(Timestamp date) {
 		this.date = date;
 	}
 }
