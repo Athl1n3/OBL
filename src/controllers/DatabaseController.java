@@ -291,7 +291,8 @@ public class DatabaseController {
 			res.subList(0, 13).clear();
 			bookList.add(book);
 		}
-
+		clientConnection.executeQuery("Select * FROM book WHERE author = 'kasem' Order By bookID ASC");
+		System.out.println(clientConnection.getList());
 		return bookList;
 	}
 

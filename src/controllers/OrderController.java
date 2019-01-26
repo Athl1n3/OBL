@@ -57,11 +57,10 @@ public class OrderController implements Initializable {
 	private Button btnPlaceOrder;
 
 	private static Book orderedBook;
-	private static UserAccount loggedAccount;
 
 	@FXML
 	void btnPlaceOrderPressed(ActionEvent event) {
-
+		
 	}
 
 	@FXML
@@ -69,8 +68,7 @@ public class OrderController implements Initializable {
 
 	}
 
-	public void start(Book orderedBook, UserAccount loggedAccount) {
-		OrderController.loggedAccount = loggedAccount;
+	public void start(Book orderedBook) {
 		OrderController.orderedBook = orderedBook;
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("../gui/OrderForm.fxml"));
@@ -99,8 +97,7 @@ public class OrderController implements Initializable {
 		txtBookType.setText(orderedBook.getBookType().toString());
 		txtBookName.setText(orderedBook.getName());
 		dtOrderDate.setValue(LocalDate.now());
-		// txtUserID.setText(String.valueOf(DatabaseController.loggedAccount.getAccount().getID()));
-		// txtName.setText(String.valueOf(DatabaseController.loggedAccount.getAccount().getFullName()));
-
+		txtUserID.setText(String.valueOf(DatabaseController.loggedAccount.getID()));
+		txtName.setText(DatabaseController.loggedAccount.getFullName());
 	}
 }

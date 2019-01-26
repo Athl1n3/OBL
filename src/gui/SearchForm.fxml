@@ -111,15 +111,15 @@
                         <Button fx:id="btnOrderBook" mnemonicParsing="false" onAction="#btnOrderBookPressed" text="Order Book" />
                      </children>
                   </GridPane>
-                  <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0">
+                  <TableView fx:id="tableView" onContextMenuRequested="#activateOrderBookButton" prefHeight="200.0" prefWidth="200.0">
                     <columns>
                       <TableColumn fx:id="bookNameCol" prefWidth="97.66665649414062" text="Book Name" />
                       <TableColumn fx:id="editionCol" prefWidth="66.33334350585938" text="Edition" />
                         <TableColumn fx:id="printYearCol" prefWidth="73.66668701171875" text="Print Year" />
                         <TableColumn fx:id="bookAuthorCol" prefWidth="80.66668701171875" text="Author" />
                         <TableColumn fx:id="subjectCol" prefWidth="113.33331298828125" text="Subject" />
-                        <TableColumn fx:id="availableCopiesCol" prefWidth="97.0" text="Available Copies" />
-                        <TableColumn fx:id="descriptionCol" prefWidth="141.33331298828125" text="Description" />
+                        <TableColumn fx:id="descriptionCol" prefWidth="134.33331298828125" text="Description" />
+                        <TableColumn fx:id="availableCopiesCol" prefWidth="104.0" text="Available Copies" />
                         <TableColumn fx:id="shelfCol" prefWidth="42.3333740234375" text="Shelf" />
                     </columns>
                   </TableView>

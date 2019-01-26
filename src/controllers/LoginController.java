@@ -66,7 +66,7 @@ public class LoginController implements Initializable {
 				if (account.getUserType() == UserType.User) {
 					if (!((UserAccount) account).getStatus().equals(accountStatus.Locked)) {
 						account.setLogged(true);
-						//DatabaseController.loggedAccount = account;
+						DatabaseController.loggedAccount = account;
 						DatabaseController.logAccount(account);
 						openNewForm("User", stage);
 						
@@ -78,7 +78,7 @@ public class LoginController implements Initializable {
 					}
 				} else {
 					account.setLogged(true);
-					//DatabaseController.loggedAccount = account;
+					DatabaseController.loggedAccount = account;
 					DatabaseController.logAccount(account);
 					openNewForm("Librarian", stage);
 				}
