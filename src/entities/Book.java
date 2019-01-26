@@ -18,7 +18,7 @@ public class Book {
 	
 	public enum bookType {
 		Wanted, Regular
-	};
+	};	
 	
 	public Book(int bookID, String name, String author, String edition, int printYear, String subject,
 			String description, int catalog, String tableOfContents, String shelf, int copiesNumber, bookType type, int availableCopies) {

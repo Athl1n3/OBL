@@ -2,6 +2,9 @@ package controllers;
 
 import java.io.IOException;
 import java.time.Year;
+import java.util.ArrayList;
+
+import com.mysql.fabric.xmlrpc.base.Array;
 
 import entities.Book;
 import javafx.collections.FXCollections;
@@ -87,8 +90,9 @@ public class ManageLibraryController {
 				// confirmation.setContentText("Select a book for delete!");
 				confirmation.showAndWait().ifPresent(response -> {
 					if (response == ButtonType.OK) {
-						// delete this book from DB
-						// DBController.deleteBook(selectedForDelete);
+						DatabaseController.deleteBook(selectedForDelete.getBookID());
+						initialize();
+						
 					}
 				});
 
@@ -149,18 +153,17 @@ public class ManageLibraryController {
 		edition.setCellValueFactory(new PropertyValueFactory<Book, Double>("edition"));
 		year.setCellValueFactory(new PropertyValueFactory<Book, Year>("printYear"));
 		copies.setCellValueFactory(new PropertyValueFactory<Book, Integer>("copiesNumber"));
-		// availableCopies.setCellValueFactory(new PropertyValueFactory<Book,
-		// Integer>("availableCopies"));
+		availableCopies.setCellValueFactory(new PropertyValueFactory<Book,Integer>("availableCopies"));
 		tableView.setItems(getBooks());
 
 	}
 
-	public ObservableList<Book> getBooks() {
-
+	public ObservableList<Book> getBooks() {	
+		ArrayList<Book> allBooks;
+		allBooks=DatabaseController.getAllBooks(); 
 		ObservableList<Book> books = FXCollections.observableArrayList();
-		// need to add the books from DB
-		books.add(new Book(123, "book1", "fadi", "1", 6, "action", "anananana", 1, "annon", "shelf", 12, "regular", 1));
-
+		for (int i=0;i<allBooks.size();i++)
+			books.add(allBooks.get(i));
 		return books;
 	}
 
