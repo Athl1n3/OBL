@@ -1,6 +1,6 @@
 package controllers;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 import entities.UserAccount;
 import entities.UserActivity;
@@ -34,7 +34,7 @@ public class ActivityController {
 	private TableView<UserActivity> tableView;
 
 	@FXML
-	private TableColumn<UserActivity, LocalDate> dateColumn;
+	private TableColumn<UserActivity, Timestamp> dateColumn;
 
 	@FXML
 	private TableColumn<UserActivity, String> activityColumn;

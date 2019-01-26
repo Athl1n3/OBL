@@ -29,6 +29,7 @@ public class EchoServer extends AbstractServer {
 	 */
 	Object obj;
 
+	@Override
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("Message received: " + msg.toString() + " from " + client);
 		obj = DBcon.executeQuery(msg);
@@ -43,6 +44,7 @@ public class EchoServer extends AbstractServer {
 	 * This method overrides the one in the superclass. Called when the server
 	 * starts listening for connections.
 	 */
+	@Override
 	protected void serverStarted() {
 		System.out.println("Server listening for connections on port " + getPort());
 	}
@@ -51,6 +53,7 @@ public class EchoServer extends AbstractServer {
 	 * This method overrides the one in the superclass. Called when the server stops
 	 * listening for connections.
 	 */
+	@Override
 	protected void serverStopped() {
 		System.out.println("Server has stopped listening for connections.");
 	}
@@ -75,7 +78,7 @@ public class EchoServer extends AbstractServer {
 		}
 		DBcon = new MySQLConnection(args[0], args[1], args[2]);
 		EchoServer sv = new EchoServer(port);
-
+		LibraryServices es = new LibraryServices(EchoServer.DBcon);
 		try {
 			sv.listen(); // Start listening for connections
 		} catch (Exception ex) {
