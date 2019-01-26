@@ -63,8 +63,8 @@ public class AccountDetailsController implements Initializable {
 	@FXML
 	private Button btnUpdateLogin;
 
-	private static UserAccount loggedAccount;
-
+	
+	private Account loggedAccount;
 	@FXML
 	void btnApplyChangesPressed(ActionEvent event) {
 		Alert msg = new Alert(AlertType.CONFIRMATION, "Are you sure to update user details?", ButtonType.YES,
@@ -76,7 +76,7 @@ public class AccountDetailsController implements Initializable {
 				loggedAccount.setLastName(txtLastName.getText());
 				loggedAccount.setMobileNum(txtMobileNum.getText());
 				loggedAccount.setEmail(txtEmail.getText());
-				// DatabaseController.LoggedUser(loggedAccount);
+				DatabaseController.updateAccount(loggedAccount);
 				new Alert(AlertType.INFORMATION, "User details was changes successfully!", ButtonType.OK).show();
 			}
 
@@ -115,7 +115,7 @@ public class AccountDetailsController implements Initializable {
 		txtMobileNum.setText(loggedAccount.getMobileNum());
 		txtEmail.setText(loggedAccount.getEmail());
 
-		switch (loggedAccount.getStatus()) {
+	/*	switch (loggedAccount.getStatus()) {
 		case Active:
 			lblStatus.setTextFill(javafx.scene.paint.Color.GREEN);
 			break;
@@ -127,7 +127,7 @@ public class AccountDetailsController implements Initializable {
 			break;
 		}
 		lblStatus.setText(loggedAccount.getStatus().toString());
-		
+		*/
 		//disable the btnApplyChanges button until all Textfields are not empty
 		 BooleanBinding booleanBind =txtUserID.textProperty().isEmpty()
 				 .or(txtFirstName.textProperty().isEmpty())
@@ -145,6 +145,8 @@ public class AccountDetailsController implements Initializable {
 		BooleanBinding  btnPasswordBind =txtPassword.textProperty().isEmpty()
 				.or(txtVerPassword.textProperty().isEmpty());
 		btnUpdateLogin.disableProperty().bind(btnPasswordBind);
+		loggedAccount = new UserAccount();
+		loggedAccount = DatabaseController.loggedAccount.getAccount();
 		
 	}
 	
