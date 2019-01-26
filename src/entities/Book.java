@@ -12,12 +12,16 @@ public class Book {
 	private String tableOfContents;
 	private String shelf;
 	private int copiesNumber;
-	private String type;
+	private bookType type;
 	private int availableCopies;
 	private int bookOrders;
 	
+	public enum bookType {
+		Wanted, Regular
+	};
+	
 	public Book(int bookID, String name, String author, String edition, int printYear, String subject,
-			String description, int catalog, String tableOfContents, String shelf, int copiesNumber, String type, int availableCopies) {
+			String description, int catalog, String tableOfContents, String shelf, int copiesNumber, bookType type, int availableCopies) {
 		super();
 		this.bookID = bookID;
 		this.name = name;
@@ -209,11 +213,11 @@ public class Book {
 		this.copiesNumber = copiesNumber;
 	}
 	
-	public String getBookType() {
+	public bookType getBookType() {
 		return type;
 	}
 	
-	public void setBookType(String type) {
+	public void setBookType(bookType type) {
 		this.type = type;
 	}
 	

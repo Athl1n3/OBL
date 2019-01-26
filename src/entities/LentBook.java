@@ -5,28 +5,22 @@ import java.util.Date;
 
 //need to extend from book
 public class LentBook {
-	public LentBook(int userID, int bookID, LocalDate issueDate, LocalDate dueDate, boolean late, String bookName , String bookEdition , String bookAuthor, String bookTopic, String bookType) {
-		this.userID = userID;
-		this.bookID = bookID;
-		IssueDate = issueDate;
-		DueDate = dueDate;
-		this.late = late;
-		this.bookName = bookName;
-		this.bookEdition = bookEdition;
-		this.bookTopic = bookTopic;
-		this.bookAuthor = bookAuthor;
-		this.bookType = bookType;
-	}
-	private String bookName;
-	private String bookEdition;
-	private String bookAuthor;
-	private String bookTopic;
-	private String bookType;
+	
+	Book book;
+	BookCopy bookCopy;
 	private int userID;
-	private int bookID;
-	private LocalDate IssueDate;
-	private LocalDate DueDate;
+	private LocalDate issueDate;
+	private LocalDate dueDate;
 	private boolean  late;
+	
+	public LentBook(int userID,Book book, BookCopy bookCopy, LocalDate issueDate, LocalDate dueDate, boolean late) {
+		this.userID = userID;
+		this.book = book;
+		this.bookCopy = bookCopy;
+		this.issueDate = issueDate;
+		this.dueDate = dueDate;
+		this.late = late;
+	}
 	
 	/**
 	 * Gets the user ID.
@@ -48,15 +42,15 @@ public class LentBook {
 	 * 
 	 * @return  bookID
 	 */
-	public int getBookID() {
-		return bookID;
+	public Book getBook() {
+		return book;
 	}
 	/**
 	 * Instantiates book ID
 	 * @param  bookID 
 	 */
-	public void setBookID(int bookID) {
-		this.bookID = bookID;
+	public void setBook(Book book) {
+		this.book = book;
 	}
 	
 	/**
@@ -78,45 +72,32 @@ public class LentBook {
 	 * @return the issueDate
 	 */
 	public LocalDate getIssueDate() {
-		return IssueDate;
+		return issueDate;
 	}
 	/**
 	 * @param issueDate the issueDate to set
 	 */
 	public void setIssueDate(LocalDate issueDate) {
-		IssueDate = issueDate;
+		this.issueDate = issueDate;
 	}
 	/**
 	 * @return the dueDate
 	 */
 	public LocalDate getDueDate() {
-		return DueDate;
+		return dueDate;
 	}
 	/**
 	 * @param dueDate the dueDate to set
 	 */
 	public void setDueDate(LocalDate dueDate) {
-		DueDate = dueDate;
+		this.dueDate = dueDate;
 	}
-	
-	public String getBookName() {
-		return bookName;
+
+	public BookCopy getBookCopy() {
+		return bookCopy;
 	}
-	
-	
-	public String getBookEdition() {
-		return bookEdition;
-	}
-	
-	public String getBookAuthor() {
-		return bookAuthor;
-	}
-	
-	public String getBookTopic() {
-		return bookTopic;
-	}
-	
-	public String getBookType() {
-		return bookType;
+
+	public void setBookCopy(BookCopy bookCopy) {
+		this.bookCopy = bookCopy;
 	}
 }

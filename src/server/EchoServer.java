@@ -1,10 +1,9 @@
 package server;
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
-import ocsf.server.*;
+import java.io.IOException;
+
+import ocsf.server.AbstractServer;
+import ocsf.server.ConnectionToClient;
 
 /**
  * This class overrides some of the methods in the abstract superclass in order
@@ -13,7 +12,8 @@ import ocsf.server.*;
 public class EchoServer extends AbstractServer {
 	// The default port to listen on.
 	final public static int DEFAULT_PORT = 5555;
-    private static MySQLConnection DBcon;
+	private static MySQLConnection DBcon;
+
 	// @param port The port number to connect on.
 	public EchoServer(int port) {
 		super(port);
@@ -28,22 +28,16 @@ public class EchoServer extends AbstractServer {
 	 * @param client The connection from which the message originated.
 	 */
 	Object obj;
-	
+
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("Message received: " + msg.toString() + " from " + client);
 		obj = DBcon.executeQuery(msg);
-		if(obj!=null) {
 		try {
 			client.sendToClient(obj);
-		}
-		catch(IOException ex)
-		{
-			
-		}
-		//this.sendToAllClients(obj);
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
 	}
-
 
 	/**
 	 * This method overrides the one in the superclass. Called when the server

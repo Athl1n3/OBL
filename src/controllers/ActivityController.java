@@ -1,8 +1,6 @@
 package controllers;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import entities.UserAccount;
 import entities.UserActivity;
@@ -48,7 +46,6 @@ public class ActivityController {
 	private Label lblUserID;
 
 	private static UserAccount lookedupAccount;
-	private ArrayList<UserActivity> userActivityList;
 	private ObservableList<UserActivity> userActivityOlist;
 
 	@FXML
@@ -61,21 +58,16 @@ public class ActivityController {
 
 	@FXML
 	void initialize() {
-		userActivityList = new ArrayList<>(Arrays.asList(new UserActivity(5, "hi", LocalDate.now())));
-		// DatabaseController.getActivityList(lookedupAccount.getAccountID());
-
 		lblUserID.setText(String.valueOf(lookedupAccount.getAccountID()));
 		lblUsername.setText(lookedupAccount.getUserName());
-
-		userActivityOlist = FXCollections.observableArrayList(userActivityList);// userActivityList
-		// MUST be used
+		userActivityOlist = FXCollections.observableArrayList(DatabaseController.getUserActivity(lookedupAccount.getAccountID()));// userActivityList
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
 		activityColumn.setCellValueFactory(new PropertyValueFactory<>("activityName"));
 		tableView.setItems(userActivityOlist);
 	}
 
 	void start(Stage stage, UserAccount lookedupAccount) throws Exception {
-		this.lookedupAccount = lookedupAccount;
+		ActivityController.lookedupAccount = lookedupAccount;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/ActivityForm.fxml"));
 		Scene scene = new Scene(root);
 		stage.setTitle("User activity");

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.gluonhq.charm.glisten.control.TextField?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
@@ -31,7 +31,7 @@
                         <Image url="@../images/Logo.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgBack" fitHeight="50.0" fitWidth="45.0" layoutY="3.0" onMouseClicked="#imgBackClicked" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@..\images\baseline_arrow_back_black_48dp.png" />
                      </image>
@@ -54,7 +54,7 @@
                <children>
                   <Label text="Book ID:" />
                   <Label GridPane.rowIndex="2" />
-                  <TextField fx:id="txtBookID" floatText="Returned Book ID" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" GridPane.columnIndex="1">
+                  <TextField fx:id="txtBookID" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" GridPane.columnIndex="1">
                      <padding>
                         <Insets bottom="10.0" />
                      </padding>
@@ -85,7 +85,7 @@
               </rowConstraints>
                <children>
                   <Label text="User ID:" />
-                  <TextField fx:id="txtUserID" floatText="Lender user ID" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" GridPane.columnIndex="1">
+                  <TextField fx:id="txtUserID" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" GridPane.columnIndex="1">
                      <padding>
                         <Insets bottom="10.0" />
                      </padding>
@@ -93,7 +93,7 @@
                   <DatePicker fx:id="dtDueDate" disable="true" prefHeight="26.0" prefWidth="180.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Label text="Due Date:" GridPane.rowIndex="2" />
                   <Label text="Name:" GridPane.rowIndex="1" />
-                  <TextField fx:id="txtName" disable="true" floatText="Lender name" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <TextField fx:id="txtName" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <padding>
                         <Insets bottom="10.0" />
                      </padding>

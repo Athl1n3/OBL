@@ -63,20 +63,13 @@ public class ManageLibraryController {
 
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
-
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		AddBookController AddBookForm = new AddBookController();
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/AddBookForm.fxml"));
-			Parent root = (Parent) loader.load();
-			Stage stage = new Stage();
-			stage.setTitle("Add book");
-			stage.setScene(new Scene(root));
-			stage.show();
-			// Hide this current window
-			((Node) event.getSource()).getScene().getWindow().hide();
-		} catch (IOException e) {
+			AddBookForm.start(stage);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@FXML
@@ -116,25 +109,18 @@ public class ManageLibraryController {
 		Book selectedForEdit = (Book) tableView.getSelectionModel().getSelectedItem();
 
 		try {
-
-			if (selectedForEdit == null) {
+			if (selectedForEdit == null)
 				throw new Exception();
+			else {
+				Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+				EditBookController EditBookForm = new EditBookController();
+				try {
+					EditBookForm.start(stage, selectedForEdit);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/EditBookForm.fxml"));
-			Parent root = (Parent) loader.load();
 
-			EditBookController controller = loader.getController();
-			controller.initFields(selectedForEdit);
-
-			Stage stage = new Stage();
-			// stage.setTitle("My New Stage Title");
-			stage.setScene(new Scene(root));
-			stage.show();
-
-			// Hide this current window
-			((Node) event.getSource()).getScene().getWindow().hide();
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error");
@@ -147,11 +133,10 @@ public class ManageLibraryController {
 
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/LibrarianMainForm.fxml"));
-		Stage stage = new Stage();
-		stage.setScene(new Scene((Parent) loader.load()));
-		stage.show();
-		((Node) event.getSource()).getScene().getWindow().hide();
+		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
+		Scene scene = SceneController.pop();
+		stage.setScene(scene);
+		stage.setTitle("Library Management");
 	}
 
 	@FXML
@@ -174,7 +159,7 @@ public class ManageLibraryController {
 
 		ObservableList<Book> books = FXCollections.observableArrayList();
 		// need to add the books from DB
-	//	books.add(new Book(123, "book1", "fadi", "1", 6, "action", "anananana", 1, "annon", "shelf", 12, "regular"));
+		books.add(new Book(123, "book1", "fadi", "1", 6, "action", "anananana", 1, "annon", "shelf", 12, "regular", 1));
 
 		return books;
 	}

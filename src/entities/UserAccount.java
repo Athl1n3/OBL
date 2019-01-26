@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class UserAccount extends Account {
 
 	private int delays;
-	private int lostBooks;
 
 	public enum accountStatus {
 		Active, Locked, Suspended
@@ -18,11 +17,10 @@ public class UserAccount extends Account {
 	}
 
 	public UserAccount(int id, String firstName, String lastName, String eMail, String mobileNum, int userID,
-			String userName, String password, accountStatus status, int delays, int lostBooks) {
-		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, UserType.User);
+			String userName, String password, accountStatus status, int delays, boolean logged) {
+		super(id, firstName, lastName, eMail, mobileNum, userID, userName, password, UserType.User, logged);
 		this.status = status;
 		this.delays = delays;
-		this.lostBooks = lostBooks;
 	}
 
 	/**
@@ -71,23 +69,6 @@ public class UserAccount extends Account {
 		this.delays = delays;
 	}
 
-	/**
-	 * Gets how many time lost books.
-	 * 
-	 * @return delays
-	 */
-	public int getLostBooks() {
-		return lostBooks;
-	}
-
-	/**
-	 * Instantiates and update the lost Books
-	 * 
-	 * @param lostBooks
-	 */
-	public void setLostBooks(int lostBooks) {
-		this.lostBooks = lostBooks;
-	}
 
 	public void parseArrayIntoAccount(ArrayList<String> accountArray) {
 		this.setID(Integer.parseInt(accountArray.get(0)));
@@ -101,5 +82,6 @@ public class UserAccount extends Account {
 		this.setUserTypeString(accountArray.get(8));
 		this.setStatusString(accountArray.get(9));
 		this.setDelays(Integer.parseInt(accountArray.get(10)));
+		this.setLogged(accountArray.get(11).equals("1") ? true : false);
 	}
 }

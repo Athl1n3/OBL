@@ -3,7 +3,6 @@ package controllers;
 import java.io.File;
 import java.io.IOException;
 
-import client.ClientConnection;
 import entities.Book;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
@@ -20,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AddBookController {
@@ -72,7 +72,7 @@ public class AddBookController {
 	@FXML
 	private TextField txtPath;
 
-	public ClientConnection cc;
+	private Book newBook;
 
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
@@ -85,23 +85,18 @@ public class AddBookController {
 				throw new Exception();
 			}
 
-			Book newBook = new Book(Integer.parseInt(txtBookID.getText()), txtBookName.getText(), txtAuthor.getText(),
+			newBook = new Book(Integer.parseInt(txtBookID.getText()), txtBookName.getText(), txtAuthor.getText(),
 					txtEdition.getText(), Integer.parseInt(txtPrintYear.getText()), txtBookSubject.getText(),
 					txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()), txtTableOfContents.getText(),
-					txtShelf.getText(), Integer.parseInt(txtCopies.getText()), null,  Integer.parseInt(txtCopies.getText()));
+					txtShelf.getText(), Integer.parseInt(txtCopies.getText()), null,
+					Integer.parseInt(txtCopies.getText()));
 
 			DatabaseController.addBook(newBook);
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Succsess");
 			alert.setHeaderText("The book has added successfully");
 			alert.showAndWait();
-
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/ManageLibraryForm.fxml"));
-			Stage stage = new Stage();
-			stage.setScene(new Scene((Parent) loader.load()));
-			stage.show();
-			((Node) event.getSource()).getScene().getWindow().hide();
-
+			((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
 		} catch (Exception e) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error");
@@ -157,11 +152,7 @@ public class AddBookController {
 
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("../gui/ManageLibraryForm.fxml"));
-		Stage stage = new Stage();
-		stage.setScene(new Scene((Parent) loader.load()));
-		stage.show();
-		((Node) event.getSource()).getScene().getWindow().hide();
+		((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
 	}
 
 	/*
@@ -195,16 +186,20 @@ public class AddBookController {
 		btnAddBook.disableProperty().bind(bb);
 
 	}
-	public void start(Stage stage) {
+
+	public void start(Stage primaryStage) {
 		try {
-  			Parent root = FXMLLoader.load(getClass().getResource("../gui/AddBookForm.fxml"));
-  			Scene scene = new Scene(root);
-  			stage.setScene(scene);
-  			stage.setTitle("Add Book Form");
-  			stage.show();
-  		} catch (Exception e) {
-  			e.printStackTrace();
-  		}		
+			Parent root = FXMLLoader.load(getClass().getResource("../gui/AddBookForm.fxml"));
+			Stage stage = new Stage();
+			stage.initOwner(primaryStage);
+			stage.initModality(Modality.WINDOW_MODAL);
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setTitle("Add Book Form");
+			stage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -53,11 +53,11 @@ public class AccountDetailsController implements Initializable {
 	private TextField txtUsername;
 
 	@FXML
-	//private TextField txtVerPassword;
-	private PasswordField  txtVerPassword;
-	
+	// private TextField txtVerPassword;
+	private PasswordField txtVerPassword;
+
 	@FXML
-	//private TextField txtPassword;
+	// private TextField txtPassword;
 	private PasswordField txtPassword;
 
 	@FXML
@@ -69,6 +69,7 @@ public class AccountDetailsController implements Initializable {
 	void btnApplyChangesPressed(ActionEvent event) {
 		Alert msg = new Alert(AlertType.CONFIRMATION, "Are you sure to update user details?", ButtonType.YES,
 				ButtonType.CANCEL);
+
 		if (msg.showAndWait().get() == ButtonType.YES)
 			if (validateInput()) {
 
@@ -80,17 +81,46 @@ public class AccountDetailsController implements Initializable {
 				new Alert(AlertType.INFORMATION, "User details was changes successfully!", ButtonType.OK).show();
 			}
 
+		clearStyles();
+		if (msg.showAndWait().get() == ButtonType.YES) {
+			if (!(loggedAccount.getFirstName().equals(txtFirstName.getText())
+					&& loggedAccount.getLastName().equals(txtLastName.getText())
+					&& loggedAccount.getMobileNum().equals(txtMobileNum.getText())
+					&& loggedAccount.getEmail().equals(txtEmail.getText()))) {
+				if (validateInput()) {
+					loggedAccount.setFirstName(txtFirstName.getText());
+					loggedAccount.setLastName(txtLastName.getText());
+					loggedAccount.setMobileNum(txtMobileNum.getText());
+					loggedAccount.setEmail(txtEmail.getText());
+					DatabaseController.updateAccount(loggedAccount);
+					new Alert(AlertType.INFORMATION, "User details were updated successfully!", ButtonType.OK).show();
+				}
+			} else
+				new Alert(AlertType.WARNING, "No changes detected!\nNo update is needed", ButtonType.OK).show();
+		}
 	}
 
 	@FXML
 	void btnUpdateLoginPressed(ActionEvent event) {
+		boolean flag = false;
 		Alert msg = new Alert(AlertType.CONFIRMATION, "Are you sure to update Login details?", ButtonType.YES,
 				ButtonType.CANCEL);
+		clearStyles();
 		if (msg.showAndWait().get() == ButtonType.YES)
-			if (validatePasswordInput()) {
-				loggedAccount.setPassword(txtPassword.getText());
-				// DatabaseController.LoggedUser(loggedAccount);
-				new Alert(AlertType.INFORMATION, "password changed successfully!", ButtonType.OK).show();
+			if (validateUsernamePasswordInput()) {
+				if (!loggedAccount.getUserName().equals(txtUsername.getText()) && !txtUsername.getText().isEmpty()) {
+					loggedAccount.setUserName(txtUsername.getText());
+					flag = true;
+				}
+				if (!loggedAccount.getPassword().equals(txtPassword.getText()) && !txtPassword.getText().isEmpty()) {
+					loggedAccount.setPassword(txtPassword.getText());
+					flag = true;
+				}
+				if (flag) {
+					DatabaseController.updateAccount(loggedAccount);
+					new Alert(AlertType.INFORMATION, "Login details updated successfully!", ButtonType.OK).show();
+				} else
+					new Alert(AlertType.WARNING, "No changes detected!", ButtonType.OK).show();
 			}
 	}
 
@@ -103,7 +133,7 @@ public class AccountDetailsController implements Initializable {
 	}
 
 	/**
-	 * Initialize the Account details 
+	 * Initialize the Account details
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -127,6 +157,7 @@ public class AccountDetailsController implements Initializable {
 			break;
 		}
 		lblStatus.setText(loggedAccount.getStatus().toString());
+<<<<<<< HEAD
 		*/
 		//disable the btnApplyChanges button until all Textfields are not empty
 		 BooleanBinding booleanBind =txtUserID.textProperty().isEmpty()
@@ -138,6 +169,12 @@ public class AccountDetailsController implements Initializable {
 		
 		
 
+
+		// disable the btnApplyChanges button until all Textfields are not empty
+		BooleanBinding booleanBind = txtFirstName.textProperty().isEmpty().or(txtLastName.textProperty().isEmpty())
+				.or(txtMobileNum.textProperty().isEmpty()).or(txtEmail.textProperty().isEmpty());
+		btnApplyChanges.disableProperty().bind(booleanBind);
+
 		// login details
 		txtUsername.setText(loggedAccount.getUserName());
 		
@@ -148,8 +185,14 @@ public class AccountDetailsController implements Initializable {
 		loggedAccount = new UserAccount();
 		loggedAccount = DatabaseController.loggedAccount.getAccount();
 		
+
+
+		// disable the btnUpdateLogin button until all passwords textfields are not
+		// empty
+		BooleanBinding btnUpdateLoginBind = txtUsername.textProperty().isEmpty();
+		btnUpdateLogin.disableProperty().bind(btnUpdateLoginBind);
 	}
-	
+
 	/**
 	 * Validate updated user data
 	 * 
@@ -157,74 +200,99 @@ public class AccountDetailsController implements Initializable {
 	 */
 	@FXML
 	public boolean validateInput() {
-
 		Alert msg = new Alert(AlertType.ERROR, "", ButtonType.OK);// Prepare alert box
 		msg.setHeaderText("Input Error");
-
-		if ((txtUserID.getText().isEmpty()) || (txtFirstName.getText().isEmpty()) || (txtLastName.getText().isEmpty())
-				|| (txtMobileNum.getText().isEmpty()) || (txtEmail.getText().isEmpty())) {
-			msg.setContentText("Please fill all requested fields!");
-			msg.show();
-			txtEmail.requestFocus();
-			return false;
+		msg.setContentText("One or more of inputs are in an invalid format!");
+		boolean validInput = true;
+		////////////
+		if (!txtFirstName.getText().isEmpty()) {
+			for (char c : txtFirstName.getText().toCharArray())// Parse text field into chars array and validate
+				if (Character.isDigit(c)) {
+					msg.setContentText(msg.getContentText() + "\n*First name must contain letters only!");
+					;
+					txtFirstName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+					validInput = false;
+					break;
+				}
+		} else {
+			msg.setContentText(msg.getContentText() + "\n*First name can't be empty!");
+			txtFirstName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
 		}
-		for (char c : txtFirstName.getText().toCharArray())// Parse text field into chars array and validate
-			if (Character.isDigit(c)) {
-				msg.setContentText("First name must contain letters only!");
-				msg.show();
-				txtFirstName.requestFocus();
-				txtFirstName.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
-				return false;
-			}
-		txtFirstName.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
-		
-		for (char c : txtLastName.getText().toCharArray())// Parse text field into chars array and validate
-			if (Character.isDigit(c)) {
-				msg.setContentText("Last name must contain letters only!");
-				msg.show();
-				txtLastName.requestFocus();
-				txtLastName.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
-				return false;
-			}
-		txtLastName.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
-		
-		for (char c : txtMobileNum.getText().toCharArray())// Parse text field into chars array and validate
-			if (Character.isAlphabetic(c)) {
-				msg.setContentText("Mobile number must contain numbers only!");
-				msg.show();
-				txtMobileNum.requestFocus();
-				txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
-
-				return false;
-			}
-		txtMobileNum.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
-
-		/**
-		 * Validate the inputed email address
-		 * @return Boolean value
-		 */
-		String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
-		java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
-		java.util.regex.Matcher m = p.matcher(txtEmail.getText());
-		if (!m.matches()) {
-			msg.setContentText("Invalid email format!");
-			msg.show();
-			txtEmail.requestFocus();
-			txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
-			return false;
+		////////////
+		if (!txtLastName.getText().isEmpty()) {
+			for (char c : txtLastName.getText().toCharArray())// Parse text field into chars array and validate
+				if (Character.isDigit(c)) {
+					msg.setContentText(msg.getContentText() + "\n*Last name must contain letters only!");
+					txtLastName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+					validInput = false;
+					break;
+				}
+		} else {
+			msg.setContentText(msg.getContentText() + "\n*Last name can't be empty!");
+			txtLastName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
 		}
-   		txtEmail.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		//////////
+		if (!txtMobileNum.getText().isEmpty()) {
+			if (txtMobileNum.getText().length() > 10) {
+				msg.setContentText(msg.getContentText() + "\n*Mobile number must contain 10 digits maximum!");
+				txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				validInput = false;
+			} else {
+				for (char c : txtMobileNum.getText().toCharArray())// Parse text field into chars array and validate
+					if (Character.isAlphabetic(c)) {
+						msg.setContentText(msg.getContentText() + "\n*Mobile number must contain numbers only!");
+						txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+						validInput = false;
+						break;
+					}
+			}
+		} else {
+			msg.setContentText(msg.getContentText() + "\n*Mobile number can't be empty!");
+			txtMobileNum.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
+		}
+		////////////
 
-
-		return true;// If all inputs are valid
+		if (!txtEmail.getText().isEmpty()) {
+			// Validate email format using
+			String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+			java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+			java.util.regex.Matcher m = p.matcher(txtEmail.getText());
+			if (!m.matches()) {
+				msg.setContentText(msg.getContentText() + "\n*Invalid email format!");
+				txtEmail.requestFocus();
+				txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				validInput = false;
+			}
+		} else {
+			msg.setContentText(msg.getContentText() + "\n*Email can't be empty!");
+			txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			validInput = false;
+		}
+		/////////////
+		if (!validInput)
+			msg.show();
+		return validInput;// If all inputs are valid
 
 	}
 
-	boolean validatePasswordInput() {
+	private boolean validateUsernamePasswordInput() {
 		Alert msg = new Alert(AlertType.ERROR, "", ButtonType.OK);// Prepare alert box
 		msg.setHeaderText("Input Error");
-		if (txtPassword.getLength() < 6) {
-			msg.setContentText("Password length must be at least 8 character !");
+		if (txtUsername.getText().isEmpty()) {
+			msg.setContentText("*Username can't be empty!");
+			txtUsername.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			return false;
+		} else if (DatabaseController.ifExists("account", "username", txtUsername.getText())
+				&& !loggedAccount.getUserName().equals(txtUsername.getText())) {
+			msg.setContentText("*Username already exists!");
+			txtUsername.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			return false;
+		}
+		if (txtPassword.getLength() < 6 && !txtPassword.getText().isEmpty()) {
+			msg.setContentText("Password length must be at least 6 character !");
 			msg.show();
 			txtUserID.requestFocus();
 			txtPassword.clear();
@@ -232,16 +300,16 @@ public class AccountDetailsController implements Initializable {
 			return false;
 		}
 
-		if (!txtPassword.getText().equals(txtVerPassword.getText())) {
+		if (!txtPassword.getText().equals(txtVerPassword.getText()) && !txtPassword.getText().isEmpty()) {
 			msg.setContentText("Password are not matching !");
 			msg.show();
 			txtUserID.requestFocus();
-			txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
-			txtVerPassword.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
+			txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			txtVerPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			return false;
 		}
-		txtPassword.setStyle("-fx-border-color: green ; -fx-border-width: 2px ;");
-		txtVerPassword.setStyle("-fx-border-color: green ; -fx-border-width: 2px ;");
+		txtPassword.setStyle("-fx-border-color: green ; -fx-border-width: 1px ;");
+		txtVerPassword.setStyle("-fx-border-color: green ; -fx-border-width: 1px ;");
 
 		// success confirm password
 		return true;
@@ -251,10 +319,20 @@ public class AccountDetailsController implements Initializable {
 		loggedAccount = (UserAccount) acc;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/AccountDetailsForm.fxml"));
 		Scene scene = new Scene(root);
-		primaryStage.setTitle("Userlookup");
+		primaryStage.setTitle("Account Details");
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.show();
+	}
+
+	private void clearStyles() {
+		txtFirstName.setStyle(null);
+		txtLastName.setStyle(null);
+		txtMobileNum.setStyle(null);
+		txtEmail.setStyle(null);
+		txtUsername.setStyle(null);
+		txtPassword.setStyle(null);
+		txtVerPassword.setStyle(null);
 	}
 
 }

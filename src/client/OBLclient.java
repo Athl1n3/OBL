@@ -1,11 +1,13 @@
 package client;
 
-import ocsf.client.*;
-import common.*;
-import entities.Account;
-
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
+
+import common.OBLclientIF;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import ocsf.client.AbstractClient;
 
 /**
  * This class overrides some of the methods defined in the abstract superclass
@@ -33,23 +35,38 @@ public class OBLclient extends AbstractClient {
 		openConnection();
 	}
 
+	Semaphore sem = new Semaphore(0);
+
+	static Alert load = new Alert(AlertType.INFORMATION, "Please wait...\n Loading data from database");
+
 	// Instance methods ************************************************
 	// This method handles all data that comes in from the server.
 	public void handleMessageFromServer(Object msg) {
-		//clientUI.display(msg.toString());	
+		// clientUI.display(msg.toString());
 		clientUI.serverObj(msg);
+		// load.close();
+		sem.release();
+
 	}
 
 	// This method handles all data coming from the UI as arrayList
-	public void handleMessageFromClientUI(Object arr) {
+	public void handleMessageFromClientUI(Object obj) {
 		try {
-			sendToServer(arr);
-		} catch (IOException e) {
+			sendToServer(obj);
+			if (obj instanceof String) {
+				if (((String) obj).startsWith("SELECT"))
+					load.show();
+			} else {
+				if (((ArrayList) obj).get(((ArrayList) obj).size() - 1).toString().startsWith("SELECT"))
+					load.show();
+			}
+			sem.acquire();
+			load.close();
+		} catch (IOException | InterruptedException e) {
 			clientUI.display("Could not send message to server.  Terminating client.");
 			quit();
 		}
 	}
-	
 
 	/**
 	 * This method terminates the client.

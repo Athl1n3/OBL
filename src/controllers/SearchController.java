@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import entities.*;
-import client.ClientConnection;
+
+import entities.Account;
+import entities.Book;
+import entities.UserAccount;
+import entities.UserAccount.accountStatus;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,7 +29,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class SearchController implements Initializable {
@@ -79,12 +81,13 @@ public class SearchController implements Initializable {
 	@FXML
 	private Button btnOrderBook;
 
+	private static Account loggedAccount;
 	ObservableList<String> list;
 	ObservableList<Book> bookList;
-	
 
 	/**
 	 * clear the table contents
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -93,9 +96,10 @@ public class SearchController implements Initializable {
 		tableView.refresh();
 		txtSearch.clear();
 	}
-	
+
 	/**
 	 * make an order for book if there is no available copies
+	 * 
 	 * @param event
 	 */
 	@SuppressWarnings("static-access")
@@ -103,42 +107,46 @@ public class SearchController implements Initializable {
 	void btnOrderBookPressed(ActionEvent event) {
 		try {
 			OrderController orderController = new OrderController();
-			//passing the selected book data to order controller
+			// passing the selected book data to order controller
 			Book selectedBook = tableView.getSelectionModel().getSelectedItem();
-			orderController.start(selectedBook);
-			
-		}catch(NullPointerException e) {
-			showAlert("error","");
+			orderController.start(selectedBook, (UserAccount) loggedAccount);
+
+		} catch (NullPointerException e) {
+			showAlert("error", "");
 		}
 	}
-	
+
 	/**
 	 * search for specific book by its (name,author,subject,description)
+	 * 
 	 * @param event
 	 */
 	@FXML
 	void btnSearchPressed(ActionEvent event) {
 		/*
-		Book newBook = new Book(1, "java", "kasem","First Edition" , 2019, "java programing", "learning java", 20, "thread,javafx,gui", "A12", 10, "Regular", 10);
-		Book newBook2 = new Book(1, "java", "saleh","First Edition" , 2019, "java programing", "learning java", 20, "thread,javafx,gui", "A12", 10, "Regular", 10);
-		Book newBook3 = new Book(1, "java3", "kasem","First Edition" , 2019, "java programing", "learning java", 20, "thread,javafx,gui", "A12", 10, "Regular", 10);
-		DatabaseController.addBook(newBook);
-		DatabaseController.addBook(newBook2);
-		DatabaseController.addBook(newBook3);
-		*/
+		 * Book newBook = new Book(1, "java", "kasem","First Edition" , 2019,
+		 * "java programing", "learning java", 20, "thread,javafx,gui", "A12", 10,
+		 * "Regular", 10); Book newBook2 = new Book(1, "java", "saleh","First Edition" ,
+		 * 2019, "java programing", "learning java", 20, "thread,javafx,gui", "A12", 10,
+		 * "Regular", 10); Book newBook3 = new Book(1, "java3", "kasem","First Edition"
+		 * , 2019, "java programing", "learning java", 20, "thread,javafx,gui", "A12",
+		 * 10, "Regular", 10); DatabaseController.addBook(newBook);
+		 * DatabaseController.addBook(newBook2); DatabaseController.addBook(newBook3);
+		 */
 		String searchBy = cmbSearchBy.getValue();
-		
-		//make a default search by name if the user didn't make a selection from Combo Box  
-		if(searchBy==null) {
+
+		// make a default search by name if the user didn't make a selection from Combo
+		// Box
+		if (searchBy == null) {
 			searchBy = "name";
 			cmbSearchBy.setValue("Name");
 		}
 		ArrayList<Book> arr = DatabaseController.bookSearch(txtSearch.getText(), searchBy);
-		if(!arr.isEmpty()) {
-		bookList = FXCollections.observableArrayList(arr);
-		tableView.setItems(bookList);
-		}else {
-			showAlert("No Match Result For "+txtSearch.getText(),"Please Enter New " + searchBy);
+		if (!arr.isEmpty()) {
+			bookList = FXCollections.observableArrayList(arr);
+			tableView.setItems(bookList);
+		} else {
+			showAlert("No Match Result For " + txtSearch.getText(), "Please Enter New " + searchBy);
 			tableView.getItems().clear();
 			tableView.refresh();
 		}
@@ -150,15 +158,15 @@ public class SearchController implements Initializable {
 
 	}
 
-
 	/**
 	 * return to the previous window
+	 * 
 	 * @param event
 	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
-    	// get the previous scene
+		// get the previous scene
 		Scene scene = SceneController.pop();
 		stage.setScene(scene);
 		stage.setTitle("User Main");
@@ -169,7 +177,7 @@ public class SearchController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		
+
 		bookNameCol.setCellValueFactory(new PropertyValueFactory<Book, String>("name"));
 		editionCol.setCellValueFactory(new PropertyValueFactory<Book, String>("edition"));
 		printYearCol.setCellValueFactory(new PropertyValueFactory<Book, String>("printYear"));
@@ -180,16 +188,25 @@ public class SearchController implements Initializable {
 		shelfCol.setCellValueFactory(new PropertyValueFactory<Book, String>("shelf"));
 
 		setCmbSearchBy();
-		//disable the search button if the search text field is empty!
+		// disable the search button if the search text field is empty!
 		BooleanBinding booleanBind = txtSearch.textProperty().isEmpty();
-	    btnSearch.disableProperty().bind(booleanBind);
-	   // if(!LoggedAccount.logged)
-	    //	btnOrderBook.setDisable(true);
+		btnSearch.disableProperty().bind(booleanBind);
+		if (loggedAccount instanceof UserAccount && loggedAccount != null) {
+			if (((UserAccount) loggedAccount).getStatus().equals(accountStatus.Suspended))
+				btnOrderBook.setDisable(true);
+		} else
+			btnOrderBook.setVisible(false);
 	}
 
-	public void start(Stage stage) {
-		openNewForm("../gui/SearchForm.fxml", "Search Form");
-
+	public void start(Stage primaryStage, Account loggedAccount) throws IOException {
+		this.loggedAccount = loggedAccount;
+		Parent root = FXMLLoader.load(getClass().getResource("../gui/SearchForm.fxml"));
+		Scene scene = new Scene(root);
+		primaryStage.setTitle("Search");
+		primaryStage.setScene(scene);
+		primaryStage.setResizable(false);
+		primaryStage.show();
+		// openNewForm("../gui/SearchForm.fxml", "Search Form");
 	}
 
 	/**
@@ -205,25 +222,23 @@ public class SearchController implements Initializable {
 		cmbSearchBy.setItems(list);
 
 	}
-	
+
 	public void showAlert(String header, String content) {
-		Alert alert = new Alert(AlertType.ERROR,content);
+		Alert alert = new Alert(AlertType.ERROR, content);
 		alert.setHeaderText(header);
 		alert.show();
 	}
-	
+
 	public void openNewForm(String resource, String title) {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource(resource));
 			Stage stage = new Stage();
-  			Scene scene = new Scene(root);
-  			stage.setScene(scene);
-  			stage.setTitle(title);
-  			stage.show();
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setTitle(title);
+			stage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 }
-
-
