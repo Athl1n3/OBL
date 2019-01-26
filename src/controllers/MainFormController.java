@@ -47,7 +47,7 @@ public class MainFormController {
 		SceneController.push(scene);
 		SearchController SearchForm = new SearchController();
 		try {
-			SearchForm.start(stage);
+			SearchForm.start(stage,null);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

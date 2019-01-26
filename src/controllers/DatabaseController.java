@@ -1,7 +1,12 @@
 package controllers;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 import client.ClientConnection;
 import entities.Account;
@@ -12,6 +17,7 @@ import entities.BookCopy;
 import entities.LentBook;
 import entities.LibrarianAccount;
 import entities.ManagerAccount;
+import entities.Notification;
 import entities.UserAccount;
 import entities.UserActivity;
 
@@ -430,19 +436,57 @@ public class DatabaseController {
 	 * @return ArrayList<UserActivity>
 	 */
 	public static ArrayList<UserActivity> getUserActivity(int AccountID) {
-		clientConnection.executeQuery("SELECT * FROM useractivity WHERE userID = '" + AccountID + "';");
+		clientConnection.executeQuery("SELECT userid, activityName, date FROM useractivity WHERE userID = '" + AccountID + "';");
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<UserActivity> activityList = new ArrayList<UserActivity>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		while (res.size() != 0) {
-			UserActivity activity = new UserActivity(Integer.parseInt(res.get(0)), res.get(1),
-					LocalDate.parse(res.get(2)));
-			res.subList(0, 3).clear();
-			activityList.add(activity);
+			try {
+				Date parsedDate = dateFormat.parse(res.get(2));
+				UserActivity activity = new UserActivity(Integer.parseInt(res.get(0)), res.get(1),
+						new Timestamp(parsedDate.getTime()));
+				res.subList(0, 3).clear();
+				activityList.add(activity);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
 		return activityList;
 	}
-
+	
+	
+	/**
+	 * return user activity list from DB
+	 * 
+	 * @param AccountID
+	 * @return ArrayList<Notification>
+	 */
+	public static ArrayList<Notification> getNotifications(int AccountID) {
+		if (AccountID != 1 && AccountID != 2)
+			clientConnection
+					.executeQuery("SELECT userID, date, message FROM notification WHERE userID = '" + AccountID + "';");
+		else if(AccountID == 1)
+			clientConnection.executeQuery("SELECT userID, date, message FROM notification WHERE userType = 'Manager' OR userType='Librarian';");
+		else
+			clientConnection.executeQuery("SELECT userID, date, message FROM notification WHERE userType = 'Librarian';");
+		ArrayList<String> res = clientConnection.getList();
+		ArrayList<Notification> notificationsList = new ArrayList<Notification>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		while (res.size() != 0) {
+			try {
+				Date parsedDate = dateFormat.parse(res.get(1));
+				Notification notification = new Notification(Integer.parseInt(res.get(0)),
+						new Timestamp(parsedDate.getTime()), res.get(2));
+				res.subList(0, 3).clear();
+				notificationsList.add(notification);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return notificationsList;
+	}
 	public static void InitiateClient(ClientConnection newClientConnection) {
 		clientConnection = newClientConnection;
 	}

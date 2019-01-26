@@ -211,7 +211,7 @@ public class SearchController implements Initializable {
 			btnOrderBook.setVisible(false);
 	}
 
-	public void start(Stage primaryStage) throws IOException {
+	public void start(Stage primaryStage, Account account) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/SearchForm.fxml"));
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Search");
