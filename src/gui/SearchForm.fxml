@@ -111,7 +111,7 @@
                         <Button fx:id="btnOrderBook" mnemonicParsing="false" onAction="#btnOrderBookPressed" text="Order Book" />
                      </children>
                   </GridPane>
-                  <TableView fx:id="tableView" onContextMenuRequested="#activateOrderBookButton" prefHeight="200.0" prefWidth="200.0">
+                  <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0">
                     <columns>
                       <TableColumn fx:id="bookNameCol" prefWidth="97.66665649414062" text="Book Name" />
                       <TableColumn fx:id="editionCol" prefWidth="66.33334350585938" text="Edition" />

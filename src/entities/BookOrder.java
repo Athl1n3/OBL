@@ -1,16 +1,20 @@
 package entities;
 
+import java.sql.Timestamp;
+
 public class BookOrder {
 	
 	private int orderID;
 	private int userID;
 	private int bookID;
+	private Timestamp orderDate;
 	
-	public BookOrder(int orderID, int userID, int bookID) {
+	public BookOrder(int orderID, int userID, int bookID, Timestamp orderDate) {
 		super();
 		this.orderID = orderID;
 		this.userID = userID;
 		this.bookID = bookID;
+		this.orderDate = orderDate;
 	}
 
 	
@@ -59,6 +63,24 @@ public class BookOrder {
 	 */
 	public void setBookID(int bookID) {
 		this.bookID = bookID;
+	}
+
+
+	/**
+	 * get order date
+	 * @return	Timestamp
+	 */
+	public Timestamp getOrderDate() {
+		return orderDate;
+	}
+
+
+	/**
+	 * set order date
+	 * @param orderDate
+	 */
+	public void setOrderDate(Timestamp orderDate) {
+		this.orderDate = orderDate;
 	}
 	
 	

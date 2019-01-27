@@ -2,21 +2,29 @@ package controllers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import entities.Book;
+import entities.BookOrder;
 import entities.UserAccount;
+import entities.UserAccount.accountStatus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -60,7 +68,23 @@ public class OrderController implements Initializable {
 
 	@FXML
 	void btnPlaceOrderPressed(ActionEvent event) {
-		
+		//check if the user status is Active
+		if (!((UserAccount) DatabaseController.loggedAccount).getStatus().equals(accountStatus.Active)) {
+			//show alert and exit
+			showAlert("Error!!!", "You Can't make an order since your acount is Suspended.", event);
+		}
+		//check if the user is already make an order for this book
+		if (DatabaseController.checkExistingOrder(DatabaseController.loggedAccount.getID(), orderedBook.getBookID())) {
+			//show alert and exit
+			showAlert("Warning!!!", "You have already placed an order for this book", event);
+		} else {
+			Timestamp now = new Timestamp(new Date().getTime());
+			BookOrder order = new BookOrder(DatabaseController.getLatestOrderID() + 1,
+					DatabaseController.loggedAccount.getID(), orderedBook.getBookID(), now);
+			DatabaseController.placeOrder(order);
+			//show alert and exit
+			showAlert("Order Placed Successfully", "book: " + orderedBook.getName() + "\nOrdered By: "
+					+ DatabaseController.loggedAccount.getID() + "\nOrder Date: " + now, event);		}
 	}
 
 	@FXML
@@ -99,5 +123,19 @@ public class OrderController implements Initializable {
 		dtOrderDate.setValue(LocalDate.now());
 		txtUserID.setText(String.valueOf(DatabaseController.loggedAccount.getID()));
 		txtName.setText(DatabaseController.loggedAccount.getFullName());
+		if (((UserAccount) DatabaseController.loggedAccount).getStatus() == accountStatus.Active) {
+			lblStatus.setText("Active");
+		} else if (((UserAccount) DatabaseController.loggedAccount).getStatus().equals(accountStatus.Suspended)) {
+			lblStatus.setText("Suspended");
+		} else
+			lblStatus.setText("Locked");
 	}
+
+	public void showAlert(String header, String content, ActionEvent event) {
+		Alert alert = new Alert(AlertType.INFORMATION,content,ButtonType.OK);
+		alert.setHeaderText(header);
+		if (alert.showAndWait().get() == ButtonType.OK)
+			((Node) event.getSource()).getScene().getWindow().hide();
+	}
+
 }

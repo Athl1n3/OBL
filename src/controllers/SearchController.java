@@ -187,7 +187,7 @@ public class SearchController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-
+		btnOrderBook.setVisible(false);
 		bookNameCol.setCellValueFactory(new PropertyValueFactory<Book, String>("name"));
 		editionCol.setCellValueFactory(new PropertyValueFactory<Book, String>("edition"));
 		printYearCol.setCellValueFactory(new PropertyValueFactory<Book, String>("printYear"));
@@ -204,11 +204,8 @@ public class SearchController implements Initializable {
 		//disable btnOrderBook until selecting row from the table
 		btnOrderBook.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 		
-		if (DatabaseController.loggedAccount instanceof UserAccount && DatabaseController.loggedAccount != null) {
-			if (((UserAccount) DatabaseController.loggedAccount).getStatus().equals(accountStatus.Suspended))
-				btnOrderBook.setDisable(true);
-		} else
-			btnOrderBook.setVisible(false);
+		if (DatabaseController.loggedAccount instanceof UserAccount && DatabaseController.loggedAccount != null)
+			btnOrderBook.setVisible(true);
 	}
 
 	public void start(Stage primaryStage, Account account) throws IOException {
