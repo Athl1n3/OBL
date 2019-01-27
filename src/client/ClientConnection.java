@@ -39,33 +39,33 @@ public class ClientConnection implements OBLclientIF {
 		}
 	}
 
-	public void executeQuery(ArrayList<String> arr) {
-		client.handleMessageFromClientUI(arr);
+	public void executeQuery(Object obj) {
+		client.handleMessageFromClientUI(obj);
 	}
 
-	public void executeQuery(String str) {
-		client.handleMessageFromClientUI(str);
+	/**
+	 * This method was built only for testing purposes (External system sends a
+	 * graduation note with graduated student ID to OBL server)
+	 */
+	public void graduateStudent(Integer studentID) {
+		client.handleMessageFromClientUI(studentID);
 	}
 
 	// **************************************//
 	private Object obj;
 
+	@Override
 	public void serverObj(Object obj) {
 		System.out.println("> Object received from server.");
-		System.out.println((ArrayList<String>) obj);
+		System.out.println(obj);
 		this.obj = obj;
 	}
 
 	public Object getObject() {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return this.obj;
 	}
 
+	@SuppressWarnings("unchecked")
 	public ArrayList<String> getList() {
 		return (ArrayList<String>) this.obj;
 	}
@@ -76,6 +76,7 @@ public class ClientConnection implements OBLclientIF {
 	 *
 	 * @param message The string to be displayed.
 	 */
+	@Override
 	public void display(String message) {
 		System.out.println("> " + message);
 	}

@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 
 import entities.Book;
+import entities.Book.bookType;
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +17,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -72,48 +77,44 @@ public class AddBookController {
 	@FXML
 	private TextField txtPath;
 
+	@FXML
+	private ComboBox<String> bookTypeCB;
+
 	private Book newBook;
 
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
-
-		try {
-			if (!(txtBookID.getText().matches("[0-9]+") && txtPrintYear.getText().matches("[0-9]+")
-					&& txtCatalog.getText().matches("[0-9]+") && txtEdition.getText().matches("[0-9]+")
-					&& txtCopies.getText().matches("[0-9]+"))) {
-
-				throw new Exception();
-			}
-
+		boolean input;
+		input = validateInput();
+		
+		if (input == true) {
 			newBook = new Book(Integer.parseInt(txtBookID.getText()), txtBookName.getText(), txtAuthor.getText(),
 					txtEdition.getText(), Integer.parseInt(txtPrintYear.getText()), txtBookSubject.getText(),
 					txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()), txtTableOfContents.getText(),
-					txtShelf.getText(), Integer.parseInt(txtCopies.getText()), null,
+					txtShelf.getText(), Integer.parseInt(txtCopies.getText()),
+					bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()),
 					Integer.parseInt(txtCopies.getText()));
+			System.out.println(newBook.getBookID());
 
-			DatabaseController.addBook(newBook);
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Succsess");
-			alert.setHeaderText("The book has added successfully");
-			alert.showAndWait();
-			((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
-		} catch (Exception e) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("The following fields must contain Numbers only ");
-			alert.setContentText("ID \nPrint year \nCatalog \nCopies");
-			alert.showAndWait();
+			//check if this id exist 
+			if ((DatabaseController.getBook(newBook.getBookID())) == null) {
+				DatabaseController.addBook(newBook);
+				System.out.println("Ddd");
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Succsess");
+				alert.setHeaderText("The book has been added successfully");
+				alert.showAndWait();
+				((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
+
+			} else {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("ERROR");
+				alert.setHeaderText("This book ID is exist");
+				alert.showAndWait();
+
+			}
+
 		}
-
-		/*
-		 * needs DB try {
-		 * 
-		 * if(Integer.parseInt(txtBookID.getText()) is exist in db){ throw new
-		 * Exception(); } catch(Exception e) { Alert alert = new
-		 * Alert(AlertType.INFORMATION); alert.setTitle("Error");
-		 * alert.setHeaderText("this id is exist");
-		 * alert.setContentText("please enter a new id "); alert.showAndWait(); } }
-		 */
 
 	}
 
@@ -131,7 +132,7 @@ public class AddBookController {
 		}
 	}
 
-	/*
+	/**
 	 * this method clears all the data in the fields when clear button clicked
 	 */
 	@FXML
@@ -155,12 +156,16 @@ public class AddBookController {
 		((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
 	}
 
-	/*
-	 * initialize "add button to disable until fill all the fields in the form
+	/**
+	 * initialize the relevant fields and disable "Add book button" until fill all
+	 * the fields
 	 */
 	@FXML
 	void initialize() {
+
 		btnAddBook.setDisable(true);
+		ObservableList<String> options = FXCollections.observableArrayList("Wanted", "Regular");
+		bookTypeCB.getItems().addAll(options);
 
 		BooleanBinding bb = new BooleanBinding() {
 			{
@@ -184,6 +189,7 @@ public class AddBookController {
 
 		// Enable "add book button" after fill all the fields
 		btnAddBook.disableProperty().bind(bb);
+		bookTypeCB.getSelectionModel().select(1);
 
 	}
 
@@ -202,4 +208,92 @@ public class AddBookController {
 		}
 	}
 
+	/**
+	 * Validate updated user data
+	 * 
+	 * @return true in case of a valid input
+	 */
+	@FXML
+	public boolean validateInput() {
+
+		// initialize the text fields to the original color
+		txtBookName.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		txtAuthor.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		txtBookID.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		txtEdition.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		txtTableOfContents.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		txtPrintYear.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		txtBookSubject.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		txtCatalog.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		txtCopies.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		txtShelf.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		txtDescirption.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+
+		Alert msg = new Alert(AlertType.ERROR, "", ButtonType.OK);// Prepare alert box
+		msg.setHeaderText("Input Error");
+		String errorMsg = "";
+
+		/**
+		 * validate input for all relevant text fields
+		 */
+
+		for (char c : txtBookID.getText().toCharArray())// Parse text field into chars array and validate
+			if (!Character.isDigit(c)) {
+				errorMsg += "Book ID number must contain numbers only!\n";
+				txtBookID.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				break;
+			}
+
+		for (char c : txtAuthor.getText().toCharArray())// Parse text field into chars array and validate
+			if (!Character.isAlphabetic(c)) {
+				errorMsg += "Author name must contain letters only!\n";
+				txtAuthor.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				break;
+			}
+
+		for (char c : txtEdition.getText().toCharArray())// Parse text field into chars array and validate
+			if (!Character.isDigit(c)) {
+				errorMsg += "Book edition must contain numbers only!\n";
+				txtEdition.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				break;
+			}
+
+		for (char c : txtBookSubject.getText().toCharArray())// Parse text field into chars array and validate
+			if (!Character.isAlphabetic(c)) {
+				errorMsg += "Book subject must contain letters only!\n";
+				txtBookSubject.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				break;
+
+			}
+
+		for (char c : txtCatalog.getText().toCharArray())// Parse text field into chars array and validate
+			if (!Character.isDigit(c)) {
+				errorMsg += "Book Catalog number must contain numbers only!\n";
+				txtCatalog.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				break;
+			}
+
+		for (char c : txtCopies.getText().toCharArray())// Parse text field into chars array and validate
+			if (!Character.isDigit(c)) {
+				errorMsg += "Copies number must contain numbers only!\n";
+				txtCopies.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				break;
+			}
+		for (char c : txtPrintYear.getText().toCharArray())// Parse text field into chars array and validate
+			if (!Character.isDigit(c)) {
+				errorMsg += "Year must contain numbers only!\n";
+				txtPrintYear.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				break;
+			}
+
+		// if errorMsg is empty all the text fields input is correct
+		if (!(errorMsg.equals(""))) {
+			msg.setContentText(errorMsg);
+			msg.show();
+			return false;
+		}
+
+		return true;
+
+	}
 }

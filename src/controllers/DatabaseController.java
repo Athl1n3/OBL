@@ -9,8 +9,18 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import client.ClientConnection;
-import entities.*;
+import entities.Account;
+import entities.Archive;
+import entities.Book;
 import entities.Book.bookType;
+import entities.BookCopy;
+import entities.BookOrder;
+import entities.LentBook;
+import entities.LibrarianAccount;
+import entities.ManagerAccount;
+import entities.Notification;
+import entities.UserAccount;
+import entities.UserActivity;
 
 public class DatabaseController {
 
@@ -97,6 +107,18 @@ public class DatabaseController {
 	}
 
 	/**
+	 * Lock user account
+	 * 
+	 * @param userAccount
+	 */
+	public static boolean lockAccount(int accountID) {
+		String query = "UPDATE account SET status = 'Locked' WHERE userID = '" + accountID + "';";
+		clientConnection.executeQuery(query);
+		clientConnection.getObject();
+		return (Boolean)clientConnection.getObject();
+	}
+
+	/**
 	 * update user's delays
 	 * 
 	 * @param userAccount
@@ -124,6 +146,7 @@ public class DatabaseController {
 		} else
 			return null;
 	}
+
 	/**
 	 * finds the account in DB according to user id and returned it, if the account
 	 * doesn't exists then return null
@@ -315,7 +338,7 @@ public class DatabaseController {
 	 * 
 	 * @param book
 	 */
-	public static void updateBookAvailableCopies(Book book,int val) {
+	public static void updateBookAvailableCopies(Book book, int val) {
 		clientConnection.executeQuery("UPDATE Book SET availableCopies = '" + (book.getAvailableCopies() + val)
 				+ "' WHERE BookID = '" + book.getBookID() + "';");
 	}
@@ -337,9 +360,10 @@ public class DatabaseController {
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 	}
-	
+
 	public static void deleteLendBook(int accountID, int bookID) {
-		clientConnection.executeQuery("DELETE FROM LentBook WHERE userID = '" + accountID + "' AND bookID = '" + bookID + "';");
+		clientConnection
+				.executeQuery("DELETE FROM LentBook WHERE userID = '" + accountID + "' AND bookID = '" + bookID + "';");
 	}
 
 	/**
@@ -364,8 +388,8 @@ public class DatabaseController {
 	}
 
 	public static LentBook getLentBook(int userID, int bookID) {
-		clientConnection.executeQuery("SELECT * FROM LentBook WHERE userID  = '"+ userID
-				+ "' AND bookID = '" + bookID + "';");
+		clientConnection
+				.executeQuery("SELECT * FROM LentBook WHERE userID  = '" + userID + "' AND bookID = '" + bookID + "';");
 		ArrayList<String> res = clientConnection.getList();
 		LentBook lentBook;
 		if (!res.isEmpty()) {
@@ -466,7 +490,6 @@ public class DatabaseController {
 			return Integer.parseInt(clientConnection.getList().get(0));
 		else
 			return 0;
-
 	}
 
 	public static boolean checkExistingOrder(int userID, int bookID) {
@@ -527,30 +550,31 @@ public class DatabaseController {
 	}
 
 	/**
-	 * return user activity list from DB
+	 * return user notifications list from DB
 	 * 
 	 * @param AccountID
 	 * @return ArrayList<Notification>
 	 */
 	public static ArrayList<Notification> getNotifications(int AccountID) {
 		if (AccountID != 1 && AccountID != 2)
-			clientConnection
-					.executeQuery("SELECT userID, date, message FROM notification WHERE userID = '" + AccountID + "';");
+			clientConnection.executeQuery(
+					"SELECT notificationNum, userID, date, message, messageType FROM notification WHERE userID = '"
+							+ AccountID + "';");
 		else if (AccountID == 1)
 			clientConnection.executeQuery(
-					"SELECT userID, date, message FROM notification WHERE userType = 'Manager' OR userType='Librarian';");
+					"SELECT notificationNum, userID, date, message, messageType FROM notification WHERE userType = 'Manager' OR userType='Librarian';");
 		else
-			clientConnection
-					.executeQuery("SELECT userID, date, message FROM notification WHERE userType = 'Librarian';");
+			clientConnection.executeQuery(
+					"SELECT notificationNum, userID, date, message, messageType FROM notification WHERE userType = 'Librarian';");
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<Notification> notificationsList = new ArrayList<Notification>();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		while (res.size() != 0) {
 			try {
-				Date parsedDate = dateFormat.parse(res.get(1));
-				Notification notification = new Notification(Integer.parseInt(res.get(0)),
-						new Timestamp(parsedDate.getTime()), res.get(2));
-				res.subList(0, 3).clear();
+				Date parsedDate = dateFormat.parse(res.get(2));
+				Notification notification = new Notification(Integer.parseInt(res.get(0)), Integer.parseInt(res.get(1)),
+						new Timestamp(parsedDate.getTime()), res.get(3), res.get(4));
+				res.subList(0, 5).clear();
 				notificationsList.add(notification);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -560,12 +584,45 @@ public class DatabaseController {
 		return notificationsList;
 	}
 
+	/**
+	 * Delete notification from database
+	 * 
+	 * @param delNotf
+	 */
+	public static void deleteNotfication(Notification delNotf) {
+		clientConnection.executeQuery(
+				"DELETE FROM notification WHERE notificationNum = '" + delNotf.getNotificationNum() + "';");
+	}
+
+	/**
+	 * Initiate a new client connection to the server
+	 * 
+	 * @param newClientConnection
+	 */
 	public static void InitiateClient(ClientConnection newClientConnection) {
 		clientConnection = newClientConnection;
 	}
 
+	/**
+	 * Shutdown client server connection when primary stage closes and logout logged in account
+	 */
 	public static void terminateClient() {
+		if(loggedAccount != null)
+		{
+			loggedAccount.setLogged(false);
+			logAccount(loggedAccount);
+			System.out.println("Logging user out");
+		}
 		clientConnection.terminate();
 	}
 
+	/**
+	 * This method was built only for testing purposes (External system sends a
+	 * graduation note with graduated student ID to OBL server)
+	 * 
+	 * @param accountID
+	 */
+	public static void graduateStudent(Integer studentID) {
+		clientConnection.graduateStudent(studentID);
+	}
 }

@@ -15,8 +15,11 @@ import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.Mailer;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.simplejavamail.mailer.config.TransportStrategy;
+
 /**
- * Library threading services that keep track of user late returns and send emails to notify users for book returns
+ * Library threading services that keep track of user late returns and send
+ * emails to notify users for book returns
+ * 
  * @author Adam Mahameed
  * @version 1.2
  * @category LibraryServices
@@ -24,17 +27,55 @@ import org.simplejavamail.mailer.config.TransportStrategy;
 
 public class LibraryServices {
 	Mailer mailConnection;
-	MySQLConnection dbCon;
+	static MySQLConnection dbCon;
 
 	public LibraryServices(MySQLConnection dbCon) {
-		this.dbCon = dbCon;
-		//emailService();// Initiate book returns email service
-		lateReturnsService();//Initiate late returns service
-		
+		initMailConnection();
+		LibraryServices.dbCon = dbCon;
+		// emailService();// Initiate book returns email service
+		// lateReturnsService();//Initiate late returns service
+	}
+
+	@SuppressWarnings("unchecked")
+	public void graduateStudent(int studentID) {
+		int accountID = Integer.parseInt(((ArrayList<String>) dbCon
+				.executeSelectQuery("SELECT userID FROM account WHERE ID = '" + studentID + "';")).get(0));
+		ArrayList<String> lentReturns = (ArrayList<String>) dbCon
+				.executeSelectQuery("SELECT bookID FROM lentbook WHERE returned = 0 AND userID = '" + accountID + "';");
+		ArrayList<String> lenderData = ((ArrayList<String>) dbCon.executeSelectQuery(
+				"SELECT firstName,lastName,eMail FROM account WHERE userID = '" + accountID + "';"));
+		String firstName = lenderData.get(0);
+		String lastName = lenderData.get(1);
+		String eMail = lenderData.get(2);
+
+		if (lentReturns.size() == 0) {
+			dbCon.executeQuery(
+					"UPDATE account SET status = 'Locked' , graduate = '1' WHERE userID = '" + accountID + "';");
+			sendEmail(eMail, "Library Lent Books Return Due Graduation", "Hello" + firstName + " " + lastName
+					+ "\nCongratulations for your graduation\n Your library account period has expired and your library account has been locked!");
+			System.out.println("Email has been sent graduate student ID:" + accountID + " => " + eMail
+					+ " notifying that his account has been locked!");
+		} else {
+			dbCon.executeQuery(
+					"UPDATE account SET status = 'Suspended' , graduate = '1' WHERE userID = '" + accountID + "';");
+
+			ArrayList<String> lentBooks = new ArrayList<>();
+			for (int i = 0; i < lentReturns.size(); i++) {
+				lentBooks.add(lentReturns.get(i).concat("-" + ((ArrayList<String>) dbCon
+						.executeSelectQuery("SELECT name FROM book WHERE bookID = '" + lentReturns.get(i) + "';"))
+								.get(0)));
+				lentBooks.add("\n");
+			}
+			sendEmail(eMail, "Library Lent Books Return Due Graduation", "Hello " + firstName + " " + lastName
+					+ "\nCongratulations for your graduation\nYour library account period has expired and has been suspended.\nBut we can see you have a list of lent books that should be returned, please return the following books\n"
+					+ lentBooks.toString().substring(1, lentBooks.toString().length() - 1));
+			System.out.println("Email has been sent graduate student ID:" + accountID + " => " + eMail
+					+ " to return all lent books");
+		}
 	}
 
 	/**
-	 * Email scheduled task to run every 24 hours 
+	 * Email scheduled task to run every 24 hours
 	 */
 	private void emailService() {
 		initMailConnection();
@@ -42,12 +83,13 @@ public class LibraryServices {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
-				ArrayList<String> lentReturns = (ArrayList<String>) dbCon.executeSelectQuery(
-						"SELECT userID, bookID FROM lentbook WHERE dueDate = '" + LocalDate.now().plusDays(1) + "' AND returned = 0;");
+				ArrayList<String> lentReturns = (ArrayList<String>) dbCon
+						.executeSelectQuery("SELECT userID, bookID FROM lentbook WHERE dueDate = '"
+								+ LocalDate.now().plusDays(1) + "' AND returned = 0;");
 				for (int i = 0; i < lentReturns.size(); i++) {
-					ArrayList<String> lenderData = ((ArrayList<String>) dbCon.executeSelectQuery(
-							"SELECT firstName,lastName,eMail FROM account WHERE userID = '" + lentReturns.get(i)
-									+ "';"));
+					ArrayList<String> lenderData = ((ArrayList<String>) dbCon
+							.executeSelectQuery("SELECT firstName,lastName,eMail FROM account WHERE userID = '"
+									+ lentReturns.get(i) + "';"));
 					String eMail = lenderData.get(2);
 					String firstName = lenderData.get(0);
 					String lastName = lenderData.get(1);
@@ -55,8 +97,8 @@ public class LibraryServices {
 					String bookName = ((ArrayList<String>) dbCon
 							.executeSelectQuery("SELECT name FROM book WHERE bookID = '" + lentReturns.get(i) + "';"))
 									.get(0);
-					sendEmail(eMail, "Lent Book Return", "Hello "+firstName +" "+ lastName+"\nYour lent book '" + bookName
-							+ "' has to be returned until tomorrow " + LocalDate.now().plusDays(1));
+					sendEmail(eMail, "Lent Book Return", "Hello " + firstName + " " + lastName + "\nYour lent book '"
+							+ bookName + "' has to be returned by tomorrow " + LocalDate.now().plusDays(1));
 					System.out.println("Email has been sent => " + eMail + " to return '" + bookName + "'");
 				}
 				if (lentReturns.size() == 0) {
@@ -68,29 +110,36 @@ public class LibraryServices {
 		returnMailsTimer.schedule(returnsMailsTask, TimeUnit.SECONDS.toMillis(10), TimeUnit.DAYS.toMillis(1));
 	}
 
-	/** 
-	 * Checks database for books late returns (books that should have been returned yesterday) once every 24 hours
+	/**
+	 * Checks database for books late returns (books that should have been returned
+	 * yesterday) once every 24 hours
 	 */
 	private void lateReturnsService() {
 		TimerTask lateReturnsTask = new TimerTask() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
+				// Get books that should have been returned yesterday
 				ArrayList<String> lateReturns = (ArrayList<String>) dbCon.executeSelectQuery(
-						"SELECT userID, bookID FROM lentbook WHERE dueDate = '" + LocalDate.now().minusDays(1) + "';");//Get books that should have been returned yesterday
+						"SELECT userID, bookID FROM lentbook WHERE dueDate = '" + LocalDate.now().minusDays(1) + "';");
 				for (int i = 0; i < lateReturns.size(); i++) {
-					dbCon.executeQuery(
-							"UPDATE account SET delays = delays + 1, status = 'Suspended' WHERE userID = '" + lateReturns.get(i) + "';");//Increment return delay by 1 for this user
-					
+					// Increment return delay by 1 for this user
+					dbCon.executeQuery("UPDATE account SET delays = delays + 1, status = 'Suspended' WHERE userID = '"
+							+ lateReturns.get(i) + "';");
+
+					// If user has got 3 delays notify manager
 					if (((ArrayList<String>) dbCon.executeQuery("SELECT EXISTS(SELECT * FROM account WHERE userID = '"
-							+ lateReturns.get(i) + "' AND delays = 3);")).get(0).equals("0") ? false : true) {//If user has got 3 delays notify manager
+							+ lateReturns.get(i) + "' AND delays = 3);")).get(0).equals("0") ? false : true) {
+						// get time stamp for notification
 						Calendar calendar = Calendar.getInstance();
-						java.sql.Timestamp notificationTimeStamp = new java.sql.Timestamp(calendar.getTime().getTime());//get time stamp for notification
+						java.sql.Timestamp notificationTimeStamp = new java.sql.Timestamp(calendar.getTime().getTime());
+						// Manager notification message
 						dbCon.executeQuery("INSERT INTO notification(date, message, usertype)VALUES ('"
 								+ notificationTimeStamp + "','User ID: " + lateReturns.get(i)
-								+ " has 3 return delays account lock approval is required','Manager')");//Manager notification message
+								+ " has 3 return delays account lock approval is required','Manager')");
 					}
-					dbCon.executeQuery("UPDATE lentbook SET late = 1 WHERE bookID = '" + lateReturns.get(i+1) + "' AND userID = '" + lateReturns.get(i) +"';");
+					dbCon.executeQuery("UPDATE lentbook SET late = 1 WHERE bookID = '" + lateReturns.get(i + 1)
+							+ "' AND userID = '" + lateReturns.get(i) + "';");
 					i++;
 				}
 				if (lateReturns.size() == 0) {
@@ -102,21 +151,8 @@ public class LibraryServices {
 		lateReturnsTimer.schedule(lateReturnsTask, TimeUnit.SECONDS.toMillis(70), TimeUnit.DAYS.toMillis(1));
 	}
 
-	/*
-	 * private final ScheduledExecutorService scheduler =
-	 * Executors.newScheduledThreadPool(1);
-	 * 
-	 * public void beepForAnHour() { final Runnable beeper = new Runnable() {
-	 * 
-	 * @Override public void run() { System.out.println("beep"); } }; final
-	 * ScheduledFuture<?> beeperHandle = scheduler.scheduleAtFixedRate(beeper, 10,
-	 * 10, SECONDS); scheduler.schedule(new Runnable() {
-	 * 
-	 * @Override public void run() { beeperHandle.cancel(true); } }, 60 * 60,
-	 * SECONDS); }
-	 */
 //smtp-mail.outlook.com	obl-project@outlook.com		adam@braude
-	
+
 	/**
 	 * Initiate mailing service over SMT protocol via TLS@587
 	 */

@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
@@ -16,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="425.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditBookController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditBookController">
    <children>
       <BorderPane prefHeight="430.0" prefWidth="400.0">
          <left>
@@ -70,37 +71,20 @@
                </children>
             </Pane>
          </top>
-         <bottom>
-            <GridPane prefHeight="50.0" prefWidth="540.0" BorderPane.alignment="CENTER">
-               <columnConstraints>
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints maxHeight="72.0" minHeight="8.0" prefHeight="31.0" />
-                  <RowConstraints maxHeight="100.0" minHeight="10.0" prefHeight="63.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <Button fx:id="btnEditBook" mnemonicParsing="false" onAction="#btnEditBookPressed" prefHeight="32.0" prefWidth="150.0" text="Edit book information" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets right="30.0" />
-                     </GridPane.margin>
-                  </Button>
-                  <Separator prefWidth="200.0" />
-               </children>
-            </GridPane>
-         </bottom>
          <right>
             <GridPane prefHeight="334.0" prefWidth="271.0" BorderPane.alignment="CENTER">
                <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="85.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="218.0" minWidth="10.0" prefWidth="186.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="96.0000244140625" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="218.0" minWidth="10.0" prefWidth="175.9999755859375" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="52.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="57.0" minHeight="10.0" prefHeight="57.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="77.0" minHeight="10.0" prefHeight="33.0" valignment="TOP" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="124.0" minHeight="10.0" prefHeight="124.0" valignment="TOP" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="77.0" minHeight="10.0" prefHeight="51.599999999999994" valignment="TOP" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="159.0" minHeight="10.0" prefHeight="56.400000000000006" valignment="TOP" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="130.79998779296875" minHeight="10.0" prefHeight="72.20001220703125" valignment="TOP" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="124.0" minHeight="10.0" prefHeight="41.79998779296875" valignment="TOP" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
                   <Label text="Catalog:" />
@@ -139,12 +123,33 @@
                         <Insets top="3.0" />
                      </GridPane.margin>
                   </TextField>
+                  <Label text="Table of Contents" GridPane.rowIndex="5" />
+                  <Label prefHeight="27.0" prefWidth="82.0" text="Book type" GridPane.rowIndex="6" />
+                  <ChoiceBox fx:id="bookTypeCB" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <TextArea fx:id="txtTableOfContents" prefHeight="200.0" prefWidth="200.0" promptText="Table of contents" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                </children>
             </GridPane>
          </right>
          <center>
-            <Separator orientation="VERTICAL" prefHeight="330.0" prefWidth="6.0" BorderPane.alignment="CENTER" />
+            <Separator orientation="VERTICAL" prefHeight="363.0" prefWidth="0.0" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
+      <GridPane prefHeight="50.0" prefWidth="540.0">
+         <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="72.0" minHeight="8.0" prefHeight="31.0" />
+            <RowConstraints maxHeight="100.0" minHeight="10.0" prefHeight="63.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Button fx:id="btnEditBook" mnemonicParsing="false" onAction="#btnEditBookPressed" prefHeight="32.0" prefWidth="150.0" text="Edit book information" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets right="30.0" />
+               </GridPane.margin>
+            </Button>
+            <Separator prefWidth="200.0" />
+         </children>
+      </GridPane>
    </children>
 </VBox>
