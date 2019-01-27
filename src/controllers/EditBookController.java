@@ -96,17 +96,18 @@ public class EditBookController {
 		 * update the edited data in the DB
 		 */
 		if(validateInput()==true) {
-	//	editedBook.setName(txtBookName.getText());
+		editedBook.setName(txtBookName.getText());
 		editedBook.setAuthor(txtAuthor.getText());
-		editedBook.setBookID(Integer.parseInt(txtBookID.getText()));
-		editedBook.setEdition(txtEdition.getText());
 		editedBook.setPrintYear(Integer.parseInt(txtPrintYear.getText()));
 		editedBook.setSubject(txtSubject.getText());
 		editedBook.setCatalog(Integer.parseInt(txtCatalog.getText()));
 		editedBook.setCopiesNumber(Integer.parseInt(txtCopies.getText()));
 		editedBook.setShelf(txtShelf.getText());
-		// Updated edited book in DB (DBController.updateBook(editedBook));
-		// add success message
+		editedBook.setEdition(txtEdition.getText());
+		editedBook.setSubject(txtDescription.getText());
+		editedBook.setSubject(txtTableOfContents.getText());
+		editedBook.setBookType(bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()));
+		DatabaseController.editBook(editedBook);
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Success");
 		alert.setContentText("this changes has updated successfully");

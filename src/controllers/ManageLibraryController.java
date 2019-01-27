@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.time.Year;
 import java.util.ArrayList;
 
-import com.mysql.fabric.xmlrpc.base.Array;
-
 import entities.Book;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -64,6 +62,11 @@ public class ManageLibraryController {
 	@FXML
 	private Button btnEditBook;
 
+	/**
+	 * open add book form
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
 		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -74,7 +77,10 @@ public class ManageLibraryController {
 			e.printStackTrace();
 		}
 	}
-
+/**
+ * 
+ * @param event
+ */
 	@FXML
 	void btnDeleteBookPressed(ActionEvent event) {
 
@@ -144,7 +150,7 @@ public class ManageLibraryController {
 	}
 
 	@FXML
-	void initialize() {
+	public  void initialize() {
 
 		// add all the relevant fields to the view table
 		bookID.setCellValueFactory(new PropertyValueFactory<Book, String>("bookID"));

@@ -76,59 +76,47 @@ public class AddBookController {
 
 	@FXML
 	private TextField txtPath;
-	
-    @FXML
-    private ComboBox<String> bookTypeCB;
+
+	@FXML
+	private ComboBox<String> bookTypeCB;
 
 	private Book newBook;
 
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
-		boolean input ;
-		input=validateInput();
-		if(input == true) {
-		newBook = new Book(Integer.parseInt(txtBookID.getText()), 
-				txtBookName.getText(),
-				txtAuthor.getText(),
-				txtEdition.getText(),
-				Integer.parseInt(txtPrintYear.getText()), txtBookSubject.getText(),
-				txtDescirption.getText(),
-				Integer.parseInt(txtCatalog.getText()),
-				txtTableOfContents.getText(),
-				txtShelf.getText(), Integer.parseInt(txtCopies.getText()),
-				bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()),
-				Integer.parseInt(txtCopies.getText()));
-		Book B1 = DatabaseController.getBook(Integer.parseInt(txtBookID.getId()));
-		if(((DatabaseController.getBook(Integer.parseInt(txtBookID.getId())))!=null))
-		{
-		DatabaseController.addBook(newBook);
-		System.out.println("Ddd");
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Succsess");
-		alert.setHeaderText("The book has been added successfully");
-		alert.showAndWait();
-		((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
-		}
-		else {
-			//this book is exist
-			
-		}
+		boolean input;
+		input = validateInput();
 		
+		if (input == true) {
+			newBook = new Book(Integer.parseInt(txtBookID.getText()), txtBookName.getText(), txtAuthor.getText(),
+					txtEdition.getText(), Integer.parseInt(txtPrintYear.getText()), txtBookSubject.getText(),
+					txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()), txtTableOfContents.getText(),
+					txtShelf.getText(), Integer.parseInt(txtCopies.getText()),
+					bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()),
+					Integer.parseInt(txtCopies.getText()));
+			System.out.println(newBook.getBookID());
+
+			//check if this id exist 
+			if ((DatabaseController.getBook(newBook.getBookID())) == null) {
+				DatabaseController.addBook(newBook);
+				System.out.println("Ddd");
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Succsess");
+				alert.setHeaderText("The book has been added successfully");
+				alert.showAndWait();
+				((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
+
+			} else {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("ERROR");
+				alert.setHeaderText("This book ID is exist");
+				alert.showAndWait();
+
+			}
+
 		}
-	
-		/*
-		 * needs DB try {
-		 * 
-		 * if(Integer.parseInt(txtBookID.getText()) is exist in db){ throw new
-		 * Exception(); } catch(Exception e) { Alert alert = new
-		 * Alert(AlertType.INFORMATION); alert.setTitle("Error");
-		 * alert.setHeaderText("this id is exist");
-		 * alert.setContentText("please enter a new id "); alert.showAndWait(); } }
-		 */
 
 	}
-	
-  
 
 	/*
 	 * when browse button clicked this method open the window to get the path of the
@@ -144,7 +132,7 @@ public class AddBookController {
 		}
 	}
 
-	/*
+	/**
 	 * this method clears all the data in the fields when clear button clicked
 	 */
 	@FXML
@@ -168,21 +156,17 @@ public class AddBookController {
 		((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
 	}
 
-	/*
-	 * initialize "add button to disable until fill all the fields in the form
+	/**
+	 * initialize the relevant fields and disable "Add book button" until fill all
+	 * the fields
 	 */
 	@FXML
 	void initialize() {
-	
+
 		btnAddBook.setDisable(true);
-		ObservableList<String> options = 
-    		    FXCollections.observableArrayList(
-    		        "Wanted",
-    		        "Regular"
-    		    );
-    	bookTypeCB.getItems().addAll(options);
-    	
-    	
+		ObservableList<String> options = FXCollections.observableArrayList("Wanted", "Regular");
+		bookTypeCB.getItems().addAll(options);
+
 		BooleanBinding bb = new BooleanBinding() {
 			{
 				super.bind(txtBookName.textProperty(), txtAuthor.textProperty(), txtBookID.textProperty(),
@@ -250,20 +234,13 @@ public class AddBookController {
 		String errorMsg = "";
 
 		/**
-		 * validate input for all the text fields
+		 * validate input for all relevant text fields
 		 */
 
 		for (char c : txtBookID.getText().toCharArray())// Parse text field into chars array and validate
 			if (!Character.isDigit(c)) {
-				errorMsg += "Book's ID number must contain numbers only!\n";
+				errorMsg += "Book ID number must contain numbers only!\n";
 				txtBookID.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				break;
-			}
-
-		for (char c : txtBookName.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isAlphabetic(c)) {
-				errorMsg += "Book name must contain letters only!\n";
-				txtBookName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 				break;
 			}
 
@@ -276,20 +253,19 @@ public class AddBookController {
 
 		for (char c : txtEdition.getText().toCharArray())// Parse text field into chars array and validate
 			if (!Character.isDigit(c)) {
-				errorMsg += "Book's edition number must contain numbers only!\n";
+				errorMsg += "Book edition must contain numbers only!\n";
 				txtEdition.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 				break;
 			}
 
-
 		for (char c : txtBookSubject.getText().toCharArray())// Parse text field into chars array and validate
 			if (!Character.isAlphabetic(c)) {
-				errorMsg += "Book's subject must contain letters only!\n";
+				errorMsg += "Book subject must contain letters only!\n";
 				txtBookSubject.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 				break;
 
 			}
-		
+
 		for (char c : txtCatalog.getText().toCharArray())// Parse text field into chars array and validate
 			if (!Character.isDigit(c)) {
 				errorMsg += "Book Catalog number must contain numbers only!\n";
@@ -301,6 +277,12 @@ public class AddBookController {
 			if (!Character.isDigit(c)) {
 				errorMsg += "Copies number must contain numbers only!\n";
 				txtCopies.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				break;
+			}
+		for (char c : txtPrintYear.getText().toCharArray())// Parse text field into chars array and validate
+			if (!Character.isDigit(c)) {
+				errorMsg += "Year must contain numbers only!\n";
+				txtPrintYear.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 				break;
 			}
 
