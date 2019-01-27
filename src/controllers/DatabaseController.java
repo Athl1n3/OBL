@@ -604,9 +604,15 @@ public class DatabaseController {
 	}
 
 	/**
-	 * Shutdown client server connection when primary stage closes
+	 * Shutdown client server connection when primary stage closes and logout logged in account
 	 */
 	public static void terminateClient() {
+		if(loggedAccount != null)
+		{
+			loggedAccount.setLogged(false);
+			logAccount(loggedAccount);
+			System.out.println("Logging user out");
+		}
 		clientConnection.terminate();
 	}
 

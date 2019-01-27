@@ -64,19 +64,31 @@ public class NotificationsController {
 	private static Account loggedAccount;
 	private ObservableList<Notification> notificationsOlist;
 
+	/**
+	 * Clear selected item from DataView
+	 * @param event
+	 */
 	@FXML
 	void btnClearSelectedPressed(ActionEvent event) {
 		Alert deleteConfirmation = new Alert(AlertType.CONFIRMATION,
 				"Are you sure you want to remove the selected notification?(Can't be undone)", ButtonType.YES,
 				ButtonType.CANCEL);
-		if (deleteConfirmation.showAndWait().get() == ButtonType.YES) {
-			Notification selectedNotf = tableView.getSelectionModel().getSelectedItem();
-			// DatabaseController.deleteNotfication(selectedNotf); // DONT FORGET TO
-			// UNCOMMENT
-			tableView.getItems().remove(selectedNotf);
-		}
+		if (!(tableView.getSelectionModel().isEmpty())) {
+			if (deleteConfirmation.showAndWait().get() == ButtonType.YES) {
+				Notification selectedNotf = tableView.getSelectionModel().getSelectedItem();
+				// DatabaseController.deleteNotfication(selectedNotf); // DONT FORGET TO
+				// UNCOMMENT
+				tableView.getItems().remove(selectedNotf);
+			}
+		} else
+			new Alert(AlertType.WARNING, "No notification is selected!", ButtonType.OK).show();
 	}
-
+	
+	
+	/**
+	 * Proccess selected notification (LOCK NOTIFICATIONS ONLY CAN BE PROCCESSED)
+	 * @param event
+	 */
 	@FXML
 	void btnProccessNotificationPressed(ActionEvent event) {
 		Alert lockConfirmation = new Alert(AlertType.CONFIRMATION,
@@ -135,8 +147,11 @@ public class NotificationsController {
 		// the message is a lock message
 		btnProccessNotification.setDisable(true);
 		tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-			if (tableView.getSelectionModel().getSelectedItem().isLock())
-				btnProccessNotification.setDisable(false);
+			if (!tableView.getItems().isEmpty())
+				if (tableView.getSelectionModel().getSelectedItem().isLock())
+					btnProccessNotification.setDisable(false);
+				else
+					btnProccessNotification.setDisable(true);
 			else
 				btnProccessNotification.setDisable(true);
 		});
