@@ -180,7 +180,7 @@ public class LendController {
 		// create the lent book request with the appropriate returning time
 		
 		BookCopy bookCopy = new BookCopy(lentBook.getBookID(), null, true);  //******* SerialNumner *******//
-		LentBook lntbook = new LentBook(lenderAccount.getID(),lentBook, bookCopy, LocalDate.now(), date, false );
+		LentBook lntbook = new LentBook(lenderAccount.getID(),lentBook, bookCopy, LocalDate.now(), date,null, false );
 																				                                                 //Jigsaw was here and commented that too (suckmydick Jigsaw)
 		// lent the book to the user
 		DatabaseController.addLentBook(lntbook);

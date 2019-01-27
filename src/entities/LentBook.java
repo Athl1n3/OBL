@@ -11,15 +11,17 @@ public class LentBook {
 	private int userID;
 	private LocalDate issueDate;
 	private LocalDate dueDate;
+	private LocalDate returnDate;
 	private boolean  late;
 	
-	public LentBook(int userID,Book book, BookCopy bookCopy, LocalDate issueDate, LocalDate dueDate, boolean late) {
+	public LentBook(int userID,Book book, BookCopy bookCopy, LocalDate issueDate, LocalDate dueDate, LocalDate returnDate,boolean late) {
 		this.userID = userID;
 		this.book = book;
 		this.bookCopy = bookCopy;
 		this.issueDate = issueDate;
 		this.dueDate = dueDate;
 		this.late = late;
+		this.returnDate = returnDate;
 	}
 	
 	/**
@@ -99,5 +101,9 @@ public class LentBook {
 
 	public void setBookCopy(BookCopy bookCopy) {
 		this.bookCopy = bookCopy;
+	}
+	
+	public LocalDate getReturnDate() {
+		return returnDate;
 	}
 }
