@@ -13,6 +13,7 @@ public class EchoServer extends AbstractServer {
 	// The default port to listen on.
 	final public static int DEFAULT_PORT = 5555;
 	private static MySQLConnection DBcon;
+	private static LibraryServices libraryServices;
 
 	// @param port The port number to connect on.
 	public EchoServer(int port) {
@@ -32,12 +33,27 @@ public class EchoServer extends AbstractServer {
 	@Override
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("Message received: " + msg.toString() + " from " + client);
-		obj = DBcon.executeQuery(msg);
+		if(msg instanceof Integer)
+		{
+			graduateStudent((Integer)msg);
+			obj = new String("Student ID "+msg+"has been set as graduated");
+		}
+		else
+		{
+			obj = DBcon.executeQuery(msg);
+			if(obj == null)
+				obj = true;
+		}
 		try {
 			client.sendToClient(obj);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	public void graduateStudent(int studentID)
+	{
+		libraryServices.graduateStudent(studentID);
 	}
 
 	/**
@@ -78,7 +94,7 @@ public class EchoServer extends AbstractServer {
 		}
 		DBcon = new MySQLConnection(args[0], args[1], args[2]);
 		EchoServer sv = new EchoServer(port);
-		LibraryServices es = new LibraryServices(EchoServer.DBcon);
+		libraryServices = new LibraryServices(EchoServer.DBcon);
 		try {
 			sv.listen(); // Start listening for connections
 		} catch (Exception ex) {

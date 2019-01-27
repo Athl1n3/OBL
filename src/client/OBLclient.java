@@ -41,23 +41,23 @@ public class OBLclient extends AbstractClient {
 
 	// Instance methods ************************************************
 	// This method handles all data that comes in from the server.
+	@Override
 	public void handleMessageFromServer(Object msg) {
 		// clientUI.display(msg.toString());
 		clientUI.serverObj(msg);
-		// load.close();
 		sem.release();
-
 	}
 
 	// This method handles all data coming from the UI as arrayList
+	@SuppressWarnings("unchecked")
 	public void handleMessageFromClientUI(Object obj) {
 		try {
 			sendToServer(obj);
 			if (obj instanceof String) {
 				if (((String) obj).startsWith("SELECT"))
 					load.show();
-			} else {
-				if (((ArrayList) obj).get(((ArrayList) obj).size() - 1).toString().startsWith("SELECT"))
+			} else if (obj instanceof ArrayList) {
+				if (((ArrayList<String>) obj).get(((ArrayList<String>) obj).size() - 1).toString().startsWith("SELECT"))
 					load.show();
 			}
 			sem.acquire();
