@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -582,6 +583,21 @@ public class DatabaseController {
 			}
 		}
 		return notificationsList;
+	}
+	
+	/**
+	 * get the closest return date from DB according to BookID
+	 * @param bookID
+	 * @return LocalDate
+	 */
+	public static LocalDate getClosestReturnDate(int bookID) {
+		clientConnection.executeQuery("SELECT dueDate From LentBook WHERE bookID = '" + bookID + "' ORDER BY dueDate LIMIT 1");
+		ArrayList<String> res = clientConnection.getList();
+		if(!res.isEmpty()) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+			return LocalDate.parse(res.get(0), formatter);
+		}else
+			return null;
 	}
 
 	/**

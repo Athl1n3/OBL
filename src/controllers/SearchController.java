@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -9,11 +10,13 @@ import entities.Account;
 import entities.Book;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -32,6 +35,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class SearchController implements Initializable {
 
@@ -43,6 +47,9 @@ public class SearchController implements Initializable {
 
 	@FXML
 	private Button btnSearch;
+
+	@FXML
+	private Button btnCheck;
 
 	@FXML
 	private ComboBox<String> cmbSearchBy;
@@ -112,10 +119,11 @@ public class SearchController implements Initializable {
 			OrderController orderController = new OrderController();
 			// passing the selected book data to order controller
 			Book selectedBook = tableView.getSelectionModel().getSelectedItem();
-			if(selectedBook.getAvailableCopies() == 0)
+			if (selectedBook.getAvailableCopies() == 0)
 				orderController.start(selectedBook);
 			else
-				showAlert("","There is already an avialable copy!!!\n You can find it on Shelf: " + selectedBook.getShelf());
+				showAlert("",
+						"There is already an avialable copy!!!\n You can find it on Shelf: " + selectedBook.getShelf());
 		} catch (NullPointerException e) {
 			showAlert("Error!!!", "Please Selecte Book First");
 		}
@@ -201,11 +209,29 @@ public class SearchController implements Initializable {
 		// disable the search button if the search text field is empty!
 		BooleanBinding booleanBind = txtSearch.textProperty().isEmpty();
 		btnSearch.disableProperty().bind(booleanBind);
-		//disable btnOrderBook until selecting row from the table
+		// disable btnOrderBook until selecting row from the table
 		btnOrderBook.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
-		
+
 		if (DatabaseController.loggedAccount instanceof UserAccount && DatabaseController.loggedAccount != null)
 			btnOrderBook.setVisible(true);
+	}
+
+	@FXML
+	void checkClosestReturnDate(ActionEvent event) {
+		try {
+			Book selectedBook = tableView.getSelectionModel().getSelectedItem();
+			Alert alert = new Alert(AlertType.INFORMATION);
+			LocalDate date = DatabaseController.getClosestReturnDate(selectedBook.getBookID());
+			if (selectedBook.getAvailableCopies() == 0) {
+				alert.setContentText(
+						"Book(" + selectedBook.getName() + ") Closest Return date is:\n" + date.toString());
+			} else 
+				alert.setContentText("Theres alreardy an existing copy from: " + selectedBook.getName()
+						+ "\nYou can find it on Shelf: " + selectedBook.getShelf());
+			alert.show();
+		} catch (NullPointerException e) {
+			showAlert("Error!!!", "Please Selecte Book First");
+		}
 	}
 
 	public void start(Stage primaryStage, Account account) throws IOException {
@@ -214,6 +240,12 @@ public class SearchController implements Initializable {
 		primaryStage.setTitle("Search");
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		    @Override
+		    public void handle(WindowEvent t) {
+		        DatabaseController.terminateClient();
+		    }
+		});
 		primaryStage.show();
 		// openNewForm("../gui/SearchForm.fxml", "Search Form");
 	}
@@ -237,7 +269,7 @@ public class SearchController implements Initializable {
 		alert.setHeaderText(header);
 		alert.show();
 	}
-
+/*
 	public void openNewForm(String resource, String title) {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource(resource));
@@ -250,4 +282,5 @@ public class SearchController implements Initializable {
 			e.printStackTrace();
 		}
 	}
+*/
 }
