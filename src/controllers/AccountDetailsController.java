@@ -157,7 +157,6 @@ public class AccountDetailsController implements Initializable {
 			break;
 		}
 		lblStatus.setText(loggedAccount.getStatus().toString());
-<<<<<<< HEAD
 		*/
 		//disable the btnApplyChanges button until all Textfields are not empty
 		 BooleanBinding booleanBind =txtUserID.textProperty().isEmpty()
@@ -171,9 +170,9 @@ public class AccountDetailsController implements Initializable {
 
 
 		// disable the btnApplyChanges button until all Textfields are not empty
-		BooleanBinding booleanBind = txtFirstName.textProperty().isEmpty().or(txtLastName.textProperty().isEmpty())
+		BooleanBinding booleanBind2 = txtFirstName.textProperty().isEmpty().or(txtLastName.textProperty().isEmpty())
 				.or(txtMobileNum.textProperty().isEmpty()).or(txtEmail.textProperty().isEmpty());
-		btnApplyChanges.disableProperty().bind(booleanBind);
+		btnApplyChanges.disableProperty().bind(booleanBind2);
 
 		// login details
 		txtUsername.setText(loggedAccount.getUserName());
@@ -183,7 +182,7 @@ public class AccountDetailsController implements Initializable {
 				.or(txtVerPassword.textProperty().isEmpty());
 		btnUpdateLogin.disableProperty().bind(btnPasswordBind);
 		loggedAccount = new UserAccount();
-		loggedAccount = DatabaseController.loggedAccount.getAccount();
+		loggedAccount = DatabaseController.loggedAccount;
 		
 
 

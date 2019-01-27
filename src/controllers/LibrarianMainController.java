@@ -49,6 +49,9 @@ public class LibrarianMainController {
 
 	@FXML
 	private ImageView imgReturnBook;
+	
+	@FXML
+	private ImageView imgNotification;
 
 	private static Stage stage;
 	private static Scene scene;
@@ -133,6 +136,20 @@ public class LibrarianMainController {
 		try {
 			UsersManagementForm.start(stage, loggedLibAccount);
 		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@FXML
+	void imgNotificationClicked(MouseEvent event)
+	{
+		SceneController.push(scene);
+		// stage.initModality(Modality.APPLICATION_MODAL);
+		NotificationsController notificationForm = new NotificationsController();
+		try {
+			 notificationForm.start(stage, loggedLibAccount);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

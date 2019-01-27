@@ -1,19 +1,16 @@
 package controllers;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 import client.ClientConnection;
-import entities.Account;
-import entities.Archive;
-import entities.Book;
+import entities.*;
 import entities.Book.bookType;
-import entities.BookCopy;
-import entities.LentBook;
-import entities.LibrarianAccount;
-import entities.ManagerAccount;
-import entities.UserAccount;
-import entities.UserActivity;
 
 public class DatabaseController {
 
@@ -119,6 +116,23 @@ public class DatabaseController {
 	 */
 	public static Account getAccount(int ID) {
 		clientConnection.executeQuery("SELECT * FROM Account WHERE ID = +" + ID + ";");
+		ArrayList<String> res = clientConnection.getList();
+		if (res.size() != 0) {
+			Account userAccount = new UserAccount();
+			((UserAccount) userAccount).parseArrayIntoAccount(res);
+			return userAccount;
+		} else
+			return null;
+	}
+	/**
+	 * finds the account in DB according to user id and returned it, if the account
+	 * doesn't exists then return null
+	 * 
+	 * @param ID
+	 * @return Account
+	 */
+	public static Account getAccountByAccountID(int accountID) {
+		clientConnection.executeQuery("SELECT * FROM Account WHERE userID = +" + accountID + ";");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
 			Account userAccount = new UserAccount();
@@ -291,7 +305,8 @@ public class DatabaseController {
 			res.subList(0, 13).clear();
 			bookList.add(book);
 		}
-
+		clientConnection.executeQuery("Select * FROM book WHERE author = 'kasem' Order By bookID ASC");
+		System.out.println(clientConnection.getList());
 		return bookList;
 	}
 
@@ -300,8 +315,8 @@ public class DatabaseController {
 	 * 
 	 * @param book
 	 */
-	public static void updateBookAvailableCopies(Book book) {
-		clientConnection.executeQuery("UPDATE Book SET availableCopies = '" + (book.getAvailableCopies() - 1)
+	public static void updateBookAvailableCopies(Book book,int val) {
+		clientConnection.executeQuery("UPDATE Book SET availableCopies = '" + (book.getAvailableCopies() + val)
 				+ "' WHERE BookID = '" + book.getBookID() + "';");
 	}
 
@@ -321,6 +336,10 @@ public class DatabaseController {
 		arr.add(String.valueOf(newLentBook.isLate()));
 		arr.add(query);
 		clientConnection.executeQuery(arr);
+	}
+	
+	public static void deleteLendBook(int accountID, int bookID) {
+		clientConnection.executeQuery("DELETE FROM LentBook WHERE userID = '" + accountID + "' AND bookID = '" + bookID + "';");
 	}
 
 	/**
@@ -342,6 +361,20 @@ public class DatabaseController {
 		}
 
 		return lentBookList;
+	}
+
+	public static LentBook getLentBook(int userID, int bookID) {
+		clientConnection.executeQuery("SELECT * FROM LentBook WHERE userID  = '"+ userID
+				+ "' AND bookID = '" + bookID + "';");
+		ArrayList<String> res = clientConnection.getList();
+		LentBook lentBook;
+		if (!res.isEmpty()) {
+			lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
+					getBookCopy(res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
+					res.get(5).equals("1") ? true : false);
+			return lentBook;
+		}
+		return null;
 	}
 
 	/**
@@ -403,6 +436,50 @@ public class DatabaseController {
 	}
 
 	/**
+	 * place an Book Order in DB
+	 * 
+	 * @param order
+	 */
+	public static void placeOrder(BookOrder order) {
+		ArrayList<String> arr = new ArrayList<String>();
+		String query = "INSERT INTO BookOrder(orderID, userID, bookID, orderDate) VALUES(?,?,?,?)";
+		arr.add(String.valueOf(order.getOrderID()));
+		arr.add(String.valueOf(order.getUserID()));
+		arr.add(String.valueOf(order.getBookID()));
+		arr.add(String.valueOf(order.getOrderDate()));
+		arr.add(query);
+		clientConnection.executeQuery(arr);
+		// clientConnection.executeQuery("Select * FROM BookOrder Order By orderDate ASC
+		// LIMIT 1");
+		// System.out.println(clientConnection.getList());
+
+	}
+
+	/**
+	 * returns the last order id
+	 * 
+	 * @return int
+	 */
+	public static int getLatestOrderID() {
+		clientConnection.executeQuery("SELECT orderID FROM BookOrder ORDER BY orderID DESC");
+		if (clientConnection.getList().size() != 0)
+			return Integer.parseInt(clientConnection.getList().get(0));
+		else
+			return 0;
+
+	}
+
+	public static boolean checkExistingOrder(int userID, int bookID) {
+		clientConnection
+				.executeQuery("SELECT * FROM BookOrder WHERE userID = '" + userID + "' AND bookID = '" + bookID + "';");
+		ArrayList<String> res = clientConnection.getList();
+		if (res.size() != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * this function returns the user's original data from DB according to its id,
 	 * if user not founded,return null
 	 * 
@@ -429,17 +506,58 @@ public class DatabaseController {
 	 * @return ArrayList<UserActivity>
 	 */
 	public static ArrayList<UserActivity> getUserActivity(int AccountID) {
-		clientConnection.executeQuery("SELECT * FROM useractivity WHERE userID = '" + AccountID + "';");
+		clientConnection.executeQuery(
+				"SELECT userid, activityName, date FROM useractivity WHERE userID = '" + AccountID + "';");
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<UserActivity> activityList = new ArrayList<UserActivity>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		while (res.size() != 0) {
-			UserActivity activity = new UserActivity(Integer.parseInt(res.get(0)), res.get(1),
-					LocalDate.parse(res.get(2)));
-			res.subList(0, 3).clear();
-			activityList.add(activity);
+			try {
+				Date parsedDate = dateFormat.parse(res.get(2));
+				UserActivity activity = new UserActivity(Integer.parseInt(res.get(0)), res.get(1),
+						new Timestamp(parsedDate.getTime()));
+				res.subList(0, 3).clear();
+				activityList.add(activity);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
 		return activityList;
+	}
+
+	/**
+	 * return user activity list from DB
+	 * 
+	 * @param AccountID
+	 * @return ArrayList<Notification>
+	 */
+	public static ArrayList<Notification> getNotifications(int AccountID) {
+		if (AccountID != 1 && AccountID != 2)
+			clientConnection
+					.executeQuery("SELECT userID, date, message FROM notification WHERE userID = '" + AccountID + "';");
+		else if (AccountID == 1)
+			clientConnection.executeQuery(
+					"SELECT userID, date, message FROM notification WHERE userType = 'Manager' OR userType='Librarian';");
+		else
+			clientConnection
+					.executeQuery("SELECT userID, date, message FROM notification WHERE userType = 'Librarian';");
+		ArrayList<String> res = clientConnection.getList();
+		ArrayList<Notification> notificationsList = new ArrayList<Notification>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		while (res.size() != 0) {
+			try {
+				Date parsedDate = dateFormat.parse(res.get(1));
+				Notification notification = new Notification(Integer.parseInt(res.get(0)),
+						new Timestamp(parsedDate.getTime()), res.get(2));
+				res.subList(0, 3).clear();
+				notificationsList.add(notification);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return notificationsList;
 	}
 
 	public static void InitiateClient(ClientConnection newClientConnection) {

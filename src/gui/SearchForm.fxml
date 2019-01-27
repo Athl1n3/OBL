@@ -118,8 +118,8 @@
                         <TableColumn fx:id="printYearCol" prefWidth="73.66668701171875" text="Print Year" />
                         <TableColumn fx:id="bookAuthorCol" prefWidth="80.66668701171875" text="Author" />
                         <TableColumn fx:id="subjectCol" prefWidth="113.33331298828125" text="Subject" />
-                        <TableColumn fx:id="availableCopiesCol" prefWidth="97.0" text="Available Copies" />
-                        <TableColumn fx:id="descriptionCol" prefWidth="141.33331298828125" text="Description" />
+                        <TableColumn fx:id="descriptionCol" prefWidth="134.33331298828125" text="Description" />
+                        <TableColumn fx:id="availableCopiesCol" prefWidth="104.0" text="Available Copies" />
                         <TableColumn fx:id="shelfCol" prefWidth="42.3333740234375" text="Shelf" />
                     </columns>
                   </TableView>

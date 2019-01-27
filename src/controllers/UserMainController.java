@@ -38,6 +38,9 @@ public class UserMainController implements Initializable {
 
 	@FXML
 	private ImageView imgSearch;
+	
+	@FXML
+	private ImageView imgNotification;
 
 	@FXML
 	private ImageView imgHistory;
@@ -96,6 +99,20 @@ public class UserMainController implements Initializable {
 		}
 	}
 
+	@FXML
+	void imgNotificationClicked(MouseEvent event)
+	{
+		SceneController.push(scene);
+		// stage.initModality(Modality.APPLICATION_MODAL);
+		NotificationsController notificationForm = new NotificationsController();
+		try {
+			 notificationForm.start(stage, loggedAccount);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@FXML
 	void imgSearchClicked(MouseEvent event) {
 		SceneController.push(scene);

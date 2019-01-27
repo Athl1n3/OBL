@@ -9,6 +9,7 @@ import entities.Account;
 import entities.Book;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,6 +29,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -81,7 +83,6 @@ public class SearchController implements Initializable {
 	@FXML
 	private Button btnOrderBook;
 
-	private static Account loggedAccount;
 	ObservableList<String> list;
 	ObservableList<Book> bookList;
 
@@ -95,6 +96,8 @@ public class SearchController implements Initializable {
 		tableView.getItems().clear();
 		tableView.refresh();
 		txtSearch.clear();
+		btnOrderBook.setDisable(true);
+
 	}
 
 	/**
@@ -109,11 +112,18 @@ public class SearchController implements Initializable {
 			OrderController orderController = new OrderController();
 			// passing the selected book data to order controller
 			Book selectedBook = tableView.getSelectionModel().getSelectedItem();
-			orderController.start(selectedBook, (UserAccount) loggedAccount);
-
+			if(selectedBook.getAvailableCopies() == 0)
+				orderController.start(selectedBook);
+			else
+				showAlert("","There is already an avialable copy!!!\n You can find it on Shelf: " + selectedBook.getShelf());
 		} catch (NullPointerException e) {
-			showAlert("error", "");
+			showAlert("Error!!!", "Please Selecte Book First");
 		}
+	}
+
+	@FXML
+	void activateOrderBookButton(ContextMenuEvent event) {
+		btnOrderBook.setDisable(false);
 	}
 
 	/**
@@ -177,7 +187,7 @@ public class SearchController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-
+		btnOrderBook.setVisible(false);
 		bookNameCol.setCellValueFactory(new PropertyValueFactory<Book, String>("name"));
 		editionCol.setCellValueFactory(new PropertyValueFactory<Book, String>("edition"));
 		printYearCol.setCellValueFactory(new PropertyValueFactory<Book, String>("printYear"));
@@ -191,15 +201,14 @@ public class SearchController implements Initializable {
 		// disable the search button if the search text field is empty!
 		BooleanBinding booleanBind = txtSearch.textProperty().isEmpty();
 		btnSearch.disableProperty().bind(booleanBind);
-		if (loggedAccount instanceof UserAccount && loggedAccount != null) {
-			if (((UserAccount) loggedAccount).getStatus().equals(accountStatus.Suspended))
-				btnOrderBook.setDisable(true);
-		} else
-			btnOrderBook.setVisible(false);
+		//disable btnOrderBook until selecting row from the table
+		btnOrderBook.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+		
+		if (DatabaseController.loggedAccount instanceof UserAccount && DatabaseController.loggedAccount != null)
+			btnOrderBook.setVisible(true);
 	}
 
-	public void start(Stage primaryStage, Account loggedAccount) throws IOException {
-		this.loggedAccount = loggedAccount;
+	public void start(Stage primaryStage, Account account) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/SearchForm.fxml"));
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Search");

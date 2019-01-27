@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.Year;
 
 import entities.Book;
+import entities.Book.bookType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -159,7 +160,7 @@ public class ManageLibraryController {
 
 		ObservableList<Book> books = FXCollections.observableArrayList();
 		// need to add the books from DB
-		books.add(new Book(123, "book1", "fadi", "1", 6, "action", "anananana", 1, "annon", "shelf", 12, "regular", 1));
+		books.add(new Book(123, "book1", "fadi", "1", 6, "action", "anananana", 1, "annon", "shelf", 12, bookType.Regular, 1));
 
 		return books;
 	}

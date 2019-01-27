@@ -1,14 +1,14 @@
 package entities;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Notification {
 
 	private int userID;
-	private Date date;
+	private Timestamp date;
 	private String message;
 
-	public Notification(int userID, Date date, String message) {
+	public Notification(int userID, Timestamp date, String message) {
 		this.userID = userID;
 		this.date = date;
 		this.message = message;
@@ -17,14 +17,14 @@ public class Notification {
 	/**
 	 * @return the date
 	 */
-	public Date getDate() {
+	public Timestamp getDate() {
 		return date;
 	}
 
 	/**
 	 * @param date the date to set
 	 */
-	public void setDate(Date date) {
+	public void setDate(Timestamp date) {
 		this.date = date;
 	}
 
