@@ -351,7 +351,7 @@ public class DatabaseController {
 	 */
 	public static void addLentBook(LentBook newLentBook) {
 		ArrayList<String> arr = new ArrayList<String>();
-		String query = "INSERT INTO LentBook(userID, bookID, BookCopyID, issueDate, dueDate, late) VALUES(?,?,?,?,?,?)";
+		String query = "INSERT INTO LentBook(userID, bookID, copySerialNumber, issueDate, dueDate, late) VALUES(?,?,?,?,?,?)";
 		arr.add(String.valueOf(newLentBook.getUserID()));
 		arr.add(String.valueOf(newLentBook.getBook().getBookID()));
 		arr.add(String.valueOf(newLentBook.getBookCopy().getSerialNumber()));

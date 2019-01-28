@@ -100,10 +100,10 @@ public class SearchController implements Initializable {
 	 */
 	@FXML
 	void btnClearPressed(ActionEvent event) {
-		tableView.getItems().clear();
-		tableView.refresh();
+		// tableView.getItems().clear();
+		// tableView.refresh();
+		tableView.getItems().removeAll(bookList);
 		txtSearch.clear();
-		btnOrderBook.setDisable(true);
 
 	}
 
@@ -209,9 +209,17 @@ public class SearchController implements Initializable {
 		// disable the search button if the search text field is empty!
 		BooleanBinding booleanBind = txtSearch.textProperty().isEmpty();
 		btnSearch.disableProperty().bind(booleanBind);
+		btnOrderBook.setDisable(true);
 		// disable btnOrderBook until selecting row from the table
-		btnOrderBook.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
-
+		// btnOrderBook.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+		tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+			if (tableView.getItems().isEmpty())
+				btnOrderBook.setDisable(true);
+			else if (tableView.getSelectionModel().isEmpty())
+				btnOrderBook.setDisable(true);
+			else
+				btnOrderBook.setDisable(false);
+		});
 		if (DatabaseController.loggedAccount instanceof UserAccount && DatabaseController.loggedAccount != null)
 			btnOrderBook.setVisible(true);
 	}
@@ -225,7 +233,7 @@ public class SearchController implements Initializable {
 			if (selectedBook.getAvailableCopies() == 0) {
 				alert.setContentText(
 						"Book(" + selectedBook.getName() + ") Closest Return date is:\n" + date.toString());
-			} else 
+			} else
 				alert.setContentText("Theres alreardy an existing copy from: " + selectedBook.getName()
 						+ "\nYou can find it on Shelf: " + selectedBook.getShelf());
 			alert.show();
@@ -263,18 +271,10 @@ public class SearchController implements Initializable {
 		alert.setHeaderText(header);
 		alert.show();
 	}
-/*
-	public void openNewForm(String resource, String title) {
-		try {
-			Parent root = FXMLLoader.load(getClass().getResource(resource));
-			Stage stage = new Stage();
-			Scene scene = new Scene(root);
-			stage.setScene(scene);
-			stage.setTitle(title);
-			stage.show();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-*/
+	/*
+	 * public void openNewForm(String resource, String title) { try { Parent root =
+	 * FXMLLoader.load(getClass().getResource(resource)); Stage stage = new Stage();
+	 * Scene scene = new Scene(root); stage.setScene(scene); stage.setTitle(title);
+	 * stage.show(); } catch (IOException e) { e.printStackTrace(); } }
+	 */
 }
