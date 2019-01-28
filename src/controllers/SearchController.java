@@ -156,15 +156,6 @@ public class SearchController implements Initializable {
 				searchBy = "name";
 				cmbSearchBy.setValue("Name");
 			}
-			// check if the inserted Book id is valid input
-			/*if (searchBy.equals("Book ID")) {
-				for (char c : str.toCharArray())// Parse text field into chars array and validate
-					if (!Character.isDigit(c)) {
-						showAlert("Input Error!", "Book ID number must contain numbers only!\n");
-						txtSearch.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-						break;
-					}
-			}*/
 			ArrayList<Book> arr = DatabaseController.bookSearch(txtSearch.getText(), searchBy);
 			bookList = FXCollections.observableArrayList(arr);
 			tableView.setItems(bookList);
