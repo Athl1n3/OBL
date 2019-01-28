@@ -38,6 +38,10 @@ public class EchoServer extends AbstractServer {
 			graduateStudent((Integer)msg);
 			obj = new String("Student ID "+msg+"has been set as graduated");
 		}
+		/*else if(msg instanceof String )
+		{
+			Implementation for order detection
+		}*/
 		else
 		{
 			obj = DBcon.executeQuery(msg);
@@ -54,6 +58,11 @@ public class EchoServer extends AbstractServer {
 	public void graduateStudent(int studentID)
 	{
 		libraryServices.graduateStudent(studentID);
+	}
+	
+	public void orderNotification(int studentID)
+	{
+		//libraryServices.orderNotification(studentID);
 	}
 
 	/**
