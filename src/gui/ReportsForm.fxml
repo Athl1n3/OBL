@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="332.0" prefWidth="473.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportsController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="332.0" prefWidth="473.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportsController">
    <children>
       <BorderPane prefHeight="430.0" prefWidth="400.0">
          <top>
@@ -45,19 +45,22 @@
          <bottom>
             <GridPane prefHeight="50.0" prefWidth="540.0" BorderPane.alignment="CENTER">
               <columnConstraints>
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="474.0" minWidth="10.0" prefWidth="474.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="232.199951171875" minWidth="0.0" prefWidth="0.0" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints maxHeight="72.0" minHeight="8.0" prefHeight="31.0" />
-                  <RowConstraints maxHeight="100.0" minHeight="10.0" prefHeight="63.0" vgrow="SOMETIMES" />
+                  <RowConstraints />
+                  <RowConstraints maxHeight="72.0" minHeight="1.1999999999999993" prefHeight="1.1999999999999993" />
+                  <RowConstraints maxHeight="100.0" minHeight="10.0" prefHeight="49.2" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="btnGetReport" mnemonicParsing="false" onAction="#btnGetReportPressed" prefWidth="140.0" text="Get report" GridPane.rowIndex="1">
+                  <Button fx:id="btnGetReport" mnemonicParsing="false" onAction="#btnGetReportPressed" prefWidth="140.0" text="Get report" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets right="30.0" />
                      </GridPane.margin>
                   </Button>
-                  <Separator prefWidth="200.0" />
+                  <Separator prefWidth="200.0" GridPane.rowIndex="1" />
+                  <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
             </GridPane>
          </bottom>
@@ -80,7 +83,7 @@
                            </toggleGroup>
                         </RadioButton>
                         <RadioButton fx:id="rdLendsReport" mnemonicParsing="false" prefHeight="30.0" prefWidth="161.0" text="Lends Report" toggleGroup="$colorToggleGroup" />
-                        <RadioButton fx:id="rdDelaysReport" mnemonicParsing="false" text="Return Delays Report" toggleGroup="$colorToggleGroup" />
+                        <RadioButton fx:id="rdDelaysReport" mnemonicParsing="false" prefHeight="17.0" prefWidth="161.0" text="Return Delays Report" toggleGroup="$colorToggleGroup" />
                      </children>
                   </TilePane>
                   <Label text="Report Type:" GridPane.valignment="TOP">

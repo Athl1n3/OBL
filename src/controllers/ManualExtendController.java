@@ -2,9 +2,12 @@ package controllers;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import entities.Book;
 import entities.Book.bookType;
+import entities.UserAccount.accountStatus;
 import entities.LentBook;
 import entities.UserAccount;
 import javafx.beans.binding.Bindings;
@@ -109,43 +112,42 @@ public class ManualExtendController {
 		// get the selected book from the tableView
 		LentBook selectedBook = tableView.getSelectionModel().getSelectedItem();
 
-		 // validate if there is a week or less to return that book
-        if(LocalDate.now().isAfter(selectedBook.getIssueDate().plusWeeks(1)) == false && LocalDate.now().isEqual(selectedBook.getIssueDate().plusWeeks(1)) == false) {
-        	// if not then let the user know that he can't extend the book return time
-        	alertWarningMessage("You have more than 1 week left to return this book, therefore you can extend this book returning time.");
-        }
-        else {   // if there is one week or left then 
-    		// validate if the book type is equal to "wanted" or not
-    		if (selectedBook.getBook().getBookType().equals(bookType.Wanted)) {
-    			// if the book type is "Wanted" then let the user know that he can't extend the
-    			// book return time
-    			alertWarningMessage(
-    					"This book " + selectedBook.getBook().getName() + " is a 'Wanted' book and cannot be extended.");
-    		}
-    		else {
-    			// validate if the orders on that book is lesser than the actual available
-    			// copies in the library
-    			if (selectedBook.getBook().getAvailableCopies() <= selectedBook.getBook().getBookOrders()) {
-    				// if not , then let the user know that he can't extend the book return time
-    				alertWarningMessage("There is a lot of orders on that book , \nTherefore the book " + selectedBook.getBook().getName()
-    						+ " cannot be extended.");
-    			} else {
-    				// extend the book return time to 1 more weeks
-    				selectedBook.setDueDate(selectedBook.getDueDate().plusWeeks(1));
-    				
-    				// DatabaseController.updateLentBook(selectedBook);
-    				 
-    				// let the user know that the return time for the his book has been extended
-    				// successfully
-    				Alert alert = new Alert(AlertType.INFORMATION,
-    						"The book" + selectedBook.getBook().getName() + " Due time has been extended successfully.", ButtonType.OK);
-    				alert.show();
-    			}
+		// validate if the book type is equal to "wanted" or not
+		if (selectedBook.getBook().getBookType().equals(bookType.Wanted)) {
+			// if the book type is "Wanted" then let the user know that he can't extend the
+			// book return time
+			alertWarningMessage(
+					"The book " + selectedBook.getBook().getName() + " is a 'Wanted'\n book and cannot be extended.");
+		} else {
+			// validate if there is a week or less to return that book
+			if (LocalDate.now().isAfter(selectedBook.getIssueDate().plusWeeks(1)) == false
+					&& LocalDate.now().isEqual(selectedBook.getIssueDate().plusWeeks(1)) == false) {
+				// if not then let the user know that he can't extend the book return time
+				alertWarningMessage(
+						"You have more than 1 week left to return this book, therefore you can extend this book returning time.");
+			} else {
 
-    		}
-        	
-        }
+				// validate if the orders on that book is lesser than the actual available
+				// copies in the library
+				if (selectedBook.getBook().getAvailableCopies() <= selectedBook.getBook().getBookOrders()) {
+					// if not , then let the user know that he can't extend the book return time
+					alertWarningMessage("There is a lot of orders on that book , \nTherefore the book "
+							+ "'"+selectedBook.getBook().getName()+"'" + " cannot be extended.");
+				} else {
+					// extend the book return time to 1 more weeks
+					selectedBook.setDueDate(selectedBook.getDueDate().plusWeeks(1));
 
+					//DatabaseController.updateLentBook(selectedBook);
+
+					// let the user know that the return time for the his book has been extended
+					// successfully
+					Alert alert = new Alert(AlertType.INFORMATION,
+							"The book" + selectedBook.getBook().getName() + " Due time has been extended successfully.",
+							ButtonType.OK);
+					alert.show();
+				}
+			}
+		}
 	}
 
 	/**
@@ -169,6 +171,14 @@ public class ManualExtendController {
 		ObservableList<LentBook> list = getLentBookList(usrID);
 		// display the data in the tableView
 		tableView.setItems(list);
+		if(acc.getStatus().equals(accountStatus.Active)) {
+			btnExtendLend.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+			btnExtendLend.setText("Extend Book Lend");
+		}
+		else {
+			btnExtendLend.setText(acc.getStatus().toString() + " Account");
+			btnExtendLend.setDisable(true);
+		}
 	}
 
 	@FXML
@@ -217,11 +227,12 @@ public class ManualExtendController {
     });
 		issuedDateCol.setCellValueFactory(new PropertyValueFactory<LentBook, LocalDate>("IssueDate"));
 		dueDateCol.setCellValueFactory(new PropertyValueFactory<LentBook, LocalDate>("DueDate"));
-		btnExtendLend.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+		btnExtendLend.setDisable(true);
 
 		// Enable UserLookUp button only when the user ID textfield is not empty
 		BooleanBinding booleanBind = txtID.textProperty().isEmpty();
 		btnUserLookup.disableProperty().bind(booleanBind);
+
 	}
 
 	/**
@@ -231,39 +242,9 @@ public class ManualExtendController {
 	 */
 	private ObservableList<LentBook> getLentBookList(String userID) {
 
-
-		////////////////////////////////////
-
-		////// Hello Alaa, I want to play a game
-		// These lines were tagged by me (219 - 229) and ExtendLendController, LendController
-		//////your acts has done a great impact to you and your future and the destiny of this code
-		// It's time for redemption, get that thing up and running within 48hours, clock is ticking
-		////// the choice is yours live or die
-		///// -JigSaw
-		
-		/*************************************_|_**************************************/
-		// Hello (Fucker)JigSaw , i want to fuck(you);
-		// it's time to choose , you either choice.suckMyDick || choice.fuckedByMyDick
-		// it's time for redemption , the choiceIs(yours);
-		// the clock is ticking ...
-		// tick tock motherfucker
-		/*************************************_|_*************************************/
-
-		////////////////////////////////////
-		
-		/*
-		 * LentBook LntBK1 = new LentBook(123, 111, LocalDate.now(),
-		 * LocalDate.now().plusWeeks(2), false, "Marshood", "2st", "ALAA", "Calculus",
-		 * "Wanted"); LentBook LntBK2 = new LentBook(777, 999, LocalDate.now(),
-		 * LocalDate.now().plusWeeks(2), false, "Fucker", "7st", "ahmad", "notur",
-		 * "Regular");
-		 */
-
-		/*
-		 * DatabaseController.getExtendBookList(userID) ** & send it
-		 */
 		// create an observablelist that contains the user let books
-		ObservableList<LentBook> list = FXCollections.observableArrayList(/* LntBK1, LntBK2 */);
+		
+		ObservableList<LentBook> list = FXCollections.observableArrayList(DatabaseController.getLentBookList(acc.getAccountID()));
 		// return the observablelist
 		return list;
 	}
