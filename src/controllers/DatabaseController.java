@@ -302,7 +302,7 @@ public class DatabaseController {
 	 * @param searchBy it could be name, author, subject or description
 	 * @return ArrayList<Book>
 	 */
-	public static ArrayList<Book> bookSearch(String str, String searchBy) {
+	public static ArrayList<Book> bookSearch(String str, String searchBy)throws NumberFormatException{
 		switch (searchBy.toLowerCase()) {
 		case "book id":
 			clientConnection.executeQuery("SELECT * FROM book WHERE bookID = '" + Integer.parseInt(str) + "' ;");
