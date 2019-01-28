@@ -334,8 +334,6 @@ public class DatabaseController {
 			res.subList(0, 13).clear();
 			bookList.add(book);
 		}
-		clientConnection.executeQuery("Select * FROM book WHERE author = 'kasem' Order By bookID ASC");
-		System.out.println(clientConnection.getList());
 		return bookList;
 	}
 
@@ -391,7 +389,7 @@ public class DatabaseController {
 			LentBook lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
 					getBookCopy(res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
 					LocalDate.parse(res.get(5)), res.get(6).equals("1") ? true : false);
-			res.subList(0, 6).clear();
+			res.subList(0, 7).clear();
 			lentBookList.add(lentBook);
 		}
 
@@ -444,7 +442,7 @@ public class DatabaseController {
 		while (res.size() != 0) {
 			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1),
 					res.get(2).equals("1") ? true : false);
-			res.subList(0, 2).clear();
+			res.subList(0, 3).clear();
 			bookCopyList.add(bookCopy);
 		}
 

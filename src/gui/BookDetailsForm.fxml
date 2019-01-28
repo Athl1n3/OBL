@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
@@ -131,4 +130,3 @@
       </BorderPane>
    </children>
 </VBox>
->>>>>>> branch 'adam-edits' of https://github.com/Athl1n3/OBL-Project.git

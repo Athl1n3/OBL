@@ -107,6 +107,8 @@ public class SearchController implements Initializable {
 		// tableView.refresh();
 		tableView.getItems().removeAll(bookList);
 		txtSearch.clear();
+		txtSearch.setStyle("-fx-border-color: black ; -fx-border-width: 1px ;");
+
 
 	}
 
@@ -144,6 +146,7 @@ public class SearchController implements Initializable {
 	 */
 	@FXML
 	void btnSearchPressed(ActionEvent event) {
+		txtSearch.setStyle("-fx-border-color: black ; -fx-border-width: 1px ;");
 		try {
 			String searchBy = cmbSearchBy.getValue();
 			String str = txtSearch.getText();
