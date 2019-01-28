@@ -240,12 +240,6 @@ public class SearchController implements Initializable {
 		primaryStage.setTitle("Search");
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-		    @Override
-		    public void handle(WindowEvent t) {
-		        DatabaseController.terminateClient();
-		    }
-		});
 		primaryStage.show();
 		// openNewForm("../gui/SearchForm.fxml", "Search Form");
 	}
