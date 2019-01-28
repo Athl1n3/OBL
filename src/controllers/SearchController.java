@@ -144,31 +144,29 @@ public class SearchController implements Initializable {
 	 */
 	@FXML
 	void btnSearchPressed(ActionEvent event) {
-
-		String searchBy = cmbSearchBy.getValue();
-		String str = txtSearch.getText();
-		// make a default search by name if the user didn't make a selection from Combo
-		// Box
-		if (searchBy == null) {
-			searchBy = "name";
-			cmbSearchBy.setValue("Name");
-		}
-		// check if the inserted Book id is valid input
-		if (searchBy.equals("bookID")) {
-			for (char c : str.toCharArray())// Parse text field into chars array and validate
-				if (!Character.isDigit(c)) {
-					showAlert("Input Error!", "Book ID number must contain numbers only!\n");
-					txtSearch.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-					break;
-				}
-		}
-		
-		ArrayList<Book> arr = DatabaseController.bookSearch(str, searchBy);
-		if (!arr.isEmpty()) {
+		try {
+			String searchBy = cmbSearchBy.getValue();
+			String str = txtSearch.getText();
+			// make a default search by name if the user didn't make a selection from Combo
+			// Box
+			if (searchBy == null) {
+				searchBy = "name";
+				cmbSearchBy.setValue("Name");
+			}
+			// check if the inserted Book id is valid input
+			if (searchBy.equals("Book ID")) {
+				for (char c : str.toCharArray())// Parse text field into chars array and validate
+					if (!Character.isDigit(c)) {
+						showAlert("Input Error!", "Book ID number must contain numbers only!\n");
+						txtSearch.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+						break;
+					}
+			}
+			ArrayList<Book> arr = DatabaseController.bookSearch(txtSearch.getText(), searchBy);
 			bookList = FXCollections.observableArrayList(arr);
 			tableView.setItems(bookList);
-		} else {
-			showAlert("No Match Result For " + txtSearch.getText(), "Please Enter New " + searchBy);
+		} catch (NullPointerException e) {
+			showAlert("No Match Result For " + txtSearch.getText(), "Please Enter New " + cmbSearchBy.getValue());
 			tableView.getItems().clear();
 			tableView.refresh();
 		}

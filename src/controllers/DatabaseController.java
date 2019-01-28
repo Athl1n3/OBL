@@ -304,25 +304,27 @@ public class DatabaseController {
 	 */
 	public static ArrayList<Book> bookSearch(String str, String searchBy) {
 		switch (searchBy.toLowerCase()) {
-		case "bookID":
-			clientConnection.executeQuery("SELECT * FROM book WHERE  bookID= '" + Integer.parseInt(str) + "' ;");
+		case "book id":
+			clientConnection.executeQuery("SELECT * FROM book WHERE bookID = '" + Integer.parseInt(str) + "' ;");
 			break;
 		case "name":
-			clientConnection.executeQuery("SELECT * FROM book WHERE  name= '" + str.toLowerCase() + "' ;");
+			clientConnection.executeQuery("SELECT * FROM book WHERE name= '" + str.toLowerCase() + "' ;");
 			break;
 		case "author":
-			clientConnection.executeQuery("SELECT * FROM book WHERE  author= '" + str.toLowerCase() + "' ;");
+			clientConnection.executeQuery("SELECT * FROM book WHERE author= '" + str.toLowerCase() + "' ;");
 			break;
 		case "subject":
-			clientConnection.executeQuery("SELECT * FROM book WHERE  subject= '" + str.toLowerCase() + "' ;");
+			clientConnection.executeQuery("SELECT * FROM book WHERE subject= '" + str.toLowerCase() + "' ;");
 			break;
 		case "description":
-			clientConnection.executeQuery("SELECT * FROM book WHERE  description= '" + str.toLowerCase() + "' ;");
+			clientConnection.executeQuery("SELECT * FROM book WHERE description= '" + str.toLowerCase() + "' ;");
 			break;
 		default:
 			return null;
 		}
 		ArrayList<String> res = clientConnection.getList();
+		if(res.isEmpty())
+			return null;
 		ArrayList<Book> bookList = new ArrayList<Book>();
 		while (res.size() != 0) {
 			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
