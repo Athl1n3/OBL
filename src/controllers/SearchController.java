@@ -58,6 +58,9 @@ public class SearchController implements Initializable {
 	private TableView<Book> tableView;
 
 	@FXML
+	private TableColumn<Book, Integer> bookIDCol;
+
+	@FXML
 	private TableColumn<Book, String> bookNameCol;
 
 	@FXML
@@ -141,25 +144,26 @@ public class SearchController implements Initializable {
 	 */
 	@FXML
 	void btnSearchPressed(ActionEvent event) {
-		/*
-		 * Book newBook = new Book(1, "java", "kasem","First Edition" , 2019,
-		 * "java programing", "learning java", 20, "thread,javafx,gui", "A12", 10,
-		 * "Regular", 10); Book newBook2 = new Book(1, "java", "saleh","First Edition" ,
-		 * 2019, "java programing", "learning java", 20, "thread,javafx,gui", "A12", 10,
-		 * "Regular", 10); Book newBook3 = new Book(1, "java3", "kasem","First Edition"
-		 * , 2019, "java programing", "learning java", 20, "thread,javafx,gui", "A12",
-		 * 10, "Regular", 10); DatabaseController.addBook(newBook);
-		 * DatabaseController.addBook(newBook2); DatabaseController.addBook(newBook3);
-		 */
-		String searchBy = cmbSearchBy.getValue();
 
+		String searchBy = cmbSearchBy.getValue();
+		String str = txtSearch.getText();
 		// make a default search by name if the user didn't make a selection from Combo
 		// Box
 		if (searchBy == null) {
 			searchBy = "name";
 			cmbSearchBy.setValue("Name");
 		}
-		ArrayList<Book> arr = DatabaseController.bookSearch(txtSearch.getText(), searchBy);
+		// check if the inserted Book id is valid input
+		if (searchBy.equals("bookID")) {
+			for (char c : str.toCharArray())// Parse text field into chars array and validate
+				if (!Character.isDigit(c)) {
+					showAlert("Input Error!", "Book ID number must contain numbers only!\n");
+					txtSearch.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+					break;
+				}
+		}
+		
+		ArrayList<Book> arr = DatabaseController.bookSearch(str, searchBy);
 		if (!arr.isEmpty()) {
 			bookList = FXCollections.observableArrayList(arr);
 			tableView.setItems(bookList);
@@ -196,6 +200,7 @@ public class SearchController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		btnOrderBook.setVisible(false);
+		bookIDCol.setCellValueFactory(new PropertyValueFactory<Book, Integer>("bookID"));
 		bookNameCol.setCellValueFactory(new PropertyValueFactory<Book, String>("name"));
 		editionCol.setCellValueFactory(new PropertyValueFactory<Book, String>("edition"));
 		printYearCol.setCellValueFactory(new PropertyValueFactory<Book, String>("printYear"));
@@ -211,7 +216,6 @@ public class SearchController implements Initializable {
 		btnSearch.disableProperty().bind(booleanBind);
 		btnOrderBook.setDisable(true);
 		// disable btnOrderBook until selecting row from the table
-		// btnOrderBook.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 		tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (tableView.getItems().isEmpty())
 				btnOrderBook.setDisable(true);
@@ -257,6 +261,7 @@ public class SearchController implements Initializable {
 	 */
 	private void setCmbSearchBy() {
 		ArrayList<String> arr = new ArrayList<String>();
+		arr.add("Book ID");
 		arr.add("Name");
 		arr.add("Author");
 		arr.add("Subject");

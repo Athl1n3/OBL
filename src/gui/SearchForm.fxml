@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="537.0" prefWidth="725.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SearchController">
+<VBox prefHeight="537.0" prefWidth="742.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SearchController">
    <children>
       <BorderPane prefHeight="527.0" prefWidth="748.0">
          <top>
@@ -115,7 +115,8 @@
                   </GridPane>
                   <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0">
                     <columns>
-                      <TableColumn fx:id="bookNameCol" prefWidth="97.66665649414062" text="Book Name" />
+                        <TableColumn fx:id="bookIDCol" prefWidth="54.66668701171875" text="Book ID" />
+                      <TableColumn fx:id="bookNameCol" prefWidth="117.99996948242188" text="Book Name" />
                       <TableColumn fx:id="editionCol" prefWidth="66.33334350585938" text="Edition" />
                         <TableColumn fx:id="printYearCol" prefWidth="73.66668701171875" text="Print Year" />
                         <TableColumn fx:id="bookAuthorCol" prefWidth="80.66668701171875" text="Author" />

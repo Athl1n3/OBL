@@ -304,6 +304,9 @@ public class DatabaseController {
 	 */
 	public static ArrayList<Book> bookSearch(String str, String searchBy) {
 		switch (searchBy.toLowerCase()) {
+		case "bookID":
+			clientConnection.executeQuery("SELECT * FROM book WHERE  bookID= '" + Integer.parseInt(str) + "' ;");
+			break;
 		case "name":
 			clientConnection.executeQuery("SELECT * FROM book WHERE  name= '" + str.toLowerCase() + "' ;");
 			break;
@@ -351,7 +354,7 @@ public class DatabaseController {
 	 */
 	public static void addLentBook(LentBook newLentBook) {
 		ArrayList<String> arr = new ArrayList<String>();
-		String query = "INSERT INTO LentBook(userID, bookID, copySerialNumber, issueDate, dueDate, late) VALUES(?,?,?,?,?,?)";
+		String query = "INSERT INTO LentBook(userID, bookID,copySerialNumber, issueDate, dueDate, late) VALUES(?,?,?,?,?,?)";
 		arr.add(String.valueOf(newLentBook.getUserID()));
 		arr.add(String.valueOf(newLentBook.getBook().getBookID()));
 		arr.add(String.valueOf(newLentBook.getBookCopy().getSerialNumber()));
@@ -369,34 +372,40 @@ public class DatabaseController {
 
 	/**
 	 * return the user lent books list from DB
-	 * 
+	 * if(userID>=0) return only the user lent Book list 
+	 * if(userID<0) return the whole lent Book list 
 	 * @return ArrayList<LentBook>
 	 */
 	public static ArrayList<LentBook> getLentBookList(int userID) {
-
-		clientConnection.executeQuery("SELECT * FROM LentBook WHERE userID  = '" + userID + "';");
+		String query;
+		if(userID>=0)
+			query = "SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '" + userID + "';";
+		else
+			query = "SELECT * FROM LentBook";
+		clientConnection.executeQuery(query);
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<LentBook> lentBookList = new ArrayList<LentBook>();
 		while (res.size() != 0) {
 			LentBook lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
 					getBookCopy(res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
-					res.get(5).equals("1") ? true : false);
-			res.subList(0, 5).clear();
+					LocalDate.parse(res.get(5)), res.get(6).equals("1") ? true : false);
+			res.subList(0, 6).clear();
 			lentBookList.add(lentBook);
 		}
 
 		return lentBookList;
 	}
+	
 
 	public static LentBook getLentBook(int userID, int bookID) {
 		clientConnection
-				.executeQuery("SELECT * FROM LentBook WHERE userID  = '" + userID + "' AND bookID = '" + bookID + "';");
+				.executeQuery("SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '" + userID + "' AND bookID = '" + bookID + "';");
 		ArrayList<String> res = clientConnection.getList();
 		LentBook lentBook;
 		if (!res.isEmpty()) {
 			lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
 					getBookCopy(res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
-					res.get(5).equals("1") ? true : false);
+					LocalDate.parse(res.get(5)), res.get(6).equals("1") ? true : false);
 			return lentBook;
 		}
 		return null;
@@ -427,7 +436,7 @@ public class DatabaseController {
 	 */
 	public static ArrayList<BookCopy> getbookCopyList(int bookID) {
 
-		clientConnection.executeQuery("SELECT * FROM LentBook WHERE bookID  = '" + bookID + "';");
+		clientConnection.executeQuery("SELECT * FROM BookCopy WHERE bookID  = '" + bookID + "';");
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<BookCopy> bookCopyList = new ArrayList<BookCopy>();
 		while (res.size() != 0) {
