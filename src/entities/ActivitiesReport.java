@@ -1,26 +1,44 @@
 package entities;
 
+import java.util.ArrayList;
+
 public class ActivitiesReport {
 	
+	private int totalUsers;
 	private int activeUsersNumber;
-	private int unActiveUsersNumber;
-	private int suspendedUsersNumber;
-	private int copiesNumber;
+	private int frozenUsersNumber;
+	private int lockedUsersNumber;
 	private int usersWithBookLateReturnNumber;
+	private ArrayList<Book> books;
+	private ArrayList<Account> accounts;
 	
 	
-	public ActivitiesReport(int activeUsersNumber, int unActiveUsersNumber, int suspendedUsersNumber, int copiesNumber,
-			int usersWithBookLateReturnNumber) {
+	public ActivitiesReport(int totalUsers, int activeUsersNumber, int frozenUsersNumber, int lockedUsersNumber,
+			int usersWithBookLateReturnNumber, ArrayList<Book> books, ArrayList<Account> accounts) {
 		super();
+		this.totalUsers = totalUsers;
 		this.activeUsersNumber = activeUsersNumber;
-		this.unActiveUsersNumber = unActiveUsersNumber;
-		this.suspendedUsersNumber = suspendedUsersNumber;
-		this.copiesNumber = copiesNumber;
+		this.frozenUsersNumber = frozenUsersNumber;
+		this.lockedUsersNumber = lockedUsersNumber;
 		this.usersWithBookLateReturnNumber = usersWithBookLateReturnNumber;
+		this.books = books;
+		this.accounts = accounts;
 	}
 	
-	
-    
+	/**
+	 * Initialise the total users in the system
+	 * @param totalUsers
+	 */
+	public void setTotalUsers(int totalUsers) {
+		this.totalUsers = totalUsers;
+	}
+	/**
+	 * Get the number of total users in the system
+	 * @return totalUsers
+	 */
+    public int getTotalUsers() {
+    	return totalUsers;
+    }
    	/**
    	 * Gets the active user number.
    	 * 
@@ -30,57 +48,42 @@ public class ActivitiesReport {
 		return activeUsersNumber;
 	}
 	/**
-	 * Instantiates the active user number
+	 * Initialise the active user number
 	 * @param activeUsersNumber set the active user number
 	 */
 	public void setActiveUsersNumber(int activeUsersNumber) {
 		this.activeUsersNumber = activeUsersNumber;
 	}
    	/**
-   	 * Gets the unactive user number.
+   	 * Gets the frozen users number.
    	 * 
-   	 * @return  unActiveUsersNumber
+   	 * @return  frozenUsersNumber
    	 */
-	public int getUnActiveUsersNumber() {
-		return unActiveUsersNumber;
+	public int getFrozenUsersNumber() {
+		return frozenUsersNumber;
 	}
 	/**
-	 * Instantiates the unActive Users Number
-	 * @param unActiveUsersNumber set the unactive user number
+	 * Initialise the frozen Users Number
+	 * @param unActiveUsersNumber set the frozen user number
 	 */
-	public void setUnActiveUsersNumber(int unActiveUsersNumber) {
-		this.unActiveUsersNumber = unActiveUsersNumber;
+	public void setFrozenUsersNumber(int frozenUsersNumber) {
+		this.frozenUsersNumber = frozenUsersNumber;
 	}
 	
    	/**
-   	 * Gets the suspended Users Number.
+   	 * Gets the locked Users Number.
    	 * 
-   	 * @return  suspendedUsersNumber
+   	 * @return  lockedUsersNumber
    	 */
-	public int getSuspendedUsersNumber() {
-		return suspendedUsersNumber;
+	public int getLockedUsersNumber() {
+		return lockedUsersNumber;
 	}
 	/**
-	 * Instantiates the suspended Users Number
-	 * @param suspendedUsersNumber set the suspended Users Number
+	 * Initialise the locked Users Number
+	 * @param lockedUsersNumber set the locked Users Number
 	 */
-	public void setSuspendedUsersNumber(int suspendedUsersNumber) {
-		this.suspendedUsersNumber = suspendedUsersNumber;
-	}
-   	/**
-   	 * Gets the copies Number.
-   	 * 
-   	 * @return  copiesNumber
-   	 */
-	public int getCopiesNumber() {
-		return copiesNumber;
-	}
-	/**
-	 * Instantiates the copies Number
-	 * @param copiesNumber
-	 */
-	public void setCopiesNumber(int copiesNumber) {
-		this.copiesNumber = copiesNumber;
+	public void setLockedUsersNumber(int lockedUsersNumber) {
+		this.lockedUsersNumber = lockedUsersNumber;
 	}
    	/**
    	 * Gets the users number With Book Late  .
@@ -98,6 +101,21 @@ public class ActivitiesReport {
 		this.usersWithBookLateReturnNumber = usersWithBookLateReturnNumber;
 	}
 	
+	public ArrayList<Book> getBooks(){
+		return books;
+	}
 	
-
+	public ArrayList<Account> getAccounts(){
+		return accounts;
+	}
+	
+	public int getAllLibraryBooksNum() {
+		int num = 0;
+		for(Book x : books) {
+			num = num + x.getCopiesNumber();
+		}
+		return num;
+		
+	}
+	
 }

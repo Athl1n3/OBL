@@ -71,9 +71,9 @@ public class LibrarianMainController {
 	@FXML
 	void imgLendBookClicked(MouseEvent event) {
 		SceneController.push(scene);
-		ManualExtendController ManualExtendForm = new ManualExtendController();
+		LendController LendForm = new LendController();
 		try {
-			ManualExtendForm.start(stage);
+			LendForm.start(stage);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

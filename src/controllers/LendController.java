@@ -93,46 +93,46 @@ public class LendController {
 	@FXML
 	void btnBookLookupPressed(ActionEvent event) {
 
-		
-		 lentBook = DatabaseController.getBook(Integer.parseInt(txtBookID.getText()));
-		 
+		lentBook = DatabaseController.getBook(Integer.parseInt(txtBookID.getText()));
+
 		// validate if there is such a book with the inputed book ID
 		if (lentBook == null) {
 			// if not , then let the user know
 			alertWarningMessage("There is no such book in the library");
 		} else {
-			
+
 			lenderAccount = (UserAccount) DatabaseController.getAccount(Integer.parseInt(txtUserID.getText()));
-			 
+
 			// validate if there is such an account with the inputed ID
 			if (lenderAccount == null) {
 				// if not , then let the user know
 				alertWarningMessage("There is no such user");
 			} else {
-				// if the book ID & the user ID is found in the DB , then display the details
-				// about the book and the user
-				txtBookName.setText(lentBook.getName());
-				txtBookName.setEditable(false);
-
-				txtBookType.setText(lentBook.getBookType().toString());
-				txtBookType.setEditable(false);
-
-				txtAvailableCopies.setText(String.valueOf(lentBook.getCopiesNumber()));
-				txtAvailableCopies.setEditable(false);
-
-				txtName.setText(lenderAccount.getFirstName());
-				txtName.setEditable(false);
-
 				// validate if the user account status is not active
 				if (!lenderAccount.getStatus().equals(accountStatus.Active)) {
-					// if the user account status is not active then let the user know that
-					alertWarningMessage("This account is " + lenderAccount.getStatus());
-				} else {
+					alertWarningMessage("This account is " + lenderAccount.getStatus().toString());
+				}
+				else {
+					// if the book ID & the user ID is found in the DB , then display the details
+					// about the book and the user
+					txtBookName.setText(lentBook.getName());
+					txtBookName.setEditable(false);
+
+					txtBookType.setText(lentBook.getBookType().toString());
+					txtBookType.setEditable(false);
+
+					txtAvailableCopies.setText(String.valueOf(lentBook.getCopiesNumber()));
+					txtAvailableCopies.setEditable(false);
+
+					txtName.setText(lenderAccount.getFirstName());
+					txtName.setEditable(false);
+
 					// the user account status is active , then validate if there is copies of that
 					// book
 					if (lentBook.getCopiesNumber() == 0) {
 						// if there is no copies of that book then let the user know that
-						alertWarningMessage("There is no copies of the book " + lentBook.getName());
+						alertWarningMessage("There is no copies of the book " + "'" + lentBook.getName() + "'");
+						btnLendBook.setDisable(true);
 					} else {
 						// if everything is okay then enable the button to let the user be able to lent
 						// the book
@@ -178,13 +178,12 @@ public class LendController {
 		dtDueDate.setValue(date);
 
 		// create the lent book request with the appropriate returning time
-		
-		BookCopy bookCopy = new BookCopy(lentBook.getBookID(), null, true);  //******* SerialNumner *******//
-		LentBook lntbook = new LentBook(lenderAccount.getID(),lentBook, bookCopy, LocalDate.now(), date, false );
-																				                                                 //Jigsaw was here and commented that too (suckmydick Jigsaw)
+
+		BookCopy bookCopy = new BookCopy(lentBook.getBookID(), null, true); // ******* SerialNumner *******//
+		LentBook lntbook = new LentBook(lenderAccount.getID(), lentBook, bookCopy, LocalDate.now(), date, null, false);
+		// Jigsaw was here and commented that too (suckmydick Jigsaw)
 		// lent the book to the user
 		DatabaseController.addLentBook(lntbook);
-
 
 		// let the user know that the lent process has been cone successfully
 		Alert alert = new Alert(AlertType.INFORMATION, "Book has been lent successfully", ButtonType.OK);
@@ -209,6 +208,28 @@ public class LendController {
 	 */
 	@FXML
 	void initialize() {
+
+		// a listener to validate if the ID length is not greater than 9 digits and if
+		// it's only contain numbers
+		txtBookID.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (!newValue.matches("\\d*")) {
+				txtBookID.setText(newValue.replaceAll("[^\\d]", ""));
+				alertWarningMessage("The user ID must contain only numbers");
+			}
+		});
+
+		// a listener to validate if the ID length is not greater than 9 digits and if
+		// it's only contain numbers
+		txtUserID.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (!newValue.matches("\\d*")) {
+				txtUserID.setText(newValue.replaceAll("[^\\d]", ""));
+				alertWarningMessage("The ID must contain only numbers");
+			}
+			if (txtUserID.getLength() > 9) {
+				txtUserID.setText(oldValue);
+				alertWarningMessage("The ID must be 9 numbers");
+			}
+		});
 		// display the date of today
 		dtIssueDate.setValue(LocalDate.now());
 		// make this field inedible
