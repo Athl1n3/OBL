@@ -181,7 +181,7 @@ public class LendController {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//you need to get the copy from bookCopy table 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		BookCopy bookCopy = new BookCopy(lentBook.getBookID(),null, null, true); // ******* SerialNumner *******//
+		BookCopy bookCopy = new BookCopy(lentBook.getBookID(),"123", null, true); // ******* SerialNumner *******//
 		LentBook lntbook = new LentBook(lenderAccount.getID(), lentBook, bookCopy, LocalDate.now(), date, null, false);
 		// lent the book to the user
 		DatabaseController.addLentBook(lntbook);
