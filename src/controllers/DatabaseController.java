@@ -68,9 +68,10 @@ public class DatabaseController {
 	public static int generateAccountID() {
 		return ((getTableRowsNumber("account") + 1) * 264 + 759);
 	}
-	
+
 	/**
 	 * returns rows number in table
+	 * 
 	 * @param tableName
 	 * @return int table rows number
 	 */
@@ -125,7 +126,7 @@ public class DatabaseController {
 		String query = "UPDATE account SET status = 'Locked' WHERE userID = '" + accountID + "';";
 		clientConnection.executeQuery(query);
 		clientConnection.getObject();
-		return (Boolean)clientConnection.getObject();
+		return (Boolean) clientConnection.getObject();
 	}
 
 	/**
@@ -311,7 +312,7 @@ public class DatabaseController {
 	 * @param searchBy it could be name, author, subject or description
 	 * @return ArrayList<Book>
 	 */
-	public static ArrayList<Book> bookSearch(String str, String searchBy)throws NumberFormatException{
+	public static ArrayList<Book> bookSearch(String str, String searchBy) throws NumberFormatException {
 		switch (searchBy.toLowerCase()) {
 		case "book id":
 			clientConnection.executeQuery("SELECT * FROM book WHERE bookID = '" + Integer.parseInt(str) + "' ;");
@@ -332,7 +333,7 @@ public class DatabaseController {
 			return null;
 		}
 		ArrayList<String> res = clientConnection.getList();
-		if(res.isEmpty())
+		if (res.isEmpty())
 			return null;
 		ArrayList<Book> bookList = new ArrayList<Book>();
 		while (res.size() != 0) {
@@ -380,23 +381,24 @@ public class DatabaseController {
 	}
 
 	/**
-	 * return the user lent books list from DB
-	 * if(userID>=0) return only the user lent Book list 
-	 * if(userID<0) return the whole lent Book list 
+	 * return the user lent books list from DB if(userID>=0) return only the user
+	 * lent Book list if(userID<0) return the whole lent Book list
+	 * 
 	 * @return ArrayList<LentBook>
 	 */
 	public static ArrayList<LentBook> getLentBookList(int userID) {
 		String query;
-		if(userID>=0)
-			query = "SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '" + userID + "';";
+		if (userID >= 0)
+			query = "SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '"
+					+ userID + "';";
 		else
-			query = "SELECT * FROM LentBook";
+			query = "SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook";
 		clientConnection.executeQuery(query);
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<LentBook> lentBookList = new ArrayList<LentBook>();
 		while (res.size() != 0) {
 			LentBook lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
-					getBookCopy(res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
+					getBookCopy(res.get(1), res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
 					LocalDate.parse(res.get(5)), res.get(6).equals("1") ? true : false);
 			res.subList(0, 7).clear();
 			lentBookList.add(lentBook);
@@ -404,16 +406,16 @@ public class DatabaseController {
 
 		return lentBookList;
 	}
-	
 
 	public static LentBook getLentBook(int userID, int bookID) {
-		clientConnection
-				.executeQuery("SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '" + userID + "' AND bookID = '" + bookID + "';");
+		clientConnection.executeQuery(
+				"SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '"
+						+ userID + "' AND bookID = '" + bookID + "';");
 		ArrayList<String> res = clientConnection.getList();
 		LentBook lentBook;
 		if (!res.isEmpty()) {
 			lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
-					getBookCopy(res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
+					getBookCopy(res.get(1), res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
 					LocalDate.parse(res.get(5)), res.get(6).equals("1") ? true : false);
 			return lentBook;
 		}
@@ -426,9 +428,10 @@ public class DatabaseController {
 	 * @param serialNumber
 	 * @return BookCopy
 	 */
-	private static BookCopy getBookCopy(String serialNumber) {
+	private static BookCopy getBookCopy(String bookID, String serialNumber) {
 
-		clientConnection.executeQuery("SELECT * FROM BookCopy WHERE bookID= '" + serialNumber + "' ;");
+		clientConnection.executeQuery(
+				"SELECT * FROM BookCopy WHERE serialNumber= '" + serialNumber + "' AND bookID = '" + bookID + "' ;");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
 			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
@@ -449,7 +452,7 @@ public class DatabaseController {
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<BookCopy> bookCopyList = new ArrayList<BookCopy>();
 		while (res.size() != 0) {
-			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1),LocalDate.parse(res.get(2)), 
+			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
 					res.get(2).equals("1") ? true : false);
 			res.subList(0, 4).clear();
 			bookCopyList.add(bookCopy);
@@ -464,8 +467,9 @@ public class DatabaseController {
 	 * @param bookCopy
 	 */
 	public static void updateBookCopyLentField(BookCopy bookCopy) {
-		clientConnection.executeQuery("UPDATE BookCopy SET lent = '" + (bookCopy.isLent() ? 1 : 0) + "' WHERE bookID = '"
-				+ bookCopy.getBookID() + "' AND serialNumber = '" + bookCopy.getSerialNumber() + "';");
+		clientConnection
+				.executeQuery("UPDATE BookCopy SET lent = '" + (bookCopy.isLent() ? 1 : 0) + "' WHERE bookID = '"
+						+ bookCopy.getBookID() + "' AND serialNumber = '" + bookCopy.getSerialNumber() + "';");
 	}
 
 	/**
@@ -512,7 +516,8 @@ public class DatabaseController {
 	}
 
 	/**
-	 * check existence of specific order 
+	 * check existence of specific order
+	 * 
 	 * @param userID
 	 * @param bookID
 	 * @return Boolean
@@ -529,12 +534,12 @@ public class DatabaseController {
 
 	/**
 	 * check if there is any orders for specific book
+	 * 
 	 * @param bookID
 	 * @return Boolean
 	 */
 	public static boolean checkExistngBookOrder(int bookID) {
-		clientConnection
-				.executeQuery("SELECT * FROM BookOrder WHERE bookID = '" + bookID + "';");
+		clientConnection.executeQuery("SELECT * FROM BookOrder WHERE bookID = '" + bookID + "';");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
 			return true;
@@ -588,9 +593,10 @@ public class DatabaseController {
 		}
 		return activityList;
 	}
-	
+
 	/**
 	 * adding user activity to userActivity table in DB
+	 * 
 	 * @param accountID
 	 * @param activity
 	 */
@@ -601,7 +607,7 @@ public class DatabaseController {
 		arr.add(String.valueOf(getTableRowsNumber("userActivity") + 1));
 		arr.add(String.valueOf(accountID));
 		arr.add(activity);
-		//get the current date and time to be saved in DB
+		// get the current date and time to be saved in DB
 		Timestamp now = new Timestamp(new Date().getTime());
 		arr.add(String.valueOf(now));
 		arr.add(query);
@@ -642,19 +648,21 @@ public class DatabaseController {
 		}
 		return notificationsList;
 	}
-	
+
 	/**
 	 * get the closest return date from DB according to BookID
+	 * 
 	 * @param bookID
 	 * @return LocalDate
 	 */
 	public static LocalDate getClosestReturnDate(int bookID) {
-		clientConnection.executeQuery("SELECT dueDate From LentBook WHERE bookID = '" + bookID + "' ORDER BY dueDate LIMIT 1");
+		clientConnection
+				.executeQuery("SELECT dueDate From LentBook WHERE bookID = '" + bookID + "' ORDER BY dueDate LIMIT 1");
 		ArrayList<String> res = clientConnection.getList();
-		if(!res.isEmpty()) {
+		if (!res.isEmpty()) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
 			return LocalDate.parse(res.get(0), formatter);
-		}else
+		} else
 			return null;
 	}
 
@@ -678,11 +686,11 @@ public class DatabaseController {
 	}
 
 	/**
-	 * Shutdown client server connection when primary stage closes and logout logged in account
+	 * Shutdown client server connection when primary stage closes and logout logged
+	 * in account
 	 */
 	public static void terminateClient() {
-		if(loggedAccount != null)
-		{
+		if (loggedAccount != null) {
 			loggedAccount.setLogged(false);
 			logAccount(loggedAccount);
 			System.out.println("Logging user out");
