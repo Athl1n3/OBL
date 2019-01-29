@@ -111,9 +111,14 @@ public class DatabaseController {
 	 * 
 	 * @param userAccount
 	 */
-	public static void updateUserStatus(UserAccount userAccount) {
-		String query = "UPDATE account SET status = '" + userAccount.getStatus() + "' WHERE userID = '"
-				+ userAccount.getAccountID() + "';";
+	public static void updateUserStatus(UserAccount userAccount, boolean resetDelays) {
+		String query;
+		if(resetDelays)
+			query = "UPDATE account SET status = '" + userAccount.getStatus() + "', delays = '0' WHERE userID = '"
+					+ userAccount.getAccountID() + "';";
+		else
+			query = "UPDATE account SET status = '" + userAccount.getStatus() + "' WHERE userID = '"
+					+ userAccount.getAccountID() + "';";
 		clientConnection.executeQuery(query);
 	}
 

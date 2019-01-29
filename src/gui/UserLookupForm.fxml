@@ -41,14 +41,14 @@
                <children>
                   <Button fx:id="btnLock" mnemonicParsing="false" onAction="#btnLockPressed" prefHeight="32.0" prefWidth="197.0" text="Lock/Unlock" GridPane.rowIndex="3" />
                   <Button fx:id="btnSuspend" mnemonicParsing="false" onAction="#btnSuspendPressed" prefHeight="32.0" prefWidth="174.0" text="Suspend/Unsuspend" GridPane.rowIndex="2" />
-                  <Label text="Status:" textAlignment="CENTER" GridPane.rowIndex="1">
+                  <Label text="User Status:" textAlignment="CENTER" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets right="45.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="lblStatus" prefHeight="19.0" prefWidth="81.0" text="---" textFill="#10bd15" GridPane.rowIndex="1">
+                  <Label fx:id="lblStatus" prefHeight="19.0" prefWidth="68.0" text="---" textFill="#10bd15" GridPane.rowIndex="1">
                      <GridPane.margin>
-                        <Insets left="45.0" />
+                        <Insets left="65.0" />
                      </GridPane.margin>
                      <font>
                         <Font name="System Bold" size="13.0" />
@@ -56,7 +56,7 @@
                   </Label>
                   <CheckBox fx:id="cbEditUser" mnemonicParsing="false" text="Edit User" GridPane.rowIndex="1">
                      <GridPane.margin>
-                        <Insets top="65.0" />
+                        <Insets top="100.0" />
                      </GridPane.margin>
                   </CheckBox>
                   <Button fx:id="btnView" mnemonicParsing="false" onAction="#btnView" prefHeight="29.0" prefWidth="64.0" text="View">
@@ -93,6 +93,14 @@
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
+                  </Label>
+                  <Label fx:id="lblOnlineStatus" prefHeight="19.0" prefWidth="154.0" text="---" textFill="#10bd15" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets top="40.0" />
+                     </GridPane.margin>
                   </Label>
                </children>
             </GridPane>
