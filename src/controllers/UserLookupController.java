@@ -27,7 +27,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
- * 
+ * This GUI is used to make a user lookup and manage all of his data
  * @author Adam Mahameed
  * @version 1.4 [16.1.2019]
  * 
@@ -100,6 +100,10 @@ public class UserLookupController {
 	private static UserAccount lookupAccount;
 	private static LibrarianAccount librarianAccount;
 
+	/**
+	 * Show looked up user archived data
+	 * @param event
+	 */
 	@FXML
 	void btnArchivePressed(ActionEvent event) {
 		if (txtID.isDisabled()) {
@@ -142,6 +146,10 @@ public class UserLookupController {
 		lblOnlineStatus.setText("---");
 	}
 
+	/**
+	 * Edits user data according to the new inserted data
+	 * @param event
+	 */
 	@FXML
 	void btnEditDataPressed(ActionEvent event) {
 		Alert msg = new Alert(AlertType.CONFIRMATION, "Are you sure to update user data?", ButtonType.YES,
@@ -260,6 +268,10 @@ public class UserLookupController {
 		return validInput;// If all inputs are valid
 	}
 
+	/**
+	 * Lock/Unlock user account
+	 * @param event
+	 */
 	@FXML
 	void btnLockPressed(ActionEvent event) {
 		Alert statMsg = new Alert(AlertType.INFORMATION, "", ButtonType.OK);
@@ -289,6 +301,10 @@ public class UserLookupController {
 		}
 	}
 
+	/**
+	 * Suspend/Unsuspend user account
+	 * @param event
+	 */
 	@FXML
 	void btnSuspendPressed(ActionEvent event) {
 		boolean status;
@@ -315,6 +331,10 @@ public class UserLookupController {
 		statMsg.show();
 	}
 
+	/**
+	 * Look up for user
+	 * @param event
+	 */
 	@FXML
 	void btnView(ActionEvent event) {
 
@@ -340,6 +360,10 @@ public class UserLookupController {
 		}
 	}
 
+	/**
+	 * View user activity history
+	 * @param event
+	 */
 	@FXML
 	void btnViewHistoryPressed(ActionEvent event) {
 		if (txtID.isDisabled()) {
@@ -356,6 +380,10 @@ public class UserLookupController {
 			new Alert(AlertType.WARNING, "A user must be looked up first!", ButtonType.OK).show();
 	}
 
+	/**
+	 * Go back to previous page
+	 * @param event
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
@@ -377,7 +405,7 @@ public class UserLookupController {
 		}
 		lblStatus.setText("---");
 		btnEditData.setDisable(true);
-		cbEditUser.setOnAction(new EventHandler<ActionEvent>() {// Edit user checkbox event handler
+		cbEditUser.setOnAction(new EventHandler<ActionEvent>() {// Edit user check box event handler
 			@Override
 			public void handle(ActionEvent event) {
 				if (txtID.isDisabled()) {
@@ -398,6 +426,12 @@ public class UserLookupController {
 		});
 	}
 
+	/**
+	 * Start up form
+	 * @param primaryStage
+	 * @param librarian
+	 * @throws Exception if starting fails
+	 */
 	void start(Stage primaryStage, Account librarian) throws Exception {
 		librarianAccount = (LibrarianAccount) librarian;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/UserLookupForm.fxml"));

@@ -37,6 +37,10 @@ public class UserAccount extends Account {
 		this.status = status;
 	}
 
+	/**
+	 * set user status
+	 * @param str to set as user status
+	 */
 	public void setStatusString(String str) {
 		switch (str) {
 		case "Active":

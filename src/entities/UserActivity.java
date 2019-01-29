@@ -15,36 +15,28 @@ public class UserActivity {
 	}
 
 	/**
-	 * Gets the user ID.
-	 * 
-	 * @return userID
+	 * @return the userID
 	 */
 	public int getUserID() {
 		return userID;
 	}
 
 	/**
-	 * Instantiates user ID
-	 * 
-	 * @param userID
+	 * @param userID the userID to set
 	 */
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}
 
 	/**
-	 * Gets the activity Name.
-	 * 
-	 * @return activityName
+	 * @return the activityName
 	 */
 	public String getActivityName() {
 		return activityName;
 	}
 
 	/**
-	 * Instantiates activity Name
-	 * 
-	 * @param activityName
+	 * @param activityName the activityName to set
 	 */
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
@@ -63,4 +55,6 @@ public class UserActivity {
 	public void setDate(Timestamp date) {
 		this.date = date;
 	}
+
+	
 }

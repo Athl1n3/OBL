@@ -1,7 +1,5 @@
 package entities;
 
-import entities.UserAccount.accountStatus;
-
 public abstract class Account extends Person {
 
 	private int accountID;
@@ -29,14 +27,15 @@ public abstract class Account extends Person {
 	}
 
 	/**
-	 * @return the logged
+	 * @return if user is logged 
 	 */
 	public boolean isLogged() {
 		return logged;
 	}
 
 	/**
-	 * @param logged the logged to set
+	 * Set user logged status
+	 * @param logged set user online status
 	 */
 	public void setLogged(boolean logged) {
 		this.logged = logged;
@@ -50,15 +49,15 @@ public abstract class Account extends Person {
 	}
 
 	/**
-	 * @param userType the userType to set
+	 * @param userType set user type
 	 */
 	public void setUserType(UserType userType) {
 		this.userType = userType;
 	}
 
 	/**
-	 * 
-	 * @param userType the Sttring userType to set
+	 * set user type via string
+	 * @param userType set usertype via string
 	 */
 	public void setUserTypeString(String userType) {
 		if (UserType.User.equals(userType))
@@ -77,7 +76,7 @@ public abstract class Account extends Person {
 	}
 
 	/**
-	 * @param accountID the accountID to set
+	 * @param accountID set accountID
 	 */
 	public void setAccountID(int accountID) {
 		this.accountID = accountID;
@@ -93,9 +92,7 @@ public abstract class Account extends Person {
 	}
 
 	/**
-	 * Instantiates the user Name
-	 * 
-	 * @param set the userName
+	 * @param userName set Username
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
@@ -111,14 +108,18 @@ public abstract class Account extends Person {
 	}
 
 	/**
-	 * Instantiates the password.
+	 * sets the password.
 	 * 
-	 * @param set the password
+	 * @param password set password
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * 
+	 * @return get full name
+	 */
 	public String getFullName() {
 		return getFirstName() + " " + getLastName();
 	}

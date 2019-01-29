@@ -17,14 +17,15 @@ public class BookCopy {
 	}
 
 	/**
-	 * @return the lent
+	 * @return if copy is lent
 	 */
 	public boolean isLent() {
 		return lent;
 	}
 
 	/**
-	 * @param lent the lent to set
+	 * 
+	 * @param lent
 	 */
 	public void setLent(boolean lent) {
 		this.lent = lent;
@@ -58,9 +59,8 @@ public class BookCopy {
 	}
 
 	/**
-	 * Instantiates Serial Number.
-	 * 
-	 * @param SerialNumber
+	 * Set serial number
+	 * @param serialNumber
 	 */
 	public void setSerialNumber(String serialNumber) {
 		SerialNumber = serialNumber;
@@ -68,7 +68,7 @@ public class BookCopy {
 	
 	/**
 	 * returns copy purchase Date
-	 * @return LocalDate 
+	 * @return LocalDate
 	 */
 	public LocalDate getPurchaseDate() {
 		return purchaseDate;

@@ -86,7 +86,7 @@ public class Book {
 	}
 	
 	/**
-	 * Instantiates the author
+	 * Set the author
 	 * @param  author 
 	 */
 	public void setAuthor(String author) {
@@ -102,7 +102,7 @@ public class Book {
 		return edition;
 	}
 	/**
-	 * Instantiates the edition
+	 * Set the edition
 	 * @param  edition 
 	 */
 	public void setEdition(String edition) {
@@ -117,7 +117,7 @@ public class Book {
 	}
 	
 	/**
-	 * @param printYear the printYear to set
+	 * @param printYear
 	 */
 	public void setPrintYear(int printYear) {
 		this.printYear = printYear;
@@ -131,8 +131,8 @@ public class Book {
 		return subject;
 	}
 	/**
-	 * Instantiates the Subject
-	 * @param  Subject 
+	 * Set subject
+	 * @param subject
 	 */
 	public void setSubject(String subject) {
 		this.subject = subject;
@@ -145,9 +145,10 @@ public class Book {
 	public String getDescription() {
 		return description;
 	}
+
 	/**
-	 * Instantiates the description
-	 * @param  description 
+	 * set description
+	 * @param description
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -161,23 +162,22 @@ public class Book {
 		return catalog;
 	}
 	/**
-	 * Instantiates the catalog
-	 * @param  catalog 
+	 * set catalog
+	 * @param catalog
 	 */
 	public void setCatalog(int catalog) {
 		this.catalog = catalog;
 	}
 	/**
-  	 * Gets   table Of Contents.
-  	 * 
-  	 * @return  tableOfContents.
-  	 */
+	 * Get table of content
+	 * @return table of contents path
+	 */
 	public String getTableOfContents() {
 		return tableOfContents;
 	}
 	/**
-	 * Instantiates the table Of Contents
-	 * @param  tableOfContents 
+	 * Set tableOfContents path
+	 * @param tableOfContents
 	 */
 	public void setTableOfContents(String tableOfContents) {
 		this.tableOfContents = tableOfContents;
@@ -185,14 +185,14 @@ public class Book {
 	/**
   	 * Gets   shelf.
   	 * 
-  	 * @return  shelf.
+  	 * @return  shelf
   	 */
 	public String getShelf() {
 		return shelf;
 	}
 	/**
-	 * Instantiates the shelf
-	 * @param  shelf 
+	 * set shelf
+	 * @param shelf
 	 */
 	public void setShelf(String shelf) {
 		this.shelf = shelf;
@@ -206,7 +206,7 @@ public class Book {
 		return copiesNumber;
 	}
 	/**
-	 * Instantiates the copies Number
+	 * Set copiesNumber
 	 * @param  copiesNumber 
 	 */
 	public void setCopiesNumber(int copiesNumber) {
@@ -217,22 +217,42 @@ public class Book {
 		return type;
 	}
 	
+	/**
+	 * set BookType
+	 * @param type
+	 */
 	public void setBookType(bookType type) {
 		this.type = type;
 	}
 	
+	/**
+	 * get available book copies
+	 * @return available copies
+	 */
 	public int getAvailableCopies() {
 		return availableCopies;
 	}
 	
+	/**
+	 * set available copies
+	 * @param availableCopies
+	 */
 	public void setAvailableCopies(int availableCopies) {
 		this.availableCopies = availableCopies;
 	}
 	
+	/**
+	 * get book orders number
+	 * @return book orders number
+	 */
 	public int getBookOrders() {
 		return bookOrders;
 	}
 	
+	/**
+	 * Set book orders number
+	 * @param bookOrders
+	 */
 	public void setBookOrders(int bookOrders) {
 		this.bookOrders = bookOrders;
 	}

@@ -36,18 +36,22 @@ public class Notification {
 	}
 
 	/**
-	 * @return the msgType
+	 * @return the userID
 	 */
-	public notificationType getNotfType() {
-		return notfType;
+	public int getUserID() {
+		return userID;
 	}
 
+
+
 	/**
-	 * @param msgType the msgType to set
+	 * @param userID the userID to set
 	 */
-	public void setMsgType(notificationType notfType) {
-		this.notfType = notfType;
+	public void setUserID(int userID) {
+		this.userID = userID;
 	}
+
+
 
 	/**
 	 * @return the notificationNum
@@ -56,12 +60,16 @@ public class Notification {
 		return notificationNum;
 	}
 
+
+
 	/**
 	 * @param notificationNum the notificationNum to set
 	 */
 	public void setNotificationNum(int notificationNum) {
 		this.notificationNum = notificationNum;
 	}
+
+
 
 	/**
 	 * @return the date
@@ -70,6 +78,8 @@ public class Notification {
 		return date;
 	}
 
+
+
 	/**
 	 * @param date the date to set
 	 */
@@ -77,44 +87,47 @@ public class Notification {
 		this.date = date;
 	}
 
-	/**
-	 * Gets the user ID.
-	 * 
-	 * @return userID
-	 */
-	public int getUserID() {
-		return userID;
-	}
+
 
 	/**
-	 * Instantiates the userID
-	 * 
-	 * @param set the userID
-	 */
-	public void setUserID(int userID) {
-		this.userID = userID;
-	}
-
-	/**
-	 * Gets the message
-	 * 
-	 * @return message
+	 * @return the message
 	 */
 	public String getMessage() {
 		return message;
 	}
 
+
+
 	/**
-	 * Instantiates the message
-	 * 
-	 * @param set the message
+	 * @param message the message to set
 	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
+
+
+
 	/**
-	 * Returns true if notification type is lock notification
+	 * @return the notfType
+	 */
+	public notificationType getNotfType() {
+		return notfType;
+	}
+
+
+
+	/**
+	 * @param notfType the notfType to set
+	 */
+	public void setNotfType(notificationType notfType) {
+		this.notfType = notfType;
+	}
+
+
+
+	/**
+	 * 
+	 * @return if it is a lock notification
 	 */
 	public boolean isLock()
 	{

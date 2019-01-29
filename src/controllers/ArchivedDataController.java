@@ -62,11 +62,19 @@ public class ArchivedDataController {
 	private Archive userArcData;
 	private static int ID;
 
+	/**
+	 * Close form GUI
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
 		((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
 	}
 
+	/**
+	 * View user archived data
+	 */
 	@FXML
 	void initialize() {
 		userArcData = DatabaseController.getArchiveData(ID);

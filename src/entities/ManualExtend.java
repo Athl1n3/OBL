@@ -24,7 +24,7 @@ public class ManualExtend {
 	}
 
 	/**
-	 * @param date the date to set
+	 * @param date
 	 */
 	public void setDate(Date date) {
 		this.date = date;
@@ -76,9 +76,8 @@ public class ManualExtend {
 	}
 
 	/**
-	 * Instantiates Worker Name
-	 * 
-	 * @param WorkerName
+	 * set worker name
+	 * @param workerName
 	 */
 	public void setWorkerName(String workerName) {
 		WorkerName = workerName;

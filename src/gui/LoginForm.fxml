@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="283.0" prefWidth="424.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
+<VBox prefHeight="283.0" prefWidth="424.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
    <children>
       <GridPane prefHeight="403.0" prefWidth="640.0">
         <columnConstraints>
@@ -56,12 +56,12 @@
                   <Insets right="8.0" />
                </padding>
             </Label>
-            <TextField fx:id="txtUsername" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyReleased="#checkUserNameTextField" prefHeight="40.0" prefWidth="140.0" promptText="Login Username" GridPane.rowIndex="1">
+            <TextField fx:id="txtUsername" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="140.0" promptText="Login Username" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets left="20.0" top="15.0" />
                </GridPane.margin>
             </TextField>
-            <PasswordField fx:id="txtPassword" maxHeight="-Infinity" maxWidth="-Infinity" onKeyReleased="#checkPasswordTextField" prefHeight="40.0" prefWidth="140.0" promptText="Login Password" GridPane.rowIndex="2">
+            <PasswordField fx:id="txtPassword" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="40.0" prefWidth="140.0" promptText="Login Password" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets left="20.0" top="15.0" />
                </GridPane.margin>

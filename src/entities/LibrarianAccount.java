@@ -31,14 +31,17 @@ public class LibrarianAccount extends Account {
 	}
 
 	/**
-	 * Instantiates the worker ID
-	 * 
-	 * @param set the worker ID
+	 * set worker ID
+	 * @param workerID
 	 */
 	public void setWorkerID(int workerID) {
 		this.workerID = workerID;
 	}
 
+	/**
+	 * Parse array list into account and fill its data
+	 * @param accountArray
+	 */
 	public void parseArrayIntoAccount(ArrayList<String> accountArray) {////////// NEEDS MODIFICATION
 		this.setID(Integer.parseInt(accountArray.get(0)));
 		this.setFirstName(accountArray.get(1));

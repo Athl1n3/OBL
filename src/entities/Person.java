@@ -19,92 +19,73 @@ public class Person {
 	}
 
 	/**
-	 * Gets the ID.
-	 * 
-	 * @return ID
+	 * @return the iD
 	 */
 	public int getID() {
 		return ID;
 	}
 
 	/**
-	 * Instantiates the ID
-	 * 
-	 * @param set the ID
+	 * @param iD the iD to set
 	 */
-	public void setID(int ID) {
-		this.ID = ID;
+	public void setID(int iD) {
+		ID = iD;
 	}
 
 	/**
-	 * Gets the first Name.
-	 * 
-	 * @return firstName
+	 * @return the firstName
 	 */
 	public String getFirstName() {
 		return firstName;
 	}
 
 	/**
-	 * Instantiates the firstName
-	 * 
-	 * @param set the firstName
+	 * @param firstName the firstName to set
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
 	/**
-	 * Gets the Last Name.
-	 * 
-	 * @return LastName
+	 * @return the lastName
 	 */
 	public String getLastName() {
 		return lastName;
 	}
 
 	/**
-	 * Instantiates the LastName
-	 * 
-	 * @param set the LastName
+	 * @param lastName the lastName to set
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
 	/**
-	 * Gets the eMail.
-	 * 
-	 * @return eMail
+	 * @return the eMail
 	 */
 	public String getEmail() {
 		return eMail;
 	}
 
 	/**
-	 * Instantiates the eMail
-	 * 
-	 * @param set the eMail
+	 * @param eMail the eMail to set
 	 */
 	public void setEmail(String eMail) {
 		this.eMail = eMail;
 	}
 
 	/**
-	 * Gets the mobile Number.
-	 * 
-	 * @return mobileNum
+	 * @return the mobileNum
 	 */
 	public String getMobileNum() {
 		return mobileNum;
 	}
 
 	/**
-	 * Instantiates the mobile Number
-	 * 
-	 * @param set the mobileNum
+	 * @param mobileNum the mobileNum to set
 	 */
-	public void setMobileNum(String str) {
-		this.mobileNum = str;
+	public void setMobileNum(String mobileNum) {
+		this.mobileNum = mobileNum;
 	}
+
 }

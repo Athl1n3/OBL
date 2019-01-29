@@ -1,6 +1,7 @@
 package server;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
@@ -21,15 +22,14 @@ public class EchoServer extends AbstractServer {
 	}
 
 	// Instance methods ************************************************
-
+	Object obj;
+	
 	/**
 	 * This method handles any messages received from the client.
 	 *
 	 * @param msg    The message received from the client.
 	 * @param client The connection from which the message originated.
 	 */
-	Object obj;
-
 	@Override
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("Message received: " + msg.toString() + " from " + client);
@@ -38,16 +38,21 @@ public class EchoServer extends AbstractServer {
 			graduateStudent((Integer)msg);
 			obj = new String("Student ID "+msg+"has been set as graduated");
 		}
-		/*else if(msg instanceof String )
-		{
-			Implementation for order detection
-		}*/
-		else
-		{
+		else if(msg instanceof ArrayList)
+		{	
+			@SuppressWarnings("unchecked")
+			ArrayList<String> arr = (ArrayList<String>)msg;
+			if(arr.get(0).equals("#"))
+			{
+				arr.remove(0);
+				orderNotification(Integer.parseInt(arr.get(0))); //book ID
+			}
 			obj = DBcon.executeQuery(msg);
-			if(obj == null)
-				obj = true;
 		}
+		else
+			obj = DBcon.executeQuery(msg);
+		if(obj == null)
+				obj = true;
 		try {
 			client.sendToClient(obj);
 		} catch (IOException ex) {
@@ -55,14 +60,22 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 	
+	/**
+	 * Call libraryServices graduate student method and set student status as graduated
+	 * @param studentID
+	 */
 	public void graduateStudent(int studentID)
 	{
 		libraryServices.graduateStudent(studentID);
 	}
 	
-	public void orderNotification(int studentID)
+	/**
+	 * Send a notification to the next student in book order queue
+	 * @param bookID
+	 */
+	public void orderNotification(int bookID)
 	{
-		//libraryServices.orderNotification(studentID);
+		libraryServices.orderNotification(bookID);
 	}
 
 	/**

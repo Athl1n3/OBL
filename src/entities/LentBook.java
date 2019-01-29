@@ -1,7 +1,6 @@
 package entities;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 //need to extend from book
 public class LentBook {
@@ -48,8 +47,8 @@ public class LentBook {
 		return book;
 	}
 	/**
-	 * Instantiates book ID
-	 * @param  bookID 
+	 * set book
+	 * @param book
 	 */
 	public void setBook(Book book) {
 		this.book = book;
@@ -77,32 +76,45 @@ public class LentBook {
 		return issueDate;
 	}
 	/**
-	 * @param issueDate the issueDate to set
+	 * @param issueDate
 	 */
 	public void setIssueDate(LocalDate issueDate) {
 		this.issueDate = issueDate;
 	}
 	/**
-	 * @return the dueDate
+	 * @return return due date
 	 */
 	public LocalDate getDueDate() {
 		return dueDate;
 	}
 	/**
-	 * @param dueDate the dueDate to set
+	 * Set due date
+	 * @param dueDate
 	 */
 	public void setDueDate(LocalDate dueDate) {
 		this.dueDate = dueDate;
 	}
 
+	/**
+	 * get book copy
+	 * @return
+	 */
 	public BookCopy getBookCopy() {
 		return bookCopy;
 	}
 
+	/**
+	 * set book copy
+	 * @param bookCopy
+	 */
 	public void setBookCopy(BookCopy bookCopy) {
 		this.bookCopy = bookCopy;
 	}
 	
+	/**
+	 * get return date
+	 * @return
+	 */
 	public LocalDate getReturnDate() {
 		return returnDate;
 	}

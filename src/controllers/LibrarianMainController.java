@@ -17,7 +17,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
+/**
+ * Librarian main window GUI
+ * @author Adam Mahameed [Athl1n3]
+ *
+ */
 public class LibrarianMainController {
 
 	@FXML
