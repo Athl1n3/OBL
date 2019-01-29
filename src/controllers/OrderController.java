@@ -82,6 +82,8 @@ public class OrderController implements Initializable {
 			BookOrder order = new BookOrder(DatabaseController.getLatestOrderID() + 1,
 					DatabaseController.loggedAccount.getID(), orderedBook.getBookID(), now);
 			DatabaseController.placeOrder(order);
+			
+			DatabaseController.addActivity(DatabaseController.loggedAccount.getID(), "Ordered Book [Book ID: " + orderedBook.getBookID() +"]");
 			//show alert and exit
 			showAlert("Order Placed Successfully", "book: " + orderedBook.getName() + "\nOrdered By: "
 					+ DatabaseController.loggedAccount.getID() + "\nOrder Date: " + now, event);		}

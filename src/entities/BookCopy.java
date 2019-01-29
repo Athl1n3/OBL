@@ -1,15 +1,18 @@
 package entities;
 
+import java.time.LocalDate;
+
 public class BookCopy {
 	
 	private int bookID;
 	private String SerialNumber;
-	//private static int availableCopies;
+	private LocalDate purchaseDate;
 	private boolean lent;
 
-	public BookCopy(int bookID, String serialNumber, boolean lent) {
+	public BookCopy(int bookID, String serialNumber,LocalDate purchaseDate, boolean lent) {
 		this.bookID = bookID;
 		SerialNumber = serialNumber;
+		this.setPurchaseDate(purchaseDate);
 		this.lent = lent;
 	}
 
@@ -61,6 +64,22 @@ public class BookCopy {
 	 */
 	public void setSerialNumber(String serialNumber) {
 		SerialNumber = serialNumber;
+	}
+	
+	/**
+	 * returns copy purchase Date
+	 * @return LocalDate 
+	 */
+	public LocalDate getPurchaseDate() {
+		return purchaseDate;
+	}
+	
+	/**
+	 * set copy purchase Date
+	 * @param purchaseDate
+	 */
+	public void setPurchaseDate(LocalDate purchaseDate) {
+		this.purchaseDate = purchaseDate;
 	}
 
 }

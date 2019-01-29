@@ -178,13 +178,14 @@ public class LendController {
 		dtDueDate.setValue(date);
 
 		// create the lent book request with the appropriate returning time
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//you need to get the copy from bookCopy table 
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		BookCopy bookCopy = new BookCopy(lentBook.getBookID(), null, true); // ******* SerialNumner *******//
 		LentBook lntbook = new LentBook(lenderAccount.getID(), lentBook, bookCopy, LocalDate.now(), date, null, false);
-		// Jigsaw was here and commented that too (suckmydick Jigsaw)
 		// lent the book to the user
 		DatabaseController.addLentBook(lntbook);
-
+		DatabaseController.updateBookAvailableCopies(lentBook, -1);
 		// let the user know that the lent process has been cone successfully
 		Alert alert = new Alert(AlertType.INFORMATION, "Book has been lent successfully", ButtonType.OK);
 		alert.show();

@@ -66,8 +66,17 @@ public class DatabaseController {
 	 * @return account ID for the new user
 	 */
 	public static int generateAccountID() {
-		clientConnection.executeQuery("SELECT COUNT(*) FROM account;");
-		return (Integer.parseInt(clientConnection.getList().get(0)) + 1) * 264 + 759;
+		return ((getTableRowsNumber("account") + 1) * 264 + 759);
+	}
+	
+	/**
+	 * returns rows number in table
+	 * @param tableName
+	 * @return int table rows number
+	 */
+	public static int getTableRowsNumber(String tableName) {
+		clientConnection.executeQuery("SELECT COUNT(*) FROM " + tableName + ";");
+		return Integer.parseInt(clientConnection.getList().get(0));
 	}
 
 	/**
@@ -308,16 +317,16 @@ public class DatabaseController {
 			clientConnection.executeQuery("SELECT * FROM book WHERE bookID = '" + Integer.parseInt(str) + "' ;");
 			break;
 		case "name":
-			clientConnection.executeQuery("SELECT * FROM book WHERE name= '" + str.toLowerCase() + "' ;");
+			clientConnection.executeQuery("SELECT * FROM book WHERE name LIKE '%" + str.toLowerCase() + "%' ;");
 			break;
 		case "author":
-			clientConnection.executeQuery("SELECT * FROM book WHERE author= '" + str.toLowerCase() + "' ;");
+			clientConnection.executeQuery("SELECT * FROM book WHERE author LIKE '%" + str.toLowerCase() + "%' ;");
 			break;
 		case "subject":
-			clientConnection.executeQuery("SELECT * FROM book WHERE subject= '" + str.toLowerCase() + "' ;");
+			clientConnection.executeQuery("SELECT * FROM book WHERE subject LIKE '%" + str.toLowerCase() + "%' ;");
 			break;
 		case "description":
-			clientConnection.executeQuery("SELECT * FROM book WHERE description= '" + str.toLowerCase() + "' ;");
+			clientConnection.executeQuery("SELECT * FROM book WHERE description LIKE '%" + str.toLowerCase() + "%' ;");
 			break;
 		default:
 			return null;
@@ -422,7 +431,7 @@ public class DatabaseController {
 		clientConnection.executeQuery("SELECT * FROM BookCopy WHERE bookID= '" + serialNumber + "' ;");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
-			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1),
+			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
 					res.get(2).equals("1") ? true : false);
 			return bookCopy;
 		}
@@ -440,9 +449,9 @@ public class DatabaseController {
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<BookCopy> bookCopyList = new ArrayList<BookCopy>();
 		while (res.size() != 0) {
-			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1),
+			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1),LocalDate.parse(res.get(2)), 
 					res.get(2).equals("1") ? true : false);
-			res.subList(0, 3).clear();
+			res.subList(0, 4).clear();
 			bookCopyList.add(bookCopy);
 		}
 
@@ -455,7 +464,7 @@ public class DatabaseController {
 	 * @param bookCopy
 	 */
 	public static void updateBookCopyLentField(BookCopy bookCopy) {
-		clientConnection.executeQuery("UPDATE BookCopy SET lent = '" + bookCopy.isLent() + "' WHERE bookID = '"
+		clientConnection.executeQuery("UPDATE BookCopy SET lent = '" + (bookCopy.isLent() ? 1 : 0) + "' WHERE bookID = '"
 				+ bookCopy.getBookID() + "' AND serialNumber = '" + bookCopy.getSerialNumber() + "';");
 	}
 
@@ -502,9 +511,30 @@ public class DatabaseController {
 			return 0;
 	}
 
+	/**
+	 * check existence of specific order 
+	 * @param userID
+	 * @param bookID
+	 * @return Boolean
+	 */
 	public static boolean checkExistingOrder(int userID, int bookID) {
 		clientConnection
 				.executeQuery("SELECT * FROM BookOrder WHERE userID = '" + userID + "' AND bookID = '" + bookID + "';");
+		ArrayList<String> res = clientConnection.getList();
+		if (res.size() != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * check if there is any orders for specific book
+	 * @param bookID
+	 * @return Boolean
+	 */
+	public static boolean checkExistngBookOrder(int bookID) {
+		clientConnection
+				.executeQuery("SELECT * FROM BookOrder WHERE bookID = '" + bookID + "';");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
 			return true;
@@ -557,6 +587,25 @@ public class DatabaseController {
 			}
 		}
 		return activityList;
+	}
+	
+	/**
+	 * adding user activity to userActivity table in DB
+	 * @param accountID
+	 * @param activity
+	 */
+	public static void addActivity(int accountID, String activity) {
+		ArrayList<String> arr = new ArrayList<String>();
+		String query = "INSERT INTO userActivity(activityNum, userID, activityName, date) VALUES(?,?,?,?)";
+		clientConnection.executeQuery("SELECT COUNT(*) FROM account;");
+		arr.add(String.valueOf(getTableRowsNumber("userActivity") + 1));
+		arr.add(String.valueOf(accountID));
+		arr.add(activity);
+		//get the current date and time to be saved in DB
+		Timestamp now = new Timestamp(new Date().getTime());
+		arr.add(String.valueOf(now));
+		arr.add(query);
+		clientConnection.executeQuery(arr);
 	}
 
 	/**

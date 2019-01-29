@@ -89,7 +89,11 @@ public class ReturnController {
 	@FXML
 	void btnReturnBookPressed(ActionEvent event) {
 		if (returnedBook != null) {
+			//update Book AvailableCopies += 1
 			DatabaseController.updateBookAvailableCopies(returnedBook.getBook(), 1);
+			//update Book Copy Lent Field to false
+			returnedBook.getBookCopy().setLent(false);
+			DatabaseController.updateBookCopyLentField(returnedBook.getBookCopy());
 			if (dtReturnDate.getValue().isBefore(returnedBook.getDueDate())
 					|| dtReturnDate.getValue().isEqual(returnedBook.getDueDate())) {
 				showAlert("Book returned successfully!!!", null);
@@ -98,7 +102,9 @@ public class ReturnController {
 				// need to check the late times number and creating a new field in account table
 				// called lateCount
 			}
-			DatabaseController.deleteLendBook(returnedBook.getUserID(), returnedBook.getBook().getBookID());
+			//DatabaseController.deleteLendBook(returnedBook.getUserID(), returnedBook.getBook().getBookID());
+			DatabaseController.addActivity(DatabaseController.loggedAccount.getID(), "Returned Book [Book ID: " + returnedBook.getBook().getBookID() +"]");
+
 		}
 		else{
 			showAlert("Warning, Empty Input!!!", "Please Insert User ID and Book ID First");
