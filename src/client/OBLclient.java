@@ -48,7 +48,10 @@ public class OBLclient extends AbstractClient {
 		sem.release();
 	}
 
-	// This method handles all data coming from the UI as arrayList
+	/**
+	 * This method handles all data coming from the UI
+	 * @param obj data recieved from client
+	 */
 	@SuppressWarnings("unchecked")
 	public void handleMessageFromClientUI(Object obj) {
 		try {
@@ -75,8 +78,24 @@ public class OBLclient extends AbstractClient {
 		try {
 			closeConnection();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		System.exit(0);
+	}
+	
+	/**
+	 * Hook method called after the connection has been closed.
+	 */
+	@Override
+	protected void connectionClosed() {
+		System.out.println("Successfully disconnected from server");
+	}
+
+	/**
+	 * Hook method called after a connection has been established.
+	 */
+	@Override
+	protected void connectionEstablished() {
+		System.out.println("Successfully connected to the server");
 	}
 }
 //End of ChatClient class

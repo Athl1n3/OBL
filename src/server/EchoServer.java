@@ -32,7 +32,7 @@ public class EchoServer extends AbstractServer {
 	 */
 	@Override
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		System.out.println("Message received: " + msg.toString() + " from " + client);
+		System.out.println("[Client "+client.getId()+"] Message received: " + msg.toString());
 		if(msg instanceof Integer)
 		{
 			graduateStudent((Integer)msg);
@@ -95,9 +95,7 @@ public class EchoServer extends AbstractServer {
 	protected void serverStopped() {
 		System.out.println("Server has stopped listening for connections.");
 	}
-
-	// Class methods ***************************************************
-
+	
 	/**
 	 * This method is responsible for the creation of the server instance (there is
 	 * no UI in this phase).
@@ -105,6 +103,24 @@ public class EchoServer extends AbstractServer {
 	 * @param args[0] The port number to listen on. Defaults to 5555 if no argument
 	 *        is entered.
 	 */
+	
+	/**
+	 * Hook method called each time a new client connection is accepted.
+	 * @param client the connection connected to the client.
+	 */
+	@Override
+	protected void clientConnected(ConnectionToClient client) {
+		System.out.println("Client " + client.getId() + " has connected to the server");
+	}
+
+	/**
+	 * Hook method called each time a client disconnects.
+	 * @param client the connection with the client.
+	 */
+	@Override
+	synchronized protected void clientDisconnected(ConnectionToClient client) {
+		System.out.println("Client " + client.getId() + " has disconnected from the server");
+	}
 
 	public static void main(String[] args) {
 		int port = 0; // Port to listen on
