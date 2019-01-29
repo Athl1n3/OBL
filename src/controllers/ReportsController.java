@@ -62,6 +62,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * @author Alaa Grable
+ * @version 1.0 [17.1.2019]
+ * 
+ */
+
+
 public class ReportsController {
 
 	@FXML
