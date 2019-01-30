@@ -81,8 +81,11 @@ public class ClientConnection implements OBLclientIF {
 		System.out.println("> " + message);
 	}
 
+	/**
+	 * Terminate client connection to the server
+	 */
 	public void terminate() {
-		client.quit();
+			client.quit();
 	}
 
 	public void init() {

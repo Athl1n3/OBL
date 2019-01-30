@@ -27,6 +27,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
+ * This GUI is used to make a user lookup and manage all of his data
  * 
  * @author Adam Mahameed
  * @version 1.4 [16.1.2019]
@@ -100,6 +101,11 @@ public class UserLookupController {
 	private static UserAccount lookupAccount;
 	private static LibrarianAccount librarianAccount;
 
+	/**
+	 * Show looked up user archived data
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void btnArchivePressed(ActionEvent event) {
 		if (txtID.isDisabled()) {
@@ -140,8 +146,14 @@ public class UserLookupController {
 		txtPassword.setStyle(null);
 		cbEditUser.setSelected(false);
 		lblOnlineStatus.setText("---");
+		lookupAccount = null;
 	}
 
+	/**
+	 * Edits user data according to the new inserted data
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void btnEditDataPressed(ActionEvent event) {
 		Alert msg = new Alert(AlertType.CONFIRMATION, "Are you sure to update user data?", ButtonType.YES,
@@ -260,19 +272,25 @@ public class UserLookupController {
 		return validInput;// If all inputs are valid
 	}
 
+	/**
+	 * Lock/Unlock user account
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void btnLockPressed(ActionEvent event) {
 		Alert statMsg = new Alert(AlertType.INFORMATION, "", ButtonType.OK);
 
 		if (txtID.isDisabled()) {
 			if (lookupAccount.getStatus() == accountStatus.Locked) {
-				Alert confirmationMsg = new Alert(AlertType.CONFIRMATION, "Unlocking a user will reset his delays\nAre you sure to perform this operation?", ButtonType.YES, ButtonType.CANCEL);
-				if(confirmationMsg.showAndWait().get() == ButtonType.YES)
-				{
-				lookupAccount.setStatus(accountStatus.Active);
-				DatabaseController.updateUserStatus(lookupAccount, true);
-				statMsg.setContentText("User account was successfully set to 'Active' and delays has been reset");
-				statMsg.show();
+				Alert confirmationMsg = new Alert(AlertType.CONFIRMATION,
+						"Unlocking a user will reset his delays\nAre you sure to perform this operation?",
+						ButtonType.YES, ButtonType.CANCEL);
+				if (confirmationMsg.showAndWait().get() == ButtonType.YES) {
+					lookupAccount.setStatus(accountStatus.Active);
+					DatabaseController.updateUserStatus(lookupAccount, true);
+					statMsg.setContentText("User account was successfully set to 'Active' and delays has been reset");
+					statMsg.show();
 				}
 			} else {
 				lookupAccount.setStatus(accountStatus.Locked);
@@ -289,6 +307,11 @@ public class UserLookupController {
 		}
 	}
 
+	/**
+	 * Suspend/Unsuspend user account
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void btnSuspendPressed(ActionEvent event) {
 		boolean status;
@@ -315,31 +338,48 @@ public class UserLookupController {
 		statMsg.show();
 	}
 
+	/**
+	 * Look up for user
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void btnView(ActionEvent event) {
-
+		boolean userFound = false;
 		if (txtID.getText().isEmpty()) {
 			Alert msg = new Alert(AlertType.WARNING, "User ID must be inserted", ButtonType.OK);
 			msg.show();
 		} else {
-			try {
-				Integer.parseInt((txtID.getText()));
-				lookupAccount = (UserAccount) DatabaseController.getAccount(Integer.parseInt(txtID.getText()));
-				if (!(lookupAccount.getStatus() == null)) {
-					if (lookupAccount != null) {
-						LoadUserData();
-						txtID.setDisable(true);
+			if (txtID.getText().length() == 9) {
+				try {
+					Integer.parseInt((txtID.getText()));
+					Account acc = DatabaseController.getAccount(Integer.parseInt(txtID.getText()));
+					if (acc != null)
+						userFound = true;
+					if (acc instanceof UserAccount)
+						lookupAccount = (UserAccount) acc;
+					if (userFound == true) {
+						if (lookupAccount != null) {
+							LoadUserData();
+							txtID.setDisable(true);
+						} else
+							new Alert(AlertType.WARNING, "Unable to lookup for a librarian/manager account!",
+									ButtonType.OK).show();
 					} else
 						new Alert(AlertType.WARNING, "User doesn't exist!", ButtonType.OK).show();
-				} else
-					new Alert(AlertType.WARNING, "Unable to lookup for a librarian/manager account!", ButtonType.OK)
-							.show();
-			} catch (NumberFormatException exc) {
-				new Alert(AlertType.WARNING, "ID must contain numbers only", ButtonType.OK).show();
-			}
+				} catch (NumberFormatException exc) {
+					new Alert(AlertType.WARNING, "ID must contain numbers only", ButtonType.OK).show();
+				}
+			} else
+				new Alert(AlertType.WARNING, "ID must be 9 numbers only!", ButtonType.OK).show();
 		}
 	}
 
+	/**
+	 * View user activity history
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void btnViewHistoryPressed(ActionEvent event) {
 		if (txtID.isDisabled()) {
@@ -356,6 +396,11 @@ public class UserLookupController {
 			new Alert(AlertType.WARNING, "A user must be looked up first!", ButtonType.OK).show();
 	}
 
+	/**
+	 * Go back to previous page
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
@@ -377,7 +422,7 @@ public class UserLookupController {
 		}
 		lblStatus.setText("---");
 		btnEditData.setDisable(true);
-		cbEditUser.setOnAction(new EventHandler<ActionEvent>() {// Edit user checkbox event handler
+		cbEditUser.setOnAction(new EventHandler<ActionEvent>() {// Edit user check box event handler
 			@Override
 			public void handle(ActionEvent event) {
 				if (txtID.isDisabled()) {
@@ -398,6 +443,13 @@ public class UserLookupController {
 		});
 	}
 
+	/**
+	 * Start up form
+	 * 
+	 * @param primaryStage
+	 * @param librarian
+	 * @throws Exception if starting fails
+	 */
 	void start(Stage primaryStage, Account librarian) throws Exception {
 		librarianAccount = (LibrarianAccount) librarian;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/UserLookupForm.fxml"));

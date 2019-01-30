@@ -22,7 +22,6 @@ import org.simplejavamail.mailer.config.TransportStrategy;
  * 
  * @author Adam Mahameed
  * @version 1.2
- * @category LibraryServices
  */
 
 public class LibraryServices {
@@ -36,6 +35,10 @@ public class LibraryServices {
 		// lateReturnsService();//Initiate late returns service
 	}
 
+	/**
+	 * Send a notification to the next student in book order queue
+	 * @param bookID
+	 */
 	@SuppressWarnings("unchecked")
 	public void orderNotification(int bookID) {// Find next order in queue for this book
 		ArrayList<String> nextBookOrder = ((ArrayList<String>) dbCon.executeSelectQuery(
@@ -59,6 +62,13 @@ public class LibraryServices {
 
 	}
 
+	
+	/**
+	 * Call libraryServices graduate student method and set student status as graduated
+	 * If the student got lent books, a mail gets sent to return them and suspends his account
+	 * else account is locked
+	 * @param studentID
+	 */
 	@SuppressWarnings("unchecked")
 	public void graduateStudent(int studentID) {
 		int accountID = Integer.parseInt(((ArrayList<String>) dbCon

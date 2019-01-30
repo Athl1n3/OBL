@@ -7,6 +7,7 @@ import entities.Account;
 import entities.Account.UserType;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,9 +21,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+/**
+ * Login GUI controller
+ * @author Saleh Kasem
+ *
+ */
 public class LoginController implements Initializable {
 
 	@FXML
@@ -48,6 +53,10 @@ public class LoginController implements Initializable {
 
 	private Account account;
 
+	/**
+	 * Cancel login operation and go back to the previous window
+	 * @param event
+	 */
 	@FXML
 	void btnCancelPressed(ActionEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
@@ -56,6 +65,10 @@ public class LoginController implements Initializable {
 		stage.setTitle("Main Window");
 	}
 
+	/**
+	 * Validate and log in into user
+	 * @param event
+	 */
 	@FXML
 	void btnLoginPressed(ActionEvent event) {
 		Alert alert = new Alert(AlertType.WARNING);
@@ -68,8 +81,7 @@ public class LoginController implements Initializable {
 						account.setLogged(true);
 						DatabaseController.loggedAccount = account;
 						DatabaseController.logAccount(account);
-						openNewForm("User", stage);
-						
+						openNewForm("User", stage);	
 					}
 					else {
 						alert.setContentText("Account is \"Locked\"! \n Contact library for appeal.");
@@ -91,29 +103,17 @@ public class LoginController implements Initializable {
 			alert.setContentText("Incorrect Username or Password!!!\n\n Please try again.");
 			alert.setHeaderText("Login Failure");
 			alert.show();
-			lblUsername.setText("*" + lblUsername.getText());
-			lblPassword.setText("*" + lblPassword.getText());
+			txtUsername.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			txtUsername.clear();
 			txtPassword.clear();
-			btnLogin.setDisable(true);
-			txtPassword.setDisable(true);
 		}
-	}
-
-	@FXML
-	void checkPasswordTextField(KeyEvent event) {
-		btnLogin.setDisable(false);
-	}
-
-	@FXML
-	void checkUserNameTextField(KeyEvent event) {
-		txtPassword.setDisable(false);
 	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		btnLogin.setDisable(true);
-		txtPassword.setDisable(true);
+		BooleanBinding loginBind = txtUsername.textProperty().isEmpty().or(txtPassword.textProperty().isEmpty());
+		btnLogin.disableProperty().bind(loginBind);
 	}
 
 	public void start(Stage stage) {
@@ -128,6 +128,11 @@ public class LoginController implements Initializable {
 		}
 	}
 
+	/**
+	 * Open appropriate form
+	 * @param userType
+	 * @param primaryStage
+	 */
 	public void openNewForm(String userType, Stage primaryStage) {
 		try {
 			if (userType.equals("User")) {

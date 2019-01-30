@@ -23,6 +23,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+/**
+ * User account details GUI
+ * @author Adam Mahameed [Athl1n3], Ahmed Qais
+ *
+ */
 public class AccountDetailsController implements Initializable {
 
 	@FXML
@@ -65,6 +70,10 @@ public class AccountDetailsController implements Initializable {
 
 	private static UserAccount loggedAccount;
 
+	/**
+	 * Apply data changes to user account
+	 * @param event
+	 */
 	@FXML
 	void btnApplyChangesPressed(ActionEvent event) {
 		Alert msg = new Alert(AlertType.CONFIRMATION, "Are you sure to update user details?", ButtonType.YES,
@@ -88,6 +97,10 @@ public class AccountDetailsController implements Initializable {
 		}
 	}
 
+	/**
+	 * Update user login details
+	 * @param event
+	 */
 	@FXML
 	void btnUpdateLoginPressed(ActionEvent event) {
 		boolean flag = false;
@@ -112,6 +125,10 @@ public class AccountDetailsController implements Initializable {
 			}
 	}
 
+	/**
+	 * Go back to previous scene
+	 * @param event
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
@@ -176,7 +193,6 @@ public class AccountDetailsController implements Initializable {
 			for (char c : txtFirstName.getText().toCharArray())// Parse text field into chars array and validate
 				if (Character.isDigit(c)) {
 					msg.setContentText(msg.getContentText() + "\n*First name must contain letters only!");
-					;
 					txtFirstName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 					validInput = false;
 					break;
@@ -245,6 +261,10 @@ public class AccountDetailsController implements Initializable {
 
 	}
 
+	/**
+	 * validate data input
+	 * @return boolean
+	 */
 	private boolean validateUsernamePasswordInput() {
 		Alert msg = new Alert(AlertType.ERROR, "", ButtonType.OK);// Prepare alert box
 		msg.setHeaderText("Input Error");
@@ -292,6 +312,9 @@ public class AccountDetailsController implements Initializable {
 		primaryStage.show();
 	}
 
+	/**
+	 * Clear text fields
+	 */
 	private void clearStyles() {
 		txtFirstName.setStyle(null);
 		txtLastName.setStyle(null);

@@ -18,7 +18,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
+/**
+ * User main window
+ * @author Athl1n3
+ *
+ */
 public class UserMainController implements Initializable {
 
 	@FXML
@@ -59,7 +63,6 @@ public class UserMainController implements Initializable {
 	@FXML
 	void imgExtendBookClicked(MouseEvent event) {
 		SceneController.push(scene);
-		// stage.initModality(Modality.APPLICATION_MODAL);
 		ExtendLendController ExtendLendForm = new ExtendLendController();
 		try {
 			ExtendLendForm.start(stage, loggedAccount);
@@ -72,7 +75,6 @@ public class UserMainController implements Initializable {
 	@FXML
 	void imgHistoryClicked(MouseEvent event) {
 		SceneController.push(scene);
-		// stage.initModality(Modality.APPLICATION_MODAL);
 		ActivityController ActivityForm = new ActivityController();
 		try {
 			ActivityForm.start(stage, loggedAccount);
@@ -84,7 +86,6 @@ public class UserMainController implements Initializable {
 
 	@FXML
 	void imgLogoutClicked(MouseEvent event) {
-		// DatabaseController.userLogIO();
 		Alert confirmLogout = new Alert(AlertType.CONFIRMATION, "Are you sure you want to log out of this account?",
 				ButtonType.YES, ButtonType.CANCEL);
 		if (confirmLogout.showAndWait().get() == ButtonType.YES) {
@@ -103,7 +104,6 @@ public class UserMainController implements Initializable {
 	void imgNotificationClicked(MouseEvent event)
 	{
 		SceneController.push(scene);
-		// stage.initModality(Modality.APPLICATION_MODAL);
 		NotificationsController notificationForm = new NotificationsController();
 		try {
 			 notificationForm.start(stage, loggedAccount);
@@ -116,7 +116,6 @@ public class UserMainController implements Initializable {
 	@FXML
 	void imgSearchClicked(MouseEvent event) {
 		SceneController.push(scene);
-		// stage.initModality(Modality.APPLICATION_MODAL);
 		SearchController SearchForm = new SearchController();
 		try {
 			SearchForm.start(stage, loggedAccount);
@@ -129,7 +128,6 @@ public class UserMainController implements Initializable {
 	@FXML
 	void imgSettingsClicked(MouseEvent event) {
 		SceneController.push(scene);
-		// stage.initModality(Modality.APPLICATION_MODAL);
 		AccountDetailsController AccountDetailsForm = new AccountDetailsController();
 		try {
 			AccountDetailsForm.start(stage, loggedAccount);

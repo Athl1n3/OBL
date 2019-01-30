@@ -48,6 +48,10 @@ public class ActivityController {
 	private static UserAccount lookedupAccount;
 	private ObservableList<UserActivity> userActivityOlist;
 
+	/**
+	 * Go back to the previous scene
+	 * @param event
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
@@ -56,6 +60,9 @@ public class ActivityController {
 		stage.setTitle("User Lookup");
 	}
 
+	/**
+	 * View user activity
+	 */
 	@FXML
 	void initialize() {
 		lblUserID.setText(String.valueOf(lookedupAccount.getAccountID()));

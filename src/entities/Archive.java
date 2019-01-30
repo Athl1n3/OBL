@@ -26,10 +26,6 @@ public class Archive {
 		this.mobileNum = mobileNum;
 		this.Email = Email;
 	}
-	/**
-	 * 
-	 */
-
 	
 	/**
 	 * Gets the ID.
@@ -39,24 +35,26 @@ public class Archive {
 	public int getId() {
 		return Id;
 	}
+	
 	/**
-	 * Instantiates Id
-	 * @param setId set the id
+	 * set ID
+	 * @param id
 	 */
 	public void setId(int id) {
 		Id = id;
 	}
+	
 	/**
 	 * Gets the user ID.
 	 * 
-	 * @return  userId
+	 * @return  userID
 	 */
 	public int getUserId() {
 		return userID;
 	}
 	/**
 	 * Instantiates the user Id
-	 * @param setUserId set the user id
+	 * @param userId
 	 */
 	public void setUserId(int userId) {
 		userID = userId;
@@ -71,7 +69,7 @@ public class Archive {
 	}
 	/**
 	 * Instantiates the user name
-	 * @param setUsername set the user name
+	 * @param username
 	 */
 	public void setUsername(String username) {
 		this.username = username;
@@ -84,24 +82,26 @@ public class Archive {
 	public String getPassword() {
 		return password;
 	}
+
 	/**
-	 * Instantiates the password
-	 * @param  set the password
+	 * set password
+	 * @param password
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
 	/**
 	 * Gets the first name.
 	 * 
-	 * @return  firstname
+	 * @return firstName
 	 */
 	public String getFirstname() {
 		return firstName;
 	}
 	/**
 	 * Instantiates the first name
-	 * @param firstname set the first name
+	 * @param firstname
 	 */
 	public void setFirstname(String firstname) {
 		this.firstName = firstname;
@@ -109,44 +109,45 @@ public class Archive {
 	/**
 	 * Gets the last name.
 	 * 
-	 * @return  lastname
+	 * @return  lastName
 	 */
 	public String getLastname() {
 		return lastName;
 	}
 	/**
-	 * Instantiates the last name
-	 * @param lastname set the last name
+	 * Set the last name
+	 * @param lastname
 	 */
 	public void setLastname(String lastname) {
 		this.lastName = lastname;
 	}
+	
 	/**
-	 * Gets the phone number.
-	 * 
-	 * @return  mobileNum
+	 * Gets the phone number
+	 * @return mobileNum
 	 */
 	public String getMobileNum() {
 		return mobileNum;
 	}
+	
 	/**
-	 * Instantiates the phone number
-	 * @param mobileNum set the phone number
+	 * set mobile num
+	 * @param mobileNum
 	 */
 	public void setMobileNum(String mobileNum) {
 		this.mobileNum = mobileNum;
 	}
+	
 	/**
-	 * Gets the phone Email.
-	 * 
+	 * get eMail
 	 * @return  eMail
 	 */
 	public String getEmail() {
 		return Email;
 	}
 	/**
-	 * Instantiates the Email.
-	 * @param email set the Email
+	 * Set Email.
+	 * @param eMail
 	 */
 	public void setEmail(String eMail) {
 		this.Email = eMail;

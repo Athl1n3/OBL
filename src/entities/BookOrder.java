@@ -74,7 +74,6 @@ public class BookOrder {
 		return orderDate;
 	}
 
-
 	/**
 	 * set order date
 	 * @param orderDate
@@ -82,10 +81,4 @@ public class BookOrder {
 	public void setOrderDate(Timestamp orderDate) {
 		this.orderDate = orderDate;
 	}
-	
-	
-
-
-	
-
 }

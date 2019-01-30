@@ -12,6 +12,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+/**
+ * Main window of the OBL Library System
+ * @author Adam Mahameed [Athl1n3]
+ *
+ */
+
 public class MainFormController {
 
 	@FXML
@@ -26,10 +32,14 @@ public class MainFormController {
 	@FXML
 	private ImageView imgSearch;
 
+	/**
+	 * Open user login form
+	 * @param event
+	 */
 	@FXML
 	void imgLoginClicked(MouseEvent event) {
 		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		Scene scene = (Scene) ((Node) event.getSource()).getScene();
+		Scene scene = ((Node) event.getSource()).getScene();
 		SceneController.push(scene);
 		LoginController LoginForm = new LoginController();
 		try {
@@ -40,10 +50,14 @@ public class MainFormController {
 		}
 	}
 
+	/**
+	 * Open search form
+	 * @param event
+	 */
 	@FXML
 	void imgSearchClicked(MouseEvent event) {
 		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		Scene scene = (Scene) ((Node) event.getSource()).getScene();
+		Scene scene = ((Node) event.getSource()).getScene();
 		SceneController.push(scene);
 		SearchController SearchForm = new SearchController();
 		try {

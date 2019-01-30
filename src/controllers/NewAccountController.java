@@ -69,8 +69,9 @@ public class NewAccountController {
 
 	public ClientConnection cc;
 
-	/*
-	 * Clear all textFields
+	/**
+	 * Clear all text fields
+	 * @param event
 	 */
 	@FXML
 	void btnClearPressed(ActionEvent event) {

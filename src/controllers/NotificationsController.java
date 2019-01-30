@@ -115,6 +115,10 @@ public class NotificationsController {
 		}
 	}
 
+	/**
+	 * Return to the previous stage
+	 * @param event
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
@@ -124,6 +128,9 @@ public class NotificationsController {
 		stage.setTitle("Main");
 	}
 
+	/**
+	 * Initialize notifications for this user
+	 */
 	@FXML
 	void initialize() {
 		txtUserID.setText(String.valueOf(loggedAccount.getAccountID()));
@@ -170,6 +177,11 @@ public class NotificationsController {
 		});
 	}
 
+	/**
+	 * Startup GUI
+	 * @param stage
+	 * @param loggedAccount
+	 */
 	public void start(Stage stage, Account loggedAccount) {
 		try {
 			NotificationsController.loggedAccount = loggedAccount;

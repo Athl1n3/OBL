@@ -13,7 +13,11 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
+/**
+ *
+ * @author Adam Mahameed [Athl1n3]
+ *
+ */
 public class UsersManagementController {
 
 	@FXML
@@ -41,10 +45,14 @@ public class UsersManagementController {
 		stage.setTitle("Main Window");
 	}
 
+	/**
+	 * Opens creating new account form
+	 * @param event
+	 */
 	@FXML
 	void imgCreateAccountClicked(MouseEvent event) {
 		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		Scene scene = (Scene) ((Node) event.getSource()).getScene();
+		Scene scene = ((Node) event.getSource()).getScene();
 		SceneController.push(scene);
 		// stage.initModality(Modality.APPLICATION_MODAL);
 		NewAccountController newAccountForm = new NewAccountController();
@@ -56,10 +64,14 @@ public class UsersManagementController {
 		}
 	}
 
+	/**
+	 * Opens user lookup form
+	 * @param event
+	 */
 	@FXML
 	void imgUserLookupClicked(MouseEvent event) {
 		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		Scene scene = (Scene) ((Node) event.getSource()).getScene();
+		Scene scene = ((Node) event.getSource()).getScene();
 		SceneController.push(scene);
 		// stage.initModality(Modality.APPLICATION_MODAL);
 		UserLookupController userLookupForm = new UserLookupController();
