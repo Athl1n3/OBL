@@ -15,8 +15,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.swing.event.ChangeListener;
-
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -24,7 +22,6 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -39,8 +36,6 @@ import entities.LentBook;
 import entities.LibrarianAccount;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -50,7 +45,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -305,7 +299,8 @@ public class ReportsController {
 					if(books.isEmpty() == true) {
 						// if not then let the user now
 						alertWarningMessage("Something went wrong while retrieving books data from database.");
-						break;document.close();
+						document.close();
+						break;
 					}
 					
 					// iterate through the books to display data for each book
@@ -374,12 +369,13 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table3.addCell(cell);
 
-					ArrayList<Account> accounts = activitiesRprt.getAccounts();
+					ArrayList<UserAccount> accounts = activitiesRprt.getAccounts();
 					// validate if we got the books data successfully from database
 					if(accounts.isEmpty() == true) {
 						// if not , let the user know
 						alertWarningMessage("Something went wrong while retrieving the accounts data.");
-						break; document.close();
+						document.close();
+						break;
 					}
 					// iterate through the accounts and display the data for each account
 					for (Account acc : accounts) {
@@ -678,7 +674,8 @@ public class ReportsController {
 					ArrayList<LentBook> accounts = DatabaseController.getLentBookList(-1);
 					if(accounts.isEmpty() == true) {
 						alertWarningMessage("Something went wrong while retrieving the lent books.");
-						break; document.close();
+						document.close();
+						break;
 					}
 
 					// Info Table Header (Start)
@@ -841,7 +838,6 @@ public class ReportsController {
 			}
 		}
 		}
-		break;
 
 	}
 
@@ -1555,7 +1551,12 @@ public class ReportsController {
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			table.addCell(cell);
 		}
-		document.add(table);
+		try {
+			document.add(table);
+		} catch (DocumentException e1) {
+			
+			e1.printStackTrace();
+		}
 
 		PdfPTable table2 = new PdfPTable(3);
 		table2.setSpacingBefore(100);
@@ -1598,7 +1599,12 @@ public class ReportsController {
 		cell.setBackgroundColor(BaseColor.GRAY);
 		table2.addCell(cell);
 
-		document.add(table2);
+		try {
+			document.add(table2);
+		} catch (DocumentException e) {
+			
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * Checks if the file is open or not
