@@ -10,18 +10,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import client.ClientConnection;
-import entities.Account;
-import entities.Archive;
-import entities.Book;
+import entities.*;
+import entities.Account.UserType;
 import entities.Book.bookType;
-import entities.BookCopy;
-import entities.BookOrder;
-import entities.LentBook;
-import entities.LibrarianAccount;
-import entities.ManagerAccount;
-import entities.Notification;
-import entities.UserAccount;
-import entities.UserActivity;
+import entities.UserAccount.accountStatus;
 
 public class DatabaseController {
 
@@ -66,17 +58,22 @@ public class DatabaseController {
 	 * @return account ID for the new user
 	 */
 	public static int generateAccountID() {
-		return ((getTableRowsNumber("account") + 1) * 264 + 759);
+		return ((getTableRowsNumber("account", null) + 1) * 264 + 759);
 	}
 
 	/**
-	 * returns rows number in table
+	 * <<<<<<< HEAD returns rows number in table according to type if type =null ,
+	 * return all the rows number ======= returns rows number in table >>>>>>>
+	 * branch 'master' of https://github.com/Athl1n3/OBL-Project.git
 	 * 
 	 * @param tableName
 	 * @return int table rows number
 	 */
-	public static int getTableRowsNumber(String tableName) {
-		clientConnection.executeQuery("SELECT COUNT(*) FROM " + tableName + ";");
+	public static int getTableRowsNumber(String tableName, String type) {
+		if (type != null)
+			clientConnection.executeQuery("SELECT COUNT(*) FROM " + tableName + " WHERE userType = '" + type + "';");
+		else
+			clientConnection.executeQuery("SELECT COUNT(*) FROM " + tableName + ";");
 		return Integer.parseInt(clientConnection.getList().get(0));
 	}
 
@@ -113,7 +110,7 @@ public class DatabaseController {
 	 */
 	public static void updateUserStatus(UserAccount userAccount, boolean resetDelays) {
 		String query;
-		if(resetDelays)
+		if (resetDelays)
 			query = "UPDATE account SET status = '" + userAccount.getStatus() + "', delays = '0' WHERE userID = '"
 					+ userAccount.getAccountID() + "';";
 		else
@@ -156,8 +153,17 @@ public class DatabaseController {
 		clientConnection.executeQuery("SELECT * FROM Account WHERE ID = +" + ID + ";");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
-			Account userAccount = new UserAccount();
-			((UserAccount) userAccount).parseArrayIntoAccount(res);
+			Account userAccount;
+			if (res.get(8).equals("User")) {
+				userAccount = new UserAccount();
+				((UserAccount) userAccount).parseArrayIntoAccount(res);
+			} else {
+				if (res.get(8).equals("Librarian"))
+					userAccount = new LibrarianAccount();
+				else
+					userAccount = new ManagerAccount();
+				((LibrarianAccount) userAccount).parseArrayIntoAccount(res);
+			}
 			return userAccount;
 		} else
 			return null;
@@ -174,8 +180,17 @@ public class DatabaseController {
 		clientConnection.executeQuery("SELECT * FROM Account WHERE userID = +" + accountID + ";");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
-			Account userAccount = new UserAccount();
-			((UserAccount) userAccount).parseArrayIntoAccount(res);
+			Account userAccount;
+			if (res.get(8).equals("User")) {
+				userAccount = new UserAccount();
+				((UserAccount) userAccount).parseArrayIntoAccount(res);
+			} else {
+				if (res.get(8).equals("Librarian"))
+					userAccount = new LibrarianAccount();
+				else
+					userAccount = new ManagerAccount();
+				((LibrarianAccount) userAccount).parseArrayIntoAccount(res);
+			}
 			return userAccount;
 		} else
 			return null;
@@ -216,6 +231,30 @@ public class DatabaseController {
 			return loggedAccount;
 		} else
 			return null;
+	}
+
+	/**
+	 * return user accounts list according to account status
+	 * 
+	 * @param status
+	 * @return arrayList of user account
+	 */
+	public static ArrayList<UserAccount> getUserAccounts(accountStatus status) {
+		clientConnection.executeQuery("SELECT * FROM Account WHERE userType = '" + UserType.User.toString()
+				+ "' AND status = " + status + "';");
+		try {
+			ArrayList<String> res = clientConnection.getList();
+			ArrayList<UserAccount> arr = new ArrayList<UserAccount>();
+			while (res.size() != 0) {
+				UserAccount userAccount = new UserAccount();
+				userAccount.parseArrayIntoAccount(res);
+				arr.add(userAccount);
+				res.subList(0, 13).clear();
+			}
+			return arr;
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -386,30 +425,38 @@ public class DatabaseController {
 	}
 
 	/**
-	 * return the user lent books list from DB if(userID>=0) return only the user
-	 * lent Book list if(userID<0) return the whole lent Book list
+	 * return the user lent books list from DB if(userID>0) return only the user
+	 * lent Book list, if(userID<0) return the whole lent Book list, if userID = 0
+	 * return only the late users
 	 * 
 	 * @return ArrayList<LentBook>
 	 */
 	public static ArrayList<LentBook> getLentBookList(int userID) {
 		String query;
-		if (userID >= 0)
-			query = "SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '"
+		if (userID > 0) // only for specific user according to userID
+			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook WHERE userID  = '"
 					+ userID + "';";
-		else
-			query = "SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook";
-		clientConnection.executeQuery(query);
-		ArrayList<String> res = clientConnection.getList();
-		ArrayList<LentBook> lentBookList = new ArrayList<LentBook>();
-		while (res.size() != 0) {
-			LentBook lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
-					getBookCopy(res.get(1), res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
-					LocalDate.parse(res.get(5)), res.get(6).equals("1") ? true : false);
-			res.subList(0, 7).clear();
-			lentBookList.add(lentBook);
-		}
+		else // all the list
+		if (userID < 0)
+			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook ;";
+		else // only the late one
+			query = "SELECT userID,bookID, copySerialNumber, issueDate ,dueDate, returnDate, late FROM LentBook WHERE late = '1' ;";
 
-		return lentBookList;
+		clientConnection.executeQuery(query);
+		try {
+			ArrayList<String> res = clientConnection.getList();
+			ArrayList<LentBook> lentBookList = new ArrayList<LentBook>();
+			while (res.size() != 0) {
+				LentBook lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
+						getBookCopy(res.get(1), res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
+						LocalDate.parse(res.get(5)), res.get(6).equals("1") ? true : false);
+				res.subList(0, 7).clear();
+				lentBookList.add(lentBook);
+			}
+			return lentBookList;
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 
 	public static LentBook getLentBook(int userID, int bookID) {
@@ -609,7 +656,7 @@ public class DatabaseController {
 		ArrayList<String> arr = new ArrayList<String>();
 		String query = "INSERT INTO userActivity(activityNum, userID, activityName, date) VALUES(?,?,?,?)";
 		clientConnection.executeQuery("SELECT COUNT(*) FROM account;");
-		arr.add(String.valueOf(getTableRowsNumber("userActivity") + 1));
+		arr.add(String.valueOf(getTableRowsNumber("userActivity", null) + 1));
 		arr.add(String.valueOf(accountID));
 		arr.add(activity);
 		// get the current date and time to be saved in DB
@@ -679,6 +726,54 @@ public class DatabaseController {
 	public static void deleteNotfication(Notification delNotf) {
 		clientConnection.executeQuery(
 				"DELETE FROM notification WHERE notificationNum = '" + delNotf.getNotificationNum() + "';");
+	}
+
+	/**
+	 * fills activities report from DB and return it
+	 * 
+	 * @return ActivitiesReport
+	 */
+	public static ActivitiesReport getActivityReport() {
+		ActivitiesReport report = new ActivitiesReport();
+		report.setTotalUsers(getTableRowsNumber("account", UserType.User.toString()));
+		report.setActiveUsersNumber(getUserTypeNumberAccordingToStatus(accountStatus.Active.toString()));
+		report.setFrozenUsersNumber(getUserTypeNumberAccordingToStatus(accountStatus.Suspended.toString()));
+		report.setLockedUsersNumber(getUserTypeNumberAccordingToStatus(accountStatus.Locked.toString()));
+
+		// get book list from DB
+		report.setBooks(getAllBooks());
+
+		// get the users list witch they where late in return book at least once
+		String query = "SELECT DISTINCT userID FROM LentBook WHERE late = '1' ;";
+		clientConnection.executeQuery(query);
+		try {
+			ArrayList<UserAccount> accounts = new ArrayList<UserAccount>();
+			ArrayList<String> res = clientConnection.getList();
+			while (res.size() != 0) {
+				accounts.add((UserAccount) getAccount(Integer.parseInt(res.get(0))));
+				res.remove(0);
+			}
+			report.setAccounts(accounts);
+		} catch (NullPointerException e) {
+			report.setAccounts(null);
+		}
+		return report;
+	}
+
+	/**
+	 * 
+	 * @param status
+	 * @return int number of users according to there status
+	 */
+	public static int getUserTypeNumberAccordingToStatus(String status) {
+		clientConnection
+				.executeQuery("SELECT COUNT(*) FROM account WHERE userType = 'User' AND status = '" + status + "';");
+		ArrayList<String> arr;
+		arr = clientConnection.getList();
+		if (arr.size() == 0) {
+			return 0;
+		}
+		return Integer.parseInt(arr.get(0));
 	}
 
 	/**

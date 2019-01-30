@@ -8,23 +8,26 @@ public class ActivitiesReport {
 	private int activeUsersNumber;
 	private int frozenUsersNumber;
 	private int lockedUsersNumber;
-	private int usersWithBookLateReturnNumber;
 	private ArrayList<Book> books;
-	private ArrayList<Account> accounts;
+
+	private ArrayList<UserAccount> accounts;
 	
 	
 	public ActivitiesReport(int totalUsers, int activeUsersNumber, int frozenUsersNumber, int lockedUsersNumber,
-			int usersWithBookLateReturnNumber, ArrayList<Book> books, ArrayList<Account> accounts) {
+			ArrayList<Book> books, ArrayList<UserAccount> accounts) {
 		super();
 		this.totalUsers = totalUsers;
 		this.activeUsersNumber = activeUsersNumber;
 		this.frozenUsersNumber = frozenUsersNumber;
 		this.lockedUsersNumber = lockedUsersNumber;
-		this.usersWithBookLateReturnNumber = usersWithBookLateReturnNumber;
 		this.books = books;
-		this.accounts = accounts;
+		this.setAccounts(accounts);
 	}
 	
+	public ActivitiesReport() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * Initialise the total users in the system
 	 * @param totalUsers
@@ -85,29 +88,8 @@ public class ActivitiesReport {
 	public void setLockedUsersNumber(int lockedUsersNumber) {
 		this.lockedUsersNumber = lockedUsersNumber;
 	}
-   	/**
-   	 * Gets the users number With Book Late  .
-   	 * 
-   	 * @return  usersWithBookLateReturnNumber
-   	 */
-	public int getUsersWithBookLateReturnNumber() {
-		return usersWithBookLateReturnNumber;
-	}
-	/**
-	 * Instantiates the  the users number With Book Late
-	 * @param usersWithBookLateReturnNumber
-	 */
-	public void setUsersWithBookLateReturnNumber(int usersWithBookLateReturnNumber) {
-		this.usersWithBookLateReturnNumber = usersWithBookLateReturnNumber;
-	}
+  
 	
-	public ArrayList<Book> getBooks(){
-		return books;
-	}
-	
-	public ArrayList<Account> getAccounts(){
-		return accounts;
-	}
 	
 	public int getAllLibraryBooksNum() {
 		int num = 0;
@@ -117,5 +99,20 @@ public class ActivitiesReport {
 		return num;
 		
 	}
+
+	public ArrayList<UserAccount> getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(ArrayList<UserAccount> accounts) {
+		this.accounts = accounts;
+	}
 	
+	public ArrayList<Book> getBooks() {
+		return books;
+	}
+
+	public void setBooks(ArrayList<Book> books) {
+		this.books = books;
+	}
 }
