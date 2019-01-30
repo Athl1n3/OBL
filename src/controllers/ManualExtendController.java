@@ -2,14 +2,15 @@ package controllers;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import entities.Book;
+import entities.Account;
 import entities.Book.bookType;
-import entities.UserAccount.accountStatus;
 import entities.LentBook;
+import entities.LibrarianAccount;
+import entities.ManualExtend;
 import entities.UserAccount;
+import entities.UserAccount.accountStatus;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
@@ -102,8 +103,11 @@ public class ManualExtendController {
 	@FXML
 	private Button btnExtendLend;
 
+	private LibrarianAccount loggedLibAccount;
+
 	/**
-	 * When ExtendLend button is pressed , this method will be called
+	 * When ExtendLend button is pressed , this method will be called to check book
+	 * extention possibility
 	 * 
 	 * @param event
 	 */
@@ -120,31 +124,48 @@ public class ManualExtendController {
 					"The book " + selectedBook.getBook().getName() + " is a 'Wanted'\n book and cannot be extended.");
 		} else {
 			// validate if there is a week or less to return that book
-			if (LocalDate.now().isAfter(selectedBook.getIssueDate().plusWeeks(1)) == false
-					&& LocalDate.now().isEqual(selectedBook.getIssueDate().plusWeeks(1)) == false) {
+			if ((LocalDate.now().isBefore(selectedBook.getDueDate().minusWeeks(1))) == true || (LocalDate.now().isEqual(selectedBook.getDueDate().minusWeeks(1))) == true) {
 				// if not then let the user know that he can't extend the book return time
 				alertWarningMessage(
 						"You have more than 1 week left to return this book, therefore you can extend this book returning time.");
 			} else {
-
 				// validate if the orders on that book is lesser than the actual available
 				// copies in the library
 				if (selectedBook.getBook().getAvailableCopies() <= selectedBook.getBook().getBookOrders()) {
 					// if not , then let the user know that he can't extend the book return time
-					alertWarningMessage("There is a lot of orders on that book , \nTherefore the book "
-							+ "'"+selectedBook.getBook().getName()+"'" + " cannot be extended.");
+					alertWarningMessage("There is a lot of orders on that book , \nTherefore the book " + "'"
+							+ selectedBook.getBook().getName() + "'" + " cannot be extended.");
 				} else {
 					// extend the book return time to 1 more weeks
-					selectedBook.setDueDate(selectedBook.getDueDate().plusWeeks(1));
+					boolean update = false;
+					if (selectedBook.isLate()) {
+						if (new Alert(AlertType.WARNING,
+								"Book is already in a late return\n Are you sure to extend return date 1 week from today?",
+								ButtonType.YES, ButtonType.CANCEL).showAndWait().get() == ButtonType.YES) {
+							selectedBook.setDueDate(LocalDate.now().plusWeeks(1));
+							update = true;
+						}
+					} else {
+						selectedBook.setDueDate(selectedBook.getDueDate().plusWeeks(1));
+						update = true;
+					}
 
-					//DatabaseController.updateLentBook(selectedBook);
-
-					// let the user know that the return time for the his book has been extended
-					// successfully
-					Alert alert = new Alert(AlertType.INFORMATION,
-							"The book" + selectedBook.getBook().getName() + " Due time has been extended successfully.",
-							ButtonType.OK);
-					alert.show();
+					if (update) {
+						if (DatabaseController.updateLentBook(selectedBook)) {
+							tableView.refresh();
+							ManualExtend extendLog = new ManualExtend(selectedBook.getBook().getBookID(),
+									acc.getAccountID(),
+									loggedLibAccount.getFirstName() + " " + loggedLibAccount.getLastName(),
+									LocalDate.now(), selectedBook.getDueDate());
+							DatabaseController.addManualExtend(extendLog);
+							// let the user know that the return time for the his book has been extended
+							// successfully
+							new Alert(AlertType.INFORMATION, "The book" + selectedBook.getBook().getName()
+									+ " Due time has been extended successfully.", ButtonType.OK).show();
+						} else
+							new Alert(AlertType.ERROR, "An error has occured!\n Executing extend failed!",
+									ButtonType.OK).show();
+					}
 				}
 			}
 		}
@@ -160,25 +181,32 @@ public class ManualExtendController {
 
 		// get the inputed ID
 		String usrID = txtID.getText();
-		
-		 acc = (UserAccount) DatabaseController.getAccount(Integer.parseInt(usrID));
-		// display the user details according to the inserted ID
-		txtUserID.setText(String.valueOf(acc.getID()));
-		txtUsername.setText(acc.getUserName());
-		txtName.setText(acc.getFirstName() + " " + acc.getLastName());
-		lblStatus.setText(String.valueOf(acc.getStatus()));
-		// get the books of the user as an observableList to display it in the table
-		ObservableList<LentBook> list = getLentBookList(usrID);
-		// display the data in the tableView
-		tableView.setItems(list);
-		if(acc.getStatus().equals(accountStatus.Active)) {
-			btnExtendLend.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
-			btnExtendLend.setText("Extend Book Lend");
-		}
-		else {
-			btnExtendLend.setText(acc.getStatus().toString() + " Account");
-			btnExtendLend.setDisable(true);
-		}
+
+		Account accAbs = DatabaseController.getAccount(Integer.parseInt(usrID));
+		if (accAbs != null) {
+			if (accAbs instanceof UserAccount) {
+				acc = (UserAccount) accAbs;
+				// display the user details according to the inserted ID
+				txtUserID.setText(String.valueOf(acc.getID()));
+				txtUsername.setText(acc.getUserName());
+				txtName.setText(acc.getFirstName() + " " + acc.getLastName());
+				lblStatus.setText(String.valueOf(acc.getStatus()));
+				// get the books of the user as an observableList to display it in the table
+				ObservableList<LentBook> list = getLentBookList(usrID);
+				// display the data in the tableView
+				tableView.setItems(list);
+				if (acc.getStatus().equals(accountStatus.Active)) {
+					btnExtendLend.disableProperty()
+							.bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+					btnExtendLend.setText("Extend Book Lend");
+				} else {
+					btnExtendLend.setText(acc.getStatus().toString() + " Account");
+					btnExtendLend.setDisable(true);
+				}
+			} else
+				alertWarningMessage("Can't perform this action for librarian account!");
+		} else
+			alertWarningMessage("User doesn't exist!");
 	}
 
 	@FXML
@@ -186,7 +214,7 @@ public class ManualExtendController {
 	 * Initialise the current screen
 	 */
 	void initialize() {
-
+		loggedLibAccount = (LibrarianAccount) DatabaseController.loggedAccount;
 		// a listener to validate if the ID length is not greater than 9 digits and if
 		// it's only contain numbers
 		txtID.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -201,30 +229,30 @@ public class ManualExtendController {
 		});
 
 		// Defines how to fill data for each cell
-        bookNameCol.setCellValueFactory(new Callback<CellDataFeatures<LentBook, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(CellDataFeatures<LentBook, String> c) {
-                return new SimpleStringProperty(c.getValue().getBook().getName());                
-            }
-    });
-        bookEditionCol.setCellValueFactory(new Callback<CellDataFeatures<LentBook, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(CellDataFeatures<LentBook, String> c) {
-                return new SimpleStringProperty(c.getValue().getBook().getEdition());                
-            }
-    });
-        bookAuthorCol.setCellValueFactory(new Callback<CellDataFeatures<LentBook, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(CellDataFeatures<LentBook, String> c) {
-                return new SimpleStringProperty(c.getValue().getBook().getAuthor());                
-            }
-    });
-        bookTypeCol.setCellValueFactory(new Callback<CellDataFeatures<LentBook, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(CellDataFeatures<LentBook, String> c) {
-                return new SimpleStringProperty(c.getValue().getBook().getBookType().toString());      
-            }
-    });
+		bookNameCol.setCellValueFactory(new Callback<CellDataFeatures<LentBook, String>, ObservableValue<String>>() {
+			@Override
+			public ObservableValue<String> call(CellDataFeatures<LentBook, String> c) {
+				return new SimpleStringProperty(c.getValue().getBook().getName());
+			}
+		});
+		bookEditionCol.setCellValueFactory(new Callback<CellDataFeatures<LentBook, String>, ObservableValue<String>>() {
+			@Override
+			public ObservableValue<String> call(CellDataFeatures<LentBook, String> c) {
+				return new SimpleStringProperty(c.getValue().getBook().getEdition());
+			}
+		});
+		bookAuthorCol.setCellValueFactory(new Callback<CellDataFeatures<LentBook, String>, ObservableValue<String>>() {
+			@Override
+			public ObservableValue<String> call(CellDataFeatures<LentBook, String> c) {
+				return new SimpleStringProperty(c.getValue().getBook().getAuthor());
+			}
+		});
+		bookTypeCol.setCellValueFactory(new Callback<CellDataFeatures<LentBook, String>, ObservableValue<String>>() {
+			@Override
+			public ObservableValue<String> call(CellDataFeatures<LentBook, String> c) {
+				return new SimpleStringProperty(c.getValue().getBook().getBookType().toString());
+			}
+		});
 		issuedDateCol.setCellValueFactory(new PropertyValueFactory<LentBook, LocalDate>("IssueDate"));
 		dueDateCol.setCellValueFactory(new PropertyValueFactory<LentBook, LocalDate>("DueDate"));
 		btnExtendLend.setDisable(true);
@@ -237,14 +265,16 @@ public class ManualExtendController {
 
 	/**
 	 * Create an ObservableList that contains the lent books for that user
+	 * 
 	 * @param userID
 	 * @return ObservableList<LentBook>
 	 */
 	private ObservableList<LentBook> getLentBookList(String userID) {
 
 		// create an observablelist that contains the user let books
-		
-		ObservableList<LentBook> list = FXCollections.observableArrayList(DatabaseController.getLentBookList(acc.getAccountID()));
+
+		ObservableList<LentBook> list = FXCollections
+				.observableArrayList(DatabaseController.getLentBookList(acc.getAccountID()));
 		// return the observablelist
 		return list;
 	}

@@ -1,33 +1,49 @@
 package entities;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class ManualExtend {
 	private int bookID;
 	private int userID;
 	private String WorkerName;
-	private Date date;
+	private LocalDate extendDate;
+	private LocalDate dueDate;
 
-	public ManualExtend(int bookID, int userID, String workerName, Date date) {
+	public ManualExtend(int bookID, int userID, String workerName, LocalDate extendDate, LocalDate dueDate) {
 		super();
 		this.bookID = bookID;
 		this.userID = userID;
 		WorkerName = workerName;
-		this.date = date;
+		this.extendDate = extendDate;
+		this.dueDate = dueDate;
 	}
 
 	/**
-	 * @return the date
+	 * @return the extendDate
 	 */
-	public Date getDate() {
-		return date;
+	public LocalDate getExtendDate() {
+		return extendDate;
 	}
 
 	/**
-	 * @param date
+	 * @param extendDate the extendDate to set
 	 */
-	public void setDate(Date date) {
-		this.date = date;
+	public void setExtendDate(LocalDate extendDate) {
+		this.extendDate = extendDate;
+	}
+
+	/**
+	 * @return the dueDate
+	 */
+	public LocalDate getDueDate() {
+		return dueDate;
+	}
+
+	/**
+	 * @param dueDate the dueDate to set
+	 */
+	public void setDueDate(LocalDate dueDate) {
+		this.dueDate = dueDate;
 	}
 
 	/**
@@ -77,6 +93,7 @@ public class ManualExtend {
 
 	/**
 	 * set worker name
+	 * 
 	 * @param workerName
 	 */
 	public void setWorkerName(String workerName) {

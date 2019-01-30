@@ -49,18 +49,21 @@
                 <RowConstraints minHeight="10.0" prefHeight="50.0" valignment="CENTER" />
                   <RowConstraints minHeight="10.0" prefHeight="50.0" valignment="CENTER" />
                   <RowConstraints minHeight="10.0" prefHeight="50.0" valignment="CENTER" />
+                  <RowConstraints minHeight="10.0" prefHeight="50.0" valignment="CENTER" />
                 <RowConstraints minHeight="10.0" prefHeight="50.0" />
               </rowConstraints>
                <children>
                   <Label text="Book ID:" />
-                  <Label GridPane.rowIndex="3" />
-                  <Label text="Book Name:" GridPane.rowIndex="1" />
-                  <Label text="Book Type:" GridPane.rowIndex="2" />
-                  <Label text="Copies:" GridPane.rowIndex="3" />
+                  <Label GridPane.rowIndex="4" />
+                  <Label text="Book Name:" GridPane.rowIndex="2" />
+                  <Label text="Book Type:" GridPane.rowIndex="3" />
+                  <Label text="Copies:" GridPane.rowIndex="4" />
                   <TextField fx:id="txtBookID" promptText="Lent Book ID" GridPane.columnIndex="1" />
-                  <TextField fx:id="txtBookName" editable="false" promptText="Lent Book Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <TextField fx:id="txtBookType" editable="false" promptText="Lent Book Type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField fx:id="txtAvailableCopies" editable="false" promptText="Available Copies" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="txtBookName" editable="false" promptText="Lent Book Name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="txtBookType" editable="false" promptText="Lent Book Type" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="txtAvailableCopies" editable="false" promptText="Available Copies" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label text="SerialNumber:" GridPane.rowIndex="1" />
+                  <TextField fx:id="txtSerialNumber" promptText="Lent Book Serial Number" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
                <BorderPane.margin>
                   <Insets top="20.0" />
