@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -154,6 +155,18 @@ public class NotificationsController {
 					btnProccessNotification.setDisable(true);
 			else
 				btnProccessNotification.setDisable(true);
+		});
+		
+		
+		tableView.setRowFactory( tableView -> {
+		    TableRow<Notification> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (!row.isEmpty()) ) {
+		        	Notification rowData = row.getItem();
+		            new Alert(AlertType.INFORMATION, rowData.getMessage(), ButtonType.OK).show();
+		        }
+		    });
+		    return row ;
 		});
 	}
 

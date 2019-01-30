@@ -53,6 +53,9 @@ public class UserLookupController {
 	private Label lblStatus;
 
 	@FXML
+	private Label lblOnlineStatus;
+
+	@FXML
 	private TextField txtUsername;
 
 	@FXML
@@ -136,6 +139,7 @@ public class UserLookupController {
 		txtUsername.setStyle(null);
 		txtPassword.setStyle(null);
 		cbEditUser.setSelected(false);
+		lblOnlineStatus.setText("---");
 	}
 
 	@FXML
@@ -221,7 +225,8 @@ public class UserLookupController {
 			msg.setContentText(msg.getContentText() + "\n*Username can't be empty!");
 			txtUsername.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			validInput = false;
-		} else if (DatabaseController.ifExists("account", "username", txtUsername.getText()) && !lookupAccount.getUserName().equals(txtUsername.getText())) {
+		} else if (DatabaseController.ifExists("account", "username", txtUsername.getText())
+				&& !lookupAccount.getUserName().equals(txtUsername.getText())) {
 			msg.setContentText(msg.getContentText() + "\n*Username already exists!");
 			txtUsername.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			validInput = false;
@@ -257,27 +262,31 @@ public class UserLookupController {
 
 	@FXML
 	void btnLockPressed(ActionEvent event) {
-		boolean status;
 		Alert statMsg = new Alert(AlertType.INFORMATION, "", ButtonType.OK);
 
 		if (txtID.isDisabled()) {
 			if (lookupAccount.getStatus() == accountStatus.Locked) {
+				Alert confirmationMsg = new Alert(AlertType.CONFIRMATION, "Unlocking a user will reset his delays\nAre you sure to perform this operation?", ButtonType.YES, ButtonType.CANCEL);
+				if(confirmationMsg.showAndWait().get() == ButtonType.YES)
+				{
 				lookupAccount.setStatus(accountStatus.Active);
-				status = true;
+				DatabaseController.updateUserStatus(lookupAccount, true);
+				statMsg.setContentText("User account was successfully set to 'Active' and delays has been reset");
+				statMsg.show();
+				}
 			} else {
 				lookupAccount.setStatus(accountStatus.Locked);
-				status = false;
+				DatabaseController.updateUserStatus(lookupAccount, false);
+				statMsg.setContentText("User account was successfully set to 'Locked'");
+				statMsg.show();
 			}
-			statMsg.setContentText(status ? "User account was successfully set to 'Active'"
-					: "User account was successfully set to 'Locked'");
-			DatabaseController.updateUserStatus(lookupAccount);
 			LoadUserData();
 		} else {
 			statMsg.setAlertType(AlertType.WARNING);
 			statMsg.setContentText("A user must be looked up first!");
 			txtID.requestFocus();
+			statMsg.show();
 		}
-		statMsg.show();
 	}
 
 	@FXML
@@ -296,7 +305,7 @@ public class UserLookupController {
 
 			statMsg.setContentText(status ? "User account was successfully set to 'Active'"
 					: "User account was successfully set to 'Suspended'");
-			DatabaseController.updateUserStatus(lookupAccount);
+			DatabaseController.updateUserStatus(lookupAccount, false);
 			LoadUserData();
 		} else {
 			statMsg.setAlertType(AlertType.WARNING);
@@ -420,6 +429,13 @@ public class UserLookupController {
 		case Locked:
 			lblStatus.setTextFill(javafx.scene.paint.Color.RED);
 			break;
+		}
+		if (lookupAccount.isLogged()) {
+			lblOnlineStatus.setTextFill(javafx.scene.paint.Color.GREEN);
+			lblOnlineStatus.setText("User is Online");
+		} else {
+			lblOnlineStatus.setTextFill(javafx.scene.paint.Color.RED);
+			lblOnlineStatus.setText("User is Offline");
 		}
 		lblStatus.setText(lookupAccount.getStatus().toString());
 	}
