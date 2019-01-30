@@ -10,18 +10,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import client.ClientConnection;
-import entities.Account;
-import entities.Archive;
-import entities.Book;
+import entities.*;
+import entities.Account.UserType;
 import entities.Book.bookType;
-import entities.BookCopy;
-import entities.BookOrder;
-import entities.LentBook;
-import entities.LibrarianAccount;
-import entities.ManagerAccount;
-import entities.Notification;
-import entities.UserAccount;
-import entities.UserActivity;
+import entities.UserAccount.accountStatus;
 
 public class DatabaseController {
 
@@ -66,16 +58,21 @@ public class DatabaseController {
 	 * @return account ID for the new user
 	 */
 	public static int generateAccountID() {
-		return ((getTableRowsNumber("account") + 1) * 264 + 759);
+		return ((getTableRowsNumber("account", null) + 1) * 264 + 759);
 	}
-	
+
 	/**
-	 * returns rows number in table
+	 * returns rows number in table according to type if type =null , return all the
+	 * rows number
+	 * 
 	 * @param tableName
 	 * @return int table rows number
 	 */
-	public static int getTableRowsNumber(String tableName) {
-		clientConnection.executeQuery("SELECT COUNT(*) FROM " + tableName + ";");
+	public static int getTableRowsNumber(String tableName, String type) {
+		if (type != null)
+			clientConnection.executeQuery("SELECT COUNT(*) FROM " + tableName + " WHERE userType = '" + type + "';");
+		else
+			clientConnection.executeQuery("SELECT COUNT(*) FROM " + tableName + ";");
 		return Integer.parseInt(clientConnection.getList().get(0));
 	}
 
@@ -125,7 +122,7 @@ public class DatabaseController {
 		String query = "UPDATE account SET status = 'Locked' WHERE userID = '" + accountID + "';";
 		clientConnection.executeQuery(query);
 		clientConnection.getObject();
-		return (Boolean)clientConnection.getObject();
+		return (Boolean) clientConnection.getObject();
 	}
 
 	/**
@@ -150,14 +147,25 @@ public class DatabaseController {
 		clientConnection.executeQuery("SELECT * FROM Account WHERE ID = +" + ID + ";");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
-			Account userAccount = new UserAccount();
-			((UserAccount) userAccount).parseArrayIntoAccount(res);
+			Account userAccount;
+			if (res.get(8).equals("User")) {
+				userAccount = new UserAccount();
+				((UserAccount) userAccount).parseArrayIntoAccount(res);
+			} else {
+				if (res.get(8).equals("Librarian"))
+					userAccount = new LibrarianAccount();
+				else
+					userAccount = new ManagerAccount();
+				((LibrarianAccount) userAccount).parseArrayIntoAccount(res);
+			}
 			return userAccount;
 		} else
 			return null;
 	}
 
-	/**
+
+
+/**
 	 * finds the account in DB according to user id and returned it, if the account
 	 * doesn't exists then return null
 	 * 
@@ -168,8 +176,17 @@ public class DatabaseController {
 		clientConnection.executeQuery("SELECT * FROM Account WHERE userID = +" + accountID + ";");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
-			Account userAccount = new UserAccount();
-			((UserAccount) userAccount).parseArrayIntoAccount(res);
+			Account userAccount;
+			if (res.get(8).equals("User")) {
+				userAccount = new UserAccount();
+				((UserAccount) userAccount).parseArrayIntoAccount(res);
+			} else {
+				if (res.get(8).equals("Librarian"))
+					userAccount = new LibrarianAccount();
+				else
+					userAccount = new ManagerAccount();
+				((LibrarianAccount) userAccount).parseArrayIntoAccount(res);
+			}
 			return userAccount;
 		} else
 			return null;
@@ -210,6 +227,30 @@ public class DatabaseController {
 			return loggedAccount;
 		} else
 			return null;
+	}
+
+	/**
+	 * return user accounts list according to account status
+	 * 
+	 * @param status
+	 * @return arrayList of user account
+	 */
+	public static ArrayList<UserAccount> getUserAccounts(accountStatus status) {
+		clientConnection.executeQuery("SELECT * FROM Account WHERE userType = '" + UserType.User.toString()
+				+ "' AND status = " + status + "';");
+		try {
+			ArrayList<String> res = clientConnection.getList();
+			ArrayList<UserAccount> arr = new ArrayList<UserAccount>();
+			while (res.size() != 0) {
+				UserAccount userAccount = new UserAccount();
+				userAccount.parseArrayIntoAccount(res);
+				arr.add(userAccount);
+				res.subList(0, 13).clear();
+			}
+			return arr;
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -311,7 +352,7 @@ public class DatabaseController {
 	 * @param searchBy it could be name, author, subject or description
 	 * @return ArrayList<Book>
 	 */
-	public static ArrayList<Book> bookSearch(String str, String searchBy)throws NumberFormatException{
+	public static ArrayList<Book> bookSearch(String str, String searchBy) throws NumberFormatException {
 		switch (searchBy.toLowerCase()) {
 		case "book id":
 			clientConnection.executeQuery("SELECT * FROM book WHERE bookID = '" + Integer.parseInt(str) + "' ;");
@@ -332,7 +373,7 @@ public class DatabaseController {
 			return null;
 		}
 		ArrayList<String> res = clientConnection.getList();
-		if(res.isEmpty())
+		if (res.isEmpty())
 			return null;
 		ArrayList<Book> bookList = new ArrayList<Book>();
 		while (res.size() != 0) {
@@ -380,17 +421,23 @@ public class DatabaseController {
 	}
 
 	/**
-	 * return the user lent books list from DB
-	 * if(userID>=0) return only the user lent Book list 
-	 * if(userID<0) return the whole lent Book list 
+	 * return the user lent books list from DB if(userID>0) return only the user
+	 * lent Book list, if(userID<0) return the whole lent Book list, if userID = 0
+	 * return only the late users
+	 * 
 	 * @return ArrayList<LentBook>
 	 */
 	public static ArrayList<LentBook> getLentBookList(int userID) {
 		String query;
-		if(userID>=0)
-			query = "SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '" + userID + "';";
-		else
-			query = "SELECT * FROM LentBook";
+		if (userID > 0) // only for specific user according to userID
+			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook WHERE userID  = '"
+					+ userID + "';";
+		else // all the list
+		if (userID < 0)
+			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook ;";
+		else // only the late one
+			query = "SELECT userID,bookID, copySerialNumber, issueDate ,dueDate, returnDate, late FROM LentBook WHERE late = '1' ;";
+
 		clientConnection.executeQuery(query);
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<LentBook> lentBookList = new ArrayList<LentBook>();
@@ -404,11 +451,11 @@ public class DatabaseController {
 
 		return lentBookList;
 	}
-	
 
 	public static LentBook getLentBook(int userID, int bookID) {
-		clientConnection
-				.executeQuery("SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '" + userID + "' AND bookID = '" + bookID + "';");
+		clientConnection.executeQuery(
+				"SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '"
+						+ userID + "' AND bookID = '" + bookID + "';");
 		ArrayList<String> res = clientConnection.getList();
 		LentBook lentBook;
 		if (!res.isEmpty()) {
@@ -449,7 +496,7 @@ public class DatabaseController {
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<BookCopy> bookCopyList = new ArrayList<BookCopy>();
 		while (res.size() != 0) {
-			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1),LocalDate.parse(res.get(2)), 
+			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
 					res.get(2).equals("1") ? true : false);
 			res.subList(0, 4).clear();
 			bookCopyList.add(bookCopy);
@@ -464,8 +511,9 @@ public class DatabaseController {
 	 * @param bookCopy
 	 */
 	public static void updateBookCopyLentField(BookCopy bookCopy) {
-		clientConnection.executeQuery("UPDATE BookCopy SET lent = '" + (bookCopy.isLent() ? 1 : 0) + "' WHERE bookID = '"
-				+ bookCopy.getBookID() + "' AND serialNumber = '" + bookCopy.getSerialNumber() + "';");
+		clientConnection
+				.executeQuery("UPDATE BookCopy SET lent = '" + (bookCopy.isLent() ? 1 : 0) + "' WHERE bookID = '"
+						+ bookCopy.getBookID() + "' AND serialNumber = '" + bookCopy.getSerialNumber() + "';");
 	}
 
 	/**
@@ -512,7 +560,8 @@ public class DatabaseController {
 	}
 
 	/**
-	 * check existence of specific order 
+	 * check existence of specific order
+	 * 
 	 * @param userID
 	 * @param bookID
 	 * @return Boolean
@@ -529,12 +578,12 @@ public class DatabaseController {
 
 	/**
 	 * check if there is any orders for specific book
+	 * 
 	 * @param bookID
 	 * @return Boolean
 	 */
-	public static boolean checkExistngBookOrder(int bookID) {
-		clientConnection
-				.executeQuery("SELECT * FROM BookOrder WHERE bookID = '" + bookID + "';");
+	public static boolean checkExistingBookOrder(int bookID) {
+		clientConnection.executeQuery("SELECT * FROM BookOrder WHERE bookID = '" + bookID + "';");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
 			return true;
@@ -588,9 +637,10 @@ public class DatabaseController {
 		}
 		return activityList;
 	}
-	
+
 	/**
 	 * adding user activity to userActivity table in DB
+	 * 
 	 * @param accountID
 	 * @param activity
 	 */
@@ -598,10 +648,10 @@ public class DatabaseController {
 		ArrayList<String> arr = new ArrayList<String>();
 		String query = "INSERT INTO userActivity(activityNum, userID, activityName, date) VALUES(?,?,?,?)";
 		clientConnection.executeQuery("SELECT COUNT(*) FROM account;");
-		arr.add(String.valueOf(getTableRowsNumber("userActivity") + 1));
+		arr.add(String.valueOf(getTableRowsNumber("userActivity", null) + 1));
 		arr.add(String.valueOf(accountID));
 		arr.add(activity);
-		//get the current date and time to be saved in DB
+		// get the current date and time to be saved in DB
 		Timestamp now = new Timestamp(new Date().getTime());
 		arr.add(String.valueOf(now));
 		arr.add(query);
@@ -642,19 +692,21 @@ public class DatabaseController {
 		}
 		return notificationsList;
 	}
-	
+
 	/**
 	 * get the closest return date from DB according to BookID
+	 * 
 	 * @param bookID
 	 * @return LocalDate
 	 */
 	public static LocalDate getClosestReturnDate(int bookID) {
-		clientConnection.executeQuery("SELECT dueDate From LentBook WHERE bookID = '" + bookID + "' ORDER BY dueDate LIMIT 1");
+		clientConnection
+				.executeQuery("SELECT dueDate From LentBook WHERE bookID = '" + bookID + "' ORDER BY dueDate LIMIT 1");
 		ArrayList<String> res = clientConnection.getList();
-		if(!res.isEmpty()) {
+		if (!res.isEmpty()) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
 			return LocalDate.parse(res.get(0), formatter);
-		}else
+		} else
 			return null;
 	}
 
@@ -669,6 +721,53 @@ public class DatabaseController {
 	}
 
 	/**
+	 * fills activities report from DB and return it
+	 * @return ActivitiesReport
+	 */
+	public static ActivitiesReport getActivityReport() {
+		ActivitiesReport report = new ActivitiesReport();
+		report.setTotalUsers(getTableRowsNumber("account", UserType.User.toString()));
+		report.setActiveUsersNumber(getUserTypeNumberAccordingToStatus(accountStatus.Active.toString()));
+		report.setFrozenUsersNumber(getUserTypeNumberAccordingToStatus(accountStatus.Suspended.toString()));
+		report.setLockedUsersNumber(getUserTypeNumberAccordingToStatus(accountStatus.Locked.toString()));
+		
+		//get book list from DB
+		report.setBooks(getAllBooks());
+		
+		//get the users list witch they where late in return book at least once  
+		String query = "SELECT DISTINCT userID FROM LentBook WHERE late = '1' ;";
+		clientConnection.executeQuery(query);
+		try {
+			ArrayList<UserAccount> accounts = new ArrayList<UserAccount>();
+			ArrayList<String> res = clientConnection.getList();
+			while (res.size() != 0) {
+				accounts.add((UserAccount) getAccount(Integer.parseInt(res.get(0))));
+				res.remove(0);
+			}
+			report.setAccounts(accounts);
+		} catch (NullPointerException e) {
+			report.setAccounts(null);
+		}
+		return report;
+	}
+
+	/**
+	 * 
+	 * @param status
+	 * @return int number of users according to there status
+	 */
+	public static int getUserTypeNumberAccordingToStatus(String status) {
+		clientConnection
+				.executeQuery("SELECT COUNT(*) FROM account WHERE userType = 'User' AND status = '" + status + "';");
+		ArrayList<String> arr;
+		arr = clientConnection.getList();
+		if (arr.size() == 0) {
+			return 0;
+		}
+		return Integer.parseInt(arr.get(0));
+	}
+
+	/**
 	 * Initiate a new client connection to the server
 	 * 
 	 * @param newClientConnection
@@ -678,11 +777,11 @@ public class DatabaseController {
 	}
 
 	/**
-	 * Shutdown client server connection when primary stage closes and logout logged in account
+	 * Shutdown client server connection when primary stage closes and logout logged
+	 * in account
 	 */
 	public static void terminateClient() {
-		if(loggedAccount != null)
-		{
+		if (loggedAccount != null) {
 			loggedAccount.setLogged(false);
 			logAccount(loggedAccount);
 			System.out.println("Logging user out");
