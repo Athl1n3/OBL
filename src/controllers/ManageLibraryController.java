@@ -19,12 +19,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class ManageLibraryController {
+
+	@FXML
+	private TextField txtSearch;
+
+	@FXML
+	private ImageView imgRef;
 
 	@FXML
 	private ImageView imgBack;
@@ -63,7 +70,8 @@ public class ManageLibraryController {
 	private Button btnEditBook;
 
 	/**
-	 * open add book form
+	 * This method called when "Add book" button clicked and open a form to fill
+	 * 
 	 * @param event
 	 * @throws IOException
 	 */
@@ -77,10 +85,13 @@ public class ManageLibraryController {
 			e.printStackTrace();
 		}
 	}
-/**
- * 
- * @param event
- */
+
+	/**
+	 * This method called when "Delete book" button clicked and deletes this
+	 * specific book after the user confirmation
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void btnDeleteBookPressed(ActionEvent event) {
 
@@ -98,7 +109,7 @@ public class ManageLibraryController {
 					if (response == ButtonType.OK) {
 						DatabaseController.deleteBook(selectedForDelete.getBookID());
 						initialize();
-						
+
 					}
 				});
 
@@ -114,6 +125,12 @@ public class ManageLibraryController {
 
 	}
 
+	/**
+	 * Open "edit book" form to edit a specific book
+	 * 
+	 * @param event
+	 * @throws Exception
+	 */
 	@FXML
 	void btnEditBookPressed(ActionEvent event) throws Exception {
 		Book selectedForEdit = (Book) tableView.getSelectionModel().getSelectedItem();
@@ -141,6 +158,12 @@ public class ManageLibraryController {
 
 	}
 
+	/**
+	 * Back to the previous scene
+	 * 
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
@@ -149,9 +172,13 @@ public class ManageLibraryController {
 		stage.setTitle("Library Management");
 	}
 
+	/**
+	 * Initialize GUI layout and tableview initialize gui depending on books
+	 */
 	@FXML
-	public  void initialize() {
+	public void initialize() {
 
+		// ObservableList<Book> search = FXCollections.observableArrayList();
 		// add all the relevant fields to the view table
 		bookID.setCellValueFactory(new PropertyValueFactory<Book, String>("bookID"));
 		name.setCellValueFactory(new PropertyValueFactory<Book, String>("name"));
@@ -159,20 +186,64 @@ public class ManageLibraryController {
 		edition.setCellValueFactory(new PropertyValueFactory<Book, Double>("edition"));
 		year.setCellValueFactory(new PropertyValueFactory<Book, Year>("printYear"));
 		copies.setCellValueFactory(new PropertyValueFactory<Book, Integer>("copiesNumber"));
-		availableCopies.setCellValueFactory(new PropertyValueFactory<Book,Integer>("availableCopies"));
+		availableCopies.setCellValueFactory(new PropertyValueFactory<Book, Integer>("availableCopies"));
 		tableView.setItems(getBooks());
+
+		txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+			ArrayList<Book> temp;
+			ArrayList<Book> arr = new ArrayList<Book>();
+			ObservableList<Book> search = FXCollections.observableArrayList();
+			if (DatabaseController.bookSearch(txtSearch.getText(), "name") != null)
+				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "name"));
+
+			if (DatabaseController.bookSearch(txtSearch.getText(), "author") != null)
+				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "author"));
+
+			if (DatabaseController.bookSearch(txtSearch.getText(), "subject") != null)
+				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "subject"));
+
+			if (DatabaseController.bookSearch(txtSearch.getText(), "description") != null)
+				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "description"));
+			if (arr != null)
+				for (int i = 0; i < arr.size(); i++)
+					if (!contain(search, arr.get(i)))
+						search.add(arr.get(i));
+			tableView.setItems(search);
+
+		});
 
 	}
 
-	public ObservableList<Book> getBooks() {	
+	/**
+	 * this method returns the current books in the DB
+	 * 
+	 * @return ObservableList<Book> with all the books
+	 */
+	public ObservableList<Book> getBooks() {
 		ArrayList<Book> allBooks;
-		allBooks=DatabaseController.getAllBooks(); 
+		allBooks = DatabaseController.getAllBooks();
 		ObservableList<Book> books = FXCollections.observableArrayList();
-		for (int i=0;i<allBooks.size();i++)
+		for (int i = 0; i < allBooks.size(); i++)
 			books.add(allBooks.get(i));
 		return books;
 	}
 
+	/**
+	 * refresh the data in the table view
+	 * 
+	 * @param event
+	 */
+	@FXML
+	void imgRefreshClicked(MouseEvent event) {
+		initialize();
+	}
+
+	/**
+	 * Load the relevant fxml file and show it
+	 * 
+	 * @param primaryStage
+	 * @throws Exception
+	 */
 	void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/ManageLibraryForm.fxml"));
 		Scene scene = new Scene(root);
@@ -180,4 +251,25 @@ public class ManageLibraryController {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
+
+	/**
+	 * checks if the observable list 'search' contains the book
+	 * 
+	 * @param search
+	 * @param book
+	 * @return true if the observable list 'search' contains the book
+	 */
+	boolean contain(ObservableList<Book> search, Book book) {
+		for (int i = 0; i < search.size(); i++)
+			if (search.get(i).getBookID() == book.getBookID())
+				return true;
+		return false;
+
+	}
+
+	@FXML
+	void btnManageCopiesPressed(ActionEvent event) {
+
+	}
+
 }

@@ -71,25 +71,35 @@ public class EditBookController {
 	private Button btnBrowsePath;
 
 	@FXML
-	private TextField txtPath;
+	private TextField txtTableOfContents;
 
 	@FXML
     private ChoiceBox<String> bookTypeCB;
 
     @FXML
-    private TextArea txtTableOfContents;
+    private TextArea txtTableOfCont333333333ents;
     
 	private static Book selectedBook;
 
+
+	/** 
+	 * Browse the contents PDF file and write the path in the relevant text field
+	 * @param event
+	 */
 	@FXML
 	void btnBrowsePathPressed(ActionEvent event) {
 		FileChooser fc = new FileChooser();
 		File SelectedFile = fc.showOpenDialog(null);
 		if (SelectedFile != null) {
-			txtPath.setText(SelectedFile.getAbsolutePath());
+			txtTableOfContents.setText(SelectedFile.getAbsolutePath());
 		}
 	}
 
+
+	/**
+	 * checks input validity and update the DB when the new data
+	 * @param event
+	 */
 	@FXML
 	void btnEditBookPressed(ActionEvent event) {
 		/*
@@ -105,7 +115,6 @@ public class EditBookController {
 		editedBook.setShelf(txtShelf.getText());
 		editedBook.setEdition(txtEdition.getText());
 		editedBook.setSubject(txtDescription.getText());
-		editedBook.setSubject(txtTableOfContents.getText());
 		editedBook.setBookType(bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()));
 		DatabaseController.editBook(editedBook);
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -117,7 +126,9 @@ public class EditBookController {
 	}
 
 	/**
-	 * back to the previous screen
+	 * back to the previous screen when image "back" 
+	 * @param event
+	 * @throws IOException
 	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
@@ -153,14 +164,14 @@ public class EditBookController {
 		txtDescription.setText(selectedBook.getDescription());
 		bookTypeCB.getItems().addAll(init);
 		bookTypeCB.getSelectionModel().select(0	);
-	//	txtPath.setText(selectedBook.get);
+		txtTableOfContents.setText(selectedBook.getTableOfContents());
 		editedBook=selectedBook;
 		BooleanBinding bb = new BooleanBinding() {
 			{
 				super.bind(txtBookName.textProperty(), txtAuthor.textProperty(), txtBookID.textProperty(),
-						txtEdition.textProperty(), txtTableOfContents.textProperty(), txtPrintYear.textProperty(),
+						txtEdition.textProperty(),  txtPrintYear.textProperty(),
 						txtSubject.textProperty(), txtCatalog.textProperty(), txtCopies.textProperty(),
-						txtShelf.textProperty(), txtDescription.textProperty(), txtPath.textProperty());
+						txtShelf.textProperty(), txtDescription.textProperty(), txtTableOfContents.textProperty());
 			}
 
 			// this function return true if at least one field not filled
@@ -168,16 +179,22 @@ public class EditBookController {
 			protected boolean computeValue() {
 				return (txtBookName.getText().isEmpty() || txtAuthor.getText().isEmpty()
 						|| txtBookID.getText().isEmpty() || txtEdition.getText().isEmpty()
-						|| txtTableOfContents.getText().isEmpty() || txtPrintYear.getText().isEmpty()
+					 || txtPrintYear.getText().isEmpty()
 						|| txtSubject.getText().isEmpty() || txtCatalog.getText().isEmpty()
 						|| txtCopies.getText().isEmpty() || txtShelf.getText().isEmpty()
-						|| txtDescription.getText().isEmpty() || txtPath.getText().isEmpty());
+						|| txtDescription.getText().isEmpty() || txtTableOfContents.getText().isEmpty());
 			}
 		};
 		// Enable "add book button" after fill all the fields
 				btnEditBook.disableProperty().bind(bb);
 	}
 
+	
+	/**
+	 * Open's "edit book" form and update the static selectedBook to the selected book from the previous window 
+	 * @param primaryStage
+	 * @param selectedBook
+	 */
 	public void start(Stage primaryStage, Book selectedBook) {
 		try {
 			this.selectedBook = selectedBook;
@@ -194,9 +211,11 @@ public class EditBookController {
 		}
 	}
 	
+	/**
+	 * Validate the input in the text fields 
+	 * @return true if the input valid 
+	 */
 	public boolean validateInput() {
-		
-
 		// initialize the text fields to the original color
 		txtBookName.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtAuthor.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
@@ -212,46 +231,18 @@ public class EditBookController {
 		Alert msg = new Alert(AlertType.ERROR, "", ButtonType.OK);// Prepare alert box
 		msg.setHeaderText("Input Error");
 		String errorMsg = "";
-
-		/**
-		 * validate input for all the text fields
-		 */
-
-		for (char c : txtBookName.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isAlphabetic(c)) {
-				errorMsg += "Book name must contain letters only!\n";
-				txtBookName.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				break;
-			}
-
+	
+		 
+		
+		 //validate input for all the text fields
 		for (char c : txtAuthor.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isAlphabetic(c)) {
+			if (Character.isDigit(c)) {
 				errorMsg += "Author name must contain letters only!\n";
 				txtAuthor.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 				break;
 			}
 
-		for (char c : txtEdition.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isDigit(c)) {
-				errorMsg += "Book's edition number must contain numbers only!\n";
-				txtEdition.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				break;
-			}
 
-		for (char c : txtEdition.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isDigit(c)) {
-				errorMsg += "Book's edition number must contain numbers only!\n";
-				txtEdition.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				break;
-			}
-
-		for (char c : txtSubject.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isAlphabetic(c)) {
-				errorMsg += "Book's subject must contain letters only!\n";
-				txtSubject.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				break;
-
-			}
 
 		for (char c : txtCopies.getText().toCharArray())// Parse text field into chars array and validate
 			if (!Character.isDigit(c)) {
@@ -259,6 +250,14 @@ public class EditBookController {
 				txtCopies.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 				break;
 			}
+		
+		for (char c : txtCatalog.getText().toCharArray())// Parse text field into chars array and validate
+			if (!Character.isDigit(c)) {
+				errorMsg += "Copies number must contain numbers only!\n";
+				txtCatalog.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				break;
+			}
+
 
 		// if errorMsg is empty all the text fields input is correct
 		if (!(errorMsg.equals(""))) {
