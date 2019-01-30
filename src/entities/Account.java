@@ -60,12 +60,17 @@ public abstract class Account extends Person {
 	 * @param userType set usertype via string
 	 */
 	public void setUserTypeString(String userType) {
-		if (UserType.User.equals(userType))
+		switch (userType) {
+		case "User":
 			this.userType = UserType.User;
-		else if (UserType.Librarian.equals(userType))
+			break;
+		case "Librarian":
 			this.userType = UserType.Librarian;
-		else if (UserType.Manager.equals(userType))
+			break;
+		case "Manager":
 			this.userType = UserType.Manager;
+			break;
+		}
 	}
 
 	/**

@@ -135,6 +135,7 @@ public class EchoServer extends AbstractServer {
 		libraryServices = new LibraryServices(EchoServer.DBcon);
 		try {
 			sv.listen(); // Start listening for connections
+			//sv.orderNotification(1234);
 		} catch (Exception ex) {
 			System.out.println("ERROR - Could not listen for clients!");
 		}

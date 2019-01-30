@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class UserAccount extends Account {
 
 	private int delays;
+	private boolean graduate;
 
 	public enum accountStatus {
 		Active, Locked, Suspended
@@ -31,6 +32,20 @@ public class UserAccount extends Account {
 	}
 
 	/**
+	 * @return the graduate
+	 */
+	public boolean isGraduate() {
+		return graduate;
+	}
+
+	/**
+	 * @param graduate the graduate to set
+	 */
+	public void setGraduate(boolean graduate) {
+		this.graduate = graduate;
+	}
+
+	/**
 	 * @param status the status to set
 	 */
 	public void setStatus(accountStatus status) {
@@ -41,8 +56,8 @@ public class UserAccount extends Account {
 	 * set user status
 	 * @param str to set as user status
 	 */
-	public void setStatusString(String str) {
-		switch (str) {
+	public void setStatusString(String status) {
+		switch (status) {
 		case "Active":
 			this.setStatus(accountStatus.Active);
 			break;
@@ -51,6 +66,8 @@ public class UserAccount extends Account {
 			break;
 		case "Locked":
 			this.setStatus(accountStatus.Locked);
+			break;
+		default:
 			break;
 		}
 	}
@@ -87,5 +104,6 @@ public class UserAccount extends Account {
 		this.setStatusString(accountArray.get(9));
 		this.setDelays(Integer.parseInt(accountArray.get(10)));
 		this.setLogged(accountArray.get(11).equals("1") ? true : false);
+		this.setGraduate(accountArray.get(12).equals("1") ? true : false);
 	}
 }
