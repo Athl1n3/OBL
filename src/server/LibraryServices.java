@@ -33,7 +33,8 @@ public class LibraryServices {
 		LibraryServices.dbCon = dbCon;
 		// emailService();// Initiate book returns email service
 		// lateReturnsService();//Initiate late returns service
-		savedCopiesManager();
+		//savedCopiesManager();
+		scheduledSuspensionManager();
 	}
 
 	/**
@@ -97,10 +98,39 @@ public class LibraryServices {
 			}
 		};
 		Timer savedCopiesManagerTimer = new Timer();
-		savedCopiesManagerTimer.schedule(savedCopiesManagerTask, TimeUnit.SECONDS.toMillis(20),
+		savedCopiesManagerTimer.schedule(savedCopiesManagerTask, TimeUnit.SECONDS.toMillis(30),
 				TimeUnit.DAYS.toMillis(1));
 	}
-
+	
+	/**
+	 * This method checks and processes scheduled suspension accounts list
+	 * Unsuspends an account after its last suspension day
+	 */
+	public void scheduledSuspensionManager()
+	{
+		TimerTask scheduledSuspensionManagerTask = new TimerTask() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public void run() {
+				ArrayList<String> scheduledSuspensionData = (ArrayList<String>) dbCon
+						.executeSelectQuery("SELECT * FROM scheduledSuspension WHERE untilDate = '"+LocalDate.now().minusDays(1)+"';");
+				if (scheduledSuspensionData.size() != 0) {
+					for (int i = 0; i < scheduledSuspensionData.size(); i++) {
+						int userID = Integer.parseInt(scheduledSuspensionData.get(0));
+						dbCon.executeQuery(
+								"DELETE FROM scheduledSuspension WHERE userID = '" + userID + "';");
+						dbCon.executeQuery("UPDATE account SET status = 'Active' WHERE userID = '"+userID+"';");
+						scheduledSuspensionData.subList(0, 2).clear();
+					}
+				} else
+					System.out.println("No scheduled accounts need to be changed");
+			}
+		};
+		Timer scheduledSuspensionManagerTimer = new Timer();
+		scheduledSuspensionManagerTimer.schedule(scheduledSuspensionManagerTask, TimeUnit.SECONDS.toMillis(10),
+				TimeUnit.DAYS.toMillis(1));
+	}
+	
 	/**
 	 * Call libraryServices graduate student method and set student status as
 	 * graduated If the student got lent books, a mail gets sent to return them and
