@@ -1,5 +1,6 @@
 package server;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -52,7 +53,7 @@ public class MySQLConnection {
 					return null;
 				} else
 					return executeSelectQuery(msg);
-				
+
 			} else if (msg instanceof String) {
 				query = msg.toString();
 				if (query.startsWith("INSERT") || query.startsWith("UPDATE") || query.startsWith("DELETE")) {
@@ -87,11 +88,22 @@ public class MySQLConnection {
 		}
 	}
 
+	public void updateFile(InputStream inputStream) {
+		String sql = "INSERT INTO BookContentsFile (upload_file) values (?)";
+		try {
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setBlob(getTableRowsNumber("BookContentsFile")+1, inputStream);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Parse database result set into an ArrayList with rows separated by commas
 	 * 
 	 * @param rs
-	 * @return  ArrayList<String>
+	 * @return ArrayList<String>
 	 */
 	public ArrayList<String> parseResultSet(ResultSet rs) {
 		ArrayList<String> arr = new ArrayList<>();
@@ -104,11 +116,22 @@ public class MySQLConnection {
 				while (i <= rsmd.getColumnCount()) {
 					arr.add(rs.getString(i++));
 				}
-				//arr.add("\n");
+				// arr.add("\n");
 			}
 		} catch (SQLException Exception) {
 			System.out.println("ERROR while parsing array!");
 		}
 		return arr;
+	}
+	
+	@SuppressWarnings("unchecked")
+	/**
+	 * 
+	 * @param tableName
+	 * @return	table rows count
+	 */
+	public int getTableRowsNumber(String tableName) {
+		ArrayList<String> res = (ArrayList<String>) executeSelectQuery("SELECT COUNT(*) FROM " + tableName + ";");
+		return Integer.parseInt(res.get(0));
 	}
 }

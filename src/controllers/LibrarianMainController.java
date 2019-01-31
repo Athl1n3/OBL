@@ -77,7 +77,7 @@ public class LibrarianMainController {
 		SceneController.push(scene);
 		LendController LendForm = new LendController();
 		try {
-			LendForm.start(stage);
+			LendForm.start(stage,null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

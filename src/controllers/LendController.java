@@ -84,6 +84,7 @@ public class LendController {
 
 	UserAccount lenderAccount;
 	Book lentBook;
+	Book selectedBook;
 
 	/**
 	 * When BookLookUp button is pressed , this method will be called
@@ -244,7 +245,8 @@ public class LendController {
 		btnBookLookup.disableProperty().bind(booleanBind);
 	}
 
-	void start(Stage stage) throws Exception {
+	void start(Stage stage, Book selectedBook) throws Exception {
+		this.selectedBook = selectedBook;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
 		Scene scene = new Scene(root);
 		stage.setTitle("Lend book");

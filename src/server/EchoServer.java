@@ -1,8 +1,13 @@
 package server;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
+import common.MyFile;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -23,58 +28,91 @@ public class EchoServer extends AbstractServer {
 
 	// Instance methods ************************************************
 	Object obj;
-	
+
 	/**
 	 * This method handles any messages received from the client.
 	 *
 	 * @param msg    The message received from the client.
 	 * @param client The connection from which the message originated.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		System.out.println("[Client "+client.getId()+"] Message received: " + msg.toString());
-		if(msg instanceof Integer)
-		{
-			graduateStudent((Integer)msg);
-			obj = new String("Student ID "+msg+"has been set as graduated");
-		}
-		else if(msg instanceof ArrayList)
-		{	
-			@SuppressWarnings("unchecked")
-			ArrayList<String> arr = (ArrayList<String>)msg;
-			if(arr.get(0).equals("#"))
-			{
+		System.out.println("[Client " + client.getId() + "] Message received: " + msg.toString());
+		if (msg instanceof MyFile)
+			handelFileMessageFromClient(msg, client);
+		else if (msg instanceof Integer) {
+			graduateStudent((Integer) msg);
+			obj = new String("Student ID " + msg + "has been set as graduated");
+		} else if (msg instanceof ArrayList) {
+			ArrayList<String> arr = (ArrayList<String>) msg;
+			if (arr.get(0).equals("#")) {
 				arr.remove(0);
-				orderNotification(Integer.parseInt(arr.get(0))); //book ID
+				orderNotification(Integer.parseInt(arr.get(0))); // book ID
 			}
 			obj = DBcon.executeQuery(msg);
-		}
-		else
+		} else
 			obj = DBcon.executeQuery(msg);
-		if(obj == null)
-				obj = true;
+		if (obj == null)
+			obj = true;
 		try {
 			client.sendToClient(obj);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
+	public void handelFileMessageFromClient(Object msg, ConnectionToClient client) {
+		InputStream is = new ByteArrayInputStream(((MyFile)msg).getMybytearray()); 
+		DBcon.updateFile(is);
+		/*int fileSize = ((MyFile) msg).getSize();
+		System.out.println("Message received: " + ((MyFile) msg).getFileName() + " from " + client);
+		System.out.println("length " + fileSize);
+		String outputFileName = "C:\\Users\\saleh\\Desktop\\" + ((MyFile) msg).getFileName();
+		try {
+			uploadFile(msg, client, outputFileName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+	}
+
+	public void uploadFile(Object msg, ConnectionToClient client, String outputFileName) throws IOException {
+		String localFilePath = outputFileName;
+		System.out.println("upload file");
+		FileOutputStream fos = null;
+		BufferedOutputStream bos = null;
+		try {
+			fos = new FileOutputStream(localFilePath);
+			bos = new BufferedOutputStream(fos);
+			bos.write(((MyFile) msg).getMybytearray(), 0, ((MyFile) msg).getSize());
+			bos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (fos != null)
+				fos.close();
+			if (bos != null)
+				bos.close();
+		}
+
+	}
+
 	/**
-	 * Call libraryServices graduate student method and set student status as graduated
+	 * Call libraryServices graduate student method and set student status as
+	 * graduated
+	 * 
 	 * @param studentID
 	 */
-	public void graduateStudent(int studentID)
-	{
+	public void graduateStudent(int studentID) {
 		libraryServices.graduateStudent(studentID);
 	}
-	
+
 	/**
 	 * Send a notification to the next student in book order queue
+	 * 
 	 * @param bookID
 	 */
-	public void orderNotification(int bookID)
-	{
+	public void orderNotification(int bookID) {
 		libraryServices.orderNotification(bookID);
 	}
 
@@ -95,7 +133,7 @@ public class EchoServer extends AbstractServer {
 	protected void serverStopped() {
 		System.out.println("Server has stopped listening for connections.");
 	}
-	
+
 	/**
 	 * This method is responsible for the creation of the server instance (there is
 	 * no UI in this phase).
@@ -103,9 +141,10 @@ public class EchoServer extends AbstractServer {
 	 * @param args[0] The port number to listen on. Defaults to 5555 if no argument
 	 *        is entered.
 	 */
-	
+
 	/**
 	 * Hook method called each time a new client connection is accepted.
+	 * 
 	 * @param client the connection connected to the client.
 	 */
 	@Override
@@ -115,6 +154,7 @@ public class EchoServer extends AbstractServer {
 
 	/**
 	 * Hook method called each time a client disconnects.
+	 * 
 	 * @param client the connection with the client.
 	 */
 	@Override
@@ -135,7 +175,7 @@ public class EchoServer extends AbstractServer {
 		libraryServices = new LibraryServices(EchoServer.DBcon);
 		try {
 			sv.listen(); // Start listening for connections
-			//sv.orderNotification(1234);
+			// sv.orderNotification(1234);
 		} catch (Exception ex) {
 			System.out.println("ERROR - Could not listen for clients!");
 		}

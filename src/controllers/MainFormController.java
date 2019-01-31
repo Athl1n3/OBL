@@ -70,7 +70,7 @@ public class MainFormController {
 
 	@FXML
 	void initialize() {
-
+		//DatabaseController.saveFile();
 	}
 
 	void start(Stage primaryStage) throws Exception {
