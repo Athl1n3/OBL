@@ -1612,9 +1612,16 @@ public class ReportsController {
 		// get the total users in the system
 		int total = DatabaseController.getTableRowsNumber("account", UserType.User.toString());
 		// calculate the percentage of the suspended accounts from the total accounts
-		cell = new PdfPCell(new Paragraph(String.valueOf(Math.round((accounts.size() * 100.00) / total)) + "%"));
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table2.addCell(cell);
+		if(total !=0) {
+			cell = new PdfPCell(new Paragraph(String.valueOf(Math.round((accounts.size() * 100.00) / total)) + "%"));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table2.addCell(cell);
+		}
+		else {
+			cell = new PdfPCell(new Paragraph(String.valueOf(total) + "%"));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table2.addCell(cell);
+		}
 		// display the number of total accounts
 		cell = new PdfPCell(
 				new Paragraph("Total Users : " + String.valueOf(total), FontFactory.getFont(FontFactory.TIMES_BOLD)));
@@ -1725,9 +1732,16 @@ public class ReportsController {
 		// get the total users in the system
 		int total = DatabaseController.getTableRowsNumber("account", UserType.User.toString());
 		// calculate the percentage of the locked accounts from the total accounts
-		cell = new PdfPCell(new Paragraph(String.valueOf(Math.round((accounts.size() * 100.00) / total)) + "%"));
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table2.addCell(cell);
+		if(total != 0 ) {
+			cell = new PdfPCell(new Paragraph(String.valueOf(Math.round((accounts.size() * 100.00) / total)) + "%"));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table2.addCell(cell);
+		}
+		else {
+			cell = new PdfPCell(new Paragraph(String.valueOf(total) + "%"));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table2.addCell(cell);
+		}
 		// display the number of total accounts
 		cell = new PdfPCell(
 				new Paragraph("Total Users : " + String.valueOf(total), FontFactory.getFont(FontFactory.TIMES_BOLD)));
@@ -1837,10 +1851,18 @@ public class ReportsController {
 
 		// get the total users in the system
 		int total = DatabaseController.getTableRowsNumber("account", UserType.User.toString());
-		// calculate the percentage of the active accounts from the total accounts
-		cell = new PdfPCell(new Paragraph(String.valueOf(Math.round((accounts.size() * 100.00) / total)) + "%"));
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table2.addCell(cell);
+			if(total != 0) {
+				// calculate the percentage of the active accounts from the total accounts
+				cell = new PdfPCell(new Paragraph(String.valueOf(Math.round((accounts.size() * 100.00) / total)) + "%"));
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table2.addCell(cell);
+		}
+			else {
+				// calculate the percentage of the active accounts from the total accounts
+				cell = new PdfPCell(new Paragraph(String.valueOf(total) + "%"));
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table2.addCell(cell);
+			}
 		// display the number of total accounts
 		cell = new PdfPCell(
 				new Paragraph("Total Users : " + String.valueOf(total), FontFactory.getFont(FontFactory.TIMES_BOLD)));
