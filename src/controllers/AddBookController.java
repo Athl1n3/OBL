@@ -41,8 +41,8 @@ public class AddBookController {
 	@FXML
 	private TextField txtEdition;
 
-	@FXML
-	private TextArea txtTableOfContents;
+//	@FXML
+	// private TextArea txtTableO33333fContents;
 
 	@FXML
 	private TextField txtPrintYear;
@@ -62,8 +62,6 @@ public class AddBookController {
 	@FXML
 	private TextField txtCatalog;
 
-	@FXML
-	private TextField txtCopies;
 
 	@FXML
 	private TextField txtShelf;
@@ -75,28 +73,34 @@ public class AddBookController {
 	private Button btnBrowsePath;
 
 	@FXML
-	private TextField txtPath;
+	private TextField txtTableOfContents;
 
 	@FXML
 	private ComboBox<String> bookTypeCB;
 
 	private Book newBook;
 
+	/**
+	 *
+	 * checks input validity and add this new book to the DB
+	 * 
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
 		boolean input;
 		input = validateInput();
-		
+
 		if (input == true) {
 			newBook = new Book(Integer.parseInt(txtBookID.getText()), txtBookName.getText(), txtAuthor.getText(),
 					txtEdition.getText(), Integer.parseInt(txtPrintYear.getText()), txtBookSubject.getText(),
 					txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()), txtTableOfContents.getText(),
-					txtShelf.getText(), Integer.parseInt(txtCopies.getText()),
-					bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()),
-					Integer.parseInt(txtCopies.getText()));
+					txtShelf.getText(), 0,
+					bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()), 0);
 			System.out.println(newBook.getBookID());
 
-			//check if this id exist 
+			// check if this id exist
 			if ((DatabaseController.getBook(newBook.getBookID())) == null) {
 				DatabaseController.addBook(newBook);
 				System.out.println("Ddd");
@@ -118,9 +122,11 @@ public class AddBookController {
 
 	}
 
-	/*
+	/**
 	 * when browse button clicked this method open the window to get the path of the
 	 * file
+	 * 
+	 * @param event
 	 */
 	@FXML
 	void btnBrowsePathPressed(ActionEvent event) {
@@ -128,27 +134,28 @@ public class AddBookController {
 		File SelectedFile = fc.showOpenDialog(null);
 
 		if (SelectedFile != null) {
-			txtPath.setText(SelectedFile.getAbsolutePath());
+			txtTableOfContents.setText(SelectedFile.getAbsolutePath());
 		}
 	}
 
 	/**
 	 * this method clears all the data in the fields when clear button clicked
+	 * 
+	 * @param event
 	 */
+
 	@FXML
 	void btnClearPressed(ActionEvent event) {
 		txtBookName.clear();
 		txtBookID.clear();
 		txtEdition.clear();
 		txtAuthor.clear();
-		txtTableOfContents.clear();
 		txtPrintYear.clear();
 		txtBookSubject.clear();
 		txtCatalog.clear();
-		txtCopies.clear();
 		txtShelf.clear();
 		txtDescirption.clear();
-		txtPath.clear();
+		txtTableOfContents.clear();
 	}
 
 	@FXML
@@ -170,9 +177,9 @@ public class AddBookController {
 		BooleanBinding bb = new BooleanBinding() {
 			{
 				super.bind(txtBookName.textProperty(), txtAuthor.textProperty(), txtBookID.textProperty(),
-						txtEdition.textProperty(), txtTableOfContents.textProperty(), txtPrintYear.textProperty(),
-						txtBookSubject.textProperty(), txtCatalog.textProperty(), txtCopies.textProperty(),
-						txtShelf.textProperty(), txtDescirption.textProperty(), txtPath.textProperty());
+						txtEdition.textProperty(), txtPrintYear.textProperty(), txtBookSubject.textProperty(),
+						txtCatalog.textProperty(),
+						txtShelf.textProperty(), txtDescirption.textProperty(), txtTableOfContents.textProperty());
 			}
 
 			// this function return true if at least one field not filled
@@ -180,10 +187,10 @@ public class AddBookController {
 			protected boolean computeValue() {
 				return (txtBookName.getText().isEmpty() || txtAuthor.getText().isEmpty()
 						|| txtBookID.getText().isEmpty() || txtEdition.getText().isEmpty()
-						|| txtTableOfContents.getText().isEmpty() || txtPrintYear.getText().isEmpty()
-						|| txtBookSubject.getText().isEmpty() || txtCatalog.getText().isEmpty()
-						|| txtCopies.getText().isEmpty() || txtShelf.getText().isEmpty()
-						|| txtDescirption.getText().isEmpty() || txtPath.getText().isEmpty());
+						|| txtPrintYear.getText().isEmpty() || txtBookSubject.getText().isEmpty()
+						|| txtCatalog.getText().isEmpty() 
+						|| txtShelf.getText().isEmpty() || txtDescirption.getText().isEmpty()
+						|| txtTableOfContents.getText().isEmpty());
 			}
 		};
 
@@ -193,6 +200,11 @@ public class AddBookController {
 
 	}
 
+	/**
+	 * loads "add book form" and show it
+	 * 
+	 * @param primaryStage
+	 */
 	public void start(Stage primaryStage) {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("../gui/AddBookForm.fxml"));
@@ -221,11 +233,9 @@ public class AddBookController {
 		txtAuthor.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtBookID.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtEdition.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
-		txtTableOfContents.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtPrintYear.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtBookSubject.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtCatalog.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
-		txtCopies.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtShelf.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtDescirption.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 
@@ -245,25 +255,10 @@ public class AddBookController {
 			}
 
 		for (char c : txtAuthor.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isAlphabetic(c)) {
+			if (Character.isDigit(c)) {
 				errorMsg += "Author name must contain letters only!\n";
 				txtAuthor.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 				break;
-			}
-
-		for (char c : txtEdition.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isDigit(c)) {
-				errorMsg += "Book edition must contain numbers only!\n";
-				txtEdition.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				break;
-			}
-
-		for (char c : txtBookSubject.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isAlphabetic(c)) {
-				errorMsg += "Book subject must contain letters only!\n";
-				txtBookSubject.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				break;
-
 			}
 
 		for (char c : txtCatalog.getText().toCharArray())// Parse text field into chars array and validate
@@ -273,12 +268,6 @@ public class AddBookController {
 				break;
 			}
 
-		for (char c : txtCopies.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isDigit(c)) {
-				errorMsg += "Copies number must contain numbers only!\n";
-				txtCopies.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				break;
-			}
 		for (char c : txtPrintYear.getText().toCharArray())// Parse text field into chars array and validate
 			if (!Character.isDigit(c)) {
 				errorMsg += "Year must contain numbers only!\n";
