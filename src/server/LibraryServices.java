@@ -33,10 +33,13 @@ public class LibraryServices {
 		LibraryServices.dbCon = dbCon;
 		// emailService();// Initiate book returns email service
 		// lateReturnsService();//Initiate late returns service
+		//savedCopiesManager();
+		scheduledSuspensionManager();
 	}
 
 	/**
 	 * Send a notification to the next student in book order queue
+	 * 
 	 * @param bookID
 	 */
 	@SuppressWarnings("unchecked")
@@ -48,7 +51,7 @@ public class LibraryServices {
 			Calendar calendar = Calendar.getInstance();
 			java.sql.Timestamp notificationTimeStamp = new java.sql.Timestamp(calendar.getTime().getTime());
 
-			//dbCon.executeQuery("DELETE FROM BookOrder WHERE orderID = '" + nextBookOrder.get(0) + "';");
+			dbCon.executeQuery("DELETE FROM BookOrder WHERE orderID = '" + nextBookOrder.get(0) + "';");
 			ArrayList<String> orderedBookData = (ArrayList<String>) dbCon.executeSelectQuery(
 					"SELECT name, author, edition, printyear FROM book WHERE bookID = '" + bookID + "';");
 			// Notify user that ordered book is available
@@ -56,17 +59,83 @@ public class LibraryServices {
 					+ nextBookOrder.get(1) + "','" + notificationTimeStamp + "','Your ordered book: " + bookID + "-"
 					+ orderedBookData.get(0) + "," + orderedBookData.get(2) + " " + orderedBookData.get(3)
 					+ " edition by " + orderedBookData.get(1)
-					+ " is available for lending at the library!','User','Message')");
+					+ " is available for lending at the library and saved for 2 days!','User','Message')");
+			int notificationNum = Integer.parseInt(((ArrayList<String>) dbCon
+					.executeQuery("SELECT notificationNum FROM notification ORDER BY notificationNum DESC LIMIT 1;"))
+							.get(0));
+			// Save copy for 2 days
+			dbCon.executeQuery("INSERT INTO savedcopy(notificationNum, userID, bookID, availableDate, dueDate)VALUES ('"
+					+ notificationNum + "','" + nextBookOrder.get(1) + "','" + bookID + "','" + LocalDate.now() + "','"
+					+ LocalDate.now().plusDays(2) + "')");
 		} else
 			System.out.println("No orders were found for book ID: " + bookID);
-
 	}
 
+	public void savedCopiesManager() {
+		TimerTask savedCopiesManagerTask = new TimerTask() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public void run() {
+				ArrayList<String> savedCopiesData = (ArrayList<String>) dbCon
+						.executeSelectQuery("SELECT bookID, userID, notificationNum FROM savedCopy WHERE dueDate = '"
+								+ LocalDate.now() + "'");
+				if (savedCopiesData.size() != 0) {
+					for (int i = 0; i < savedCopiesData.size(); i++) {
+						int bookID = Integer.parseInt(savedCopiesData.get(0));
+						int userID = Integer.parseInt(savedCopiesData.get(1));
+						int notificationNum = Integer.parseInt(savedCopiesData.get(2));
+						dbCon.executeQuery("DELETE FROM notification WHERE notificationNum = '" + notificationNum
+								+ "' AND userID = '" + userID + "';");
+						dbCon.executeQuery(
+								"DELETE FROM savedCopy WHERE userID = '" + userID + "' AND bookID = '" + bookID + "';");
+						dbCon.executeQuery(
+								"UPDATE book SET availableCopies = availableCopies+1 WHERE bookID = '" + bookID + "';");
+						orderNotification(bookID);
+						savedCopiesData.subList(0, 3).clear();
+					}
+				} else
+					System.out.println("No saved copies found");
+			}
+		};
+		Timer savedCopiesManagerTimer = new Timer();
+		savedCopiesManagerTimer.schedule(savedCopiesManagerTask, TimeUnit.SECONDS.toMillis(30),
+				TimeUnit.DAYS.toMillis(1));
+	}
 	
 	/**
-	 * Call libraryServices graduate student method and set student status as graduated
-	 * If the student got lent books, a mail gets sent to return them and suspends his account
-	 * else account is locked
+	 * This method checks and processes scheduled suspension accounts list
+	 * Unsuspends an account after its last suspension day
+	 */
+	public void scheduledSuspensionManager()
+	{
+		TimerTask scheduledSuspensionManagerTask = new TimerTask() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public void run() {
+				ArrayList<String> scheduledSuspensionData = (ArrayList<String>) dbCon
+						.executeSelectQuery("SELECT * FROM scheduledSuspension WHERE untilDate = '"+LocalDate.now().minusDays(1)+"';");
+				if (scheduledSuspensionData.size() != 0) {
+					for (int i = 0; i < scheduledSuspensionData.size(); i++) {
+						int userID = Integer.parseInt(scheduledSuspensionData.get(0));
+						dbCon.executeQuery(
+								"DELETE FROM scheduledSuspension WHERE userID = '" + userID + "';");
+						dbCon.executeQuery("UPDATE account SET status = 'Active' WHERE userID = '"+userID+"';");
+						scheduledSuspensionData.subList(0, 2).clear();
+					}
+				} else
+					System.out.println("No scheduled accounts need to be changed");
+			}
+		};
+		Timer scheduledSuspensionManagerTimer = new Timer();
+		scheduledSuspensionManagerTimer.schedule(scheduledSuspensionManagerTask, TimeUnit.SECONDS.toMillis(10),
+				TimeUnit.DAYS.toMillis(1));
+	}
+	
+	/**
+	 * Call libraryServices graduate student method and set student status as
+	 * graduated If the student got lent books, a mail gets sent to return them and
+	 * suspends his account else account is locked
+	 * 
 	 * @param studentID
 	 */
 	@SuppressWarnings("unchecked")

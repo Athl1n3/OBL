@@ -1,6 +1,7 @@
 package controllers;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import entities.Account;
@@ -20,6 +21,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -98,6 +100,9 @@ public class UserLookupController {
 	@FXML
 	private Button btnEditData;
 
+	@FXML
+	private DatePicker dtDatePicker;
+
 	private static UserAccount lookupAccount;
 	private static LibrarianAccount librarianAccount;
 
@@ -147,6 +152,7 @@ public class UserLookupController {
 		cbEditUser.setSelected(false);
 		lblOnlineStatus.setText("---");
 		lookupAccount = null;
+		dtDatePicker.setValue(null);
 	}
 
 	/**
@@ -314,21 +320,54 @@ public class UserLookupController {
 	 */
 	@FXML
 	void btnSuspendPressed(ActionEvent event) {
-		boolean status;
+		int status = 0;
 		Alert statMsg = new Alert(AlertType.INFORMATION, "", ButtonType.OK);
 
 		if (txtID.isDisabled()) {
 			if (lookupAccount.getStatus() == accountStatus.Suspended) {
 				lookupAccount.setStatus(accountStatus.Active);
-				status = true;
+				dtDatePicker.getEditor().clear();
+				DatabaseController.deleteScheduledSuspension(lookupAccount.getAccountID());
+				DatabaseController.updateUserStatus(lookupAccount, false);
+				status = 0;
 			} else {
-				lookupAccount.setStatus(accountStatus.Suspended);
-				status = false;
-			}
+				if (dtDatePicker.getValue() == null) {
+					lookupAccount.setStatus(accountStatus.Suspended);
+					DatabaseController.updateUserStatus(lookupAccount, false);
+					status = 1;
+				} else {
+					if (dtDatePicker.getValue().isBefore(LocalDate.now())
+							|| dtDatePicker.getValue().isEqual(LocalDate.now()))
+						status = 3;
+					else {
+						lookupAccount.setStatus(accountStatus.Suspended);
+						DatabaseController.addScheduledSuspension(lookupAccount.getAccountID(), dtDatePicker.getValue());
+						DatabaseController.updateUserStatus(lookupAccount, false);
+						status = 2;
+					}
+				}
 
-			statMsg.setContentText(status ? "User account was successfully set to 'Active'"
-					: "User account was successfully set to 'Suspended'");
-			DatabaseController.updateUserStatus(lookupAccount, false);
+			}
+			
+			switch(status)
+			{
+			case 0:
+				statMsg.setContentText("User account was successfully set to 'Active'");
+				dtDatePicker.setValue(null);
+				break;
+			case 1:
+				statMsg.setContentText("User account was successfully set to 'Suspended'\n[No schedueled suspension was determined]");
+				break;
+			case 2:
+				statMsg.setContentText("User account was successfully set to 'Suspended'\n Suspended until: ["+dtDatePicker.getValue()+"]");
+				break;
+				default:
+					statMsg.setContentText("Schedueled suspension date must be a valid date starting from tomorrow!");
+					dtDatePicker.getEditor().clear();
+					dtDatePicker.setValue(null);
+					break;		
+			}
+			
 			LoadUserData();
 		} else {
 			statMsg.setAlertType(AlertType.WARNING);
@@ -490,5 +529,9 @@ public class UserLookupController {
 			lblOnlineStatus.setText("User is Offline");
 		}
 		lblStatus.setText(lookupAccount.getStatus().toString());
+		
+		LocalDate schedueledDate = DatabaseController.getSchedueledSuspension(lookupAccount.getAccountID());
+		if(schedueledDate != null)
+			dtDatePicker.setValue(schedueledDate);
 	}
 }

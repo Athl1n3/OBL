@@ -4,10 +4,12 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
+import entities.Account;
 import entities.Book;
 import entities.Book.bookType;
 import entities.BookCopy;
 import entities.LentBook;
+import entities.LibrarianAccount;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
 import javafx.beans.binding.BooleanBinding;
@@ -82,9 +84,12 @@ public class LendController {
 	@FXML
 	private Button btnClear;
 
-	UserAccount lenderAccount;
-	Book lentBook;
-	Book selectedBook;
+	@FXML
+	private TextField txtSerialNumber;
+
+	private Account lenderAccount;
+	private Book lentBook;
+	private boolean lookedUp;
 
 	/**
 	 * When BookLookUp button is pressed , this method will be called
@@ -94,54 +99,63 @@ public class LendController {
 	@FXML
 	void btnBookLookupPressed(ActionEvent event) {
 
-		lentBook = DatabaseController.getBook(Integer.parseInt(txtBookID.getText()));
-
-		// validate if there is such a book with the inputed book ID
-		if (lentBook == null) {
-			// if not , then let the user know
-			alertWarningMessage("There is no such book in the library");
-		} else {
-
-			lenderAccount = (UserAccount) DatabaseController.getAccount(Integer.parseInt(txtUserID.getText()));
-
-			// validate if there is such an account with the inputed ID
-			if (lenderAccount == null) {
+		if (lookedUp == false) {
+			lentBook = DatabaseController.getBook(Integer.parseInt(txtBookID.getText()));
+			// validate if there is such a book with the inputed book ID
+			if (lentBook == null) {
 				// if not , then let the user know
-				alertWarningMessage("There is no such user");
+				alertWarningMessage("There is no such book in the library");
 			} else {
-				// validate if the user account status is not active
-				if (!lenderAccount.getStatus().equals(accountStatus.Active)) {
-					alertWarningMessage("This account is " + lenderAccount.getStatus().toString());
-				}
-				else {
-					// if the book ID & the user ID is found in the DB , then display the details
-					// about the book and the user
-					txtBookName.setText(lentBook.getName());
-					txtBookName.setEditable(false);
+				lenderAccount = DatabaseController.getAccount(Integer.parseInt(txtUserID.getText()));
+				// validate if there is such an account with the inputed ID
+				if (lenderAccount == null) {
+					// if not , then let the user know
+					alertWarningMessage("User doesn't exist!");
+				} else {
+					// validate if the user account status is not active
+					if (lenderAccount instanceof UserAccount) {
+						if (!((UserAccount) lenderAccount).getStatus().equals(accountStatus.Active)) {
+							alertWarningMessage(
+									"This account is " + ((UserAccount) lenderAccount).getStatus().toString()
+											+ "\nNo lending can be performed");
+						} else {
+							// if the book ID & the user ID is found in the DB , then display the details
+							// about the book and the user
+							txtBookName.setText(lentBook.getName());
+							txtBookType.setText(lentBook.getBookType().toString());
+							txtAvailableCopies.setText(String.valueOf(lentBook.getAvailableCopies()));
+							txtName.setText(lenderAccount.getFirstName());
 
-					txtBookType.setText(lentBook.getBookType().toString());
-					txtBookType.setEditable(false);
+							if (lentBook.getBookType() == bookType.Wanted)
+								dtDueDate.setValue(LocalDate.now().plusDays(3));// the book is "wanted" so lent the book
+																				// for // 3 days only
+							else
+								dtDueDate.setValue(LocalDate.now().plusWeeks(2));// the books is "regular" , then lent
+																					// the
+																					// book for 2 weeks
+							// the user account status is active , then validate if there is copies of that
+							// book
 
-					txtAvailableCopies.setText(String.valueOf(lentBook.getCopiesNumber()));
-					txtAvailableCopies.setEditable(false);
-
-					txtName.setText(lenderAccount.getFirstName());
-					txtName.setEditable(false);
-
-					// the user account status is active , then validate if there is copies of that
-					// book
-					if (lentBook.getCopiesNumber() == 0) {
-						// if there is no copies of that book then let the user know that
-						alertWarningMessage("There is no copies of the book " + "'" + lentBook.getName() + "'");
-						btnLendBook.setDisable(true);
-					} else {
-						// if everything is okay then enable the button to let the user be able to lent
-						// the book
-						btnLendBook.setDisable(false);
-					}
+							if (lentBook.getAvailableCopies() == 0) {
+								// if there is no copies of that book then let the user know that
+								alertWarningMessage("There are no copies are available of the book " + "'"
+										+ lentBook.getName() + "'");
+								btnLendBook.setDisable(true);
+							} else {
+								// if everything is okay then enable the button to let the user be able to lent
+								// the book
+								btnLendBook.setDisable(false);
+							}
+							txtBookID.setDisable(true);
+							txtUserID.setDisable(true);
+							lookedUp = true;
+						}
+					} else if (lenderAccount instanceof LibrarianAccount)
+						alertWarningMessage("Can't use a librarian ID for lending!");
 				}
 			}
-		}
+		} else
+			alertWarningMessage("User/Book already looked up!");
 	}
 
 	/*
@@ -156,6 +170,10 @@ public class LendController {
 		txtUserID.clear();
 		txtName.clear();
 		dtDueDate.getEditor().clear();
+		txtBookID.setDisable(false);
+		txtUserID.setDisable(false);
+		lookedUp = false;
+		txtSerialNumber.clear();
 	}
 
 	/**
@@ -166,30 +184,32 @@ public class LendController {
 	@FXML
 	void btnLendBookPressed(ActionEvent event) {
 
-		// get the date of today
-		LocalDate date = LocalDate.now();
-		// validate if the book type is wanted or not
-		if (lentBook.getBookType().equals(bookType.Wanted))
-			// the book is "wanted" so lent the book for 3 days only
-			date = date.plusDays(3);
-		else
-			// the books is "regular" , then lent the book for 2 weeks
-			date = date.plusWeeks(2);
-		// set the returning time
-		dtDueDate.setValue(date);
-
 		// create the lent book request with the appropriate returning time
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//you need to get the copy from bookCopy table 
+		// you need to get the copy from bookCopy table
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		BookCopy bookCopy = new BookCopy(lentBook.getBookID(),"123", null, true); // ******* SerialNumner *******//
-		LentBook lntbook = new LentBook(lenderAccount.getID(), lentBook, bookCopy, LocalDate.now(), date, null, false);
-		// lent the book to the user
-		DatabaseController.addLentBook(lntbook);
-		DatabaseController.updateBookAvailableCopies(lentBook, -1);
-		// let the user know that the lent process has been cone successfully
-		Alert alert = new Alert(AlertType.INFORMATION, "Book has been lent successfully", ButtonType.OK);
-		alert.show();
+		BookCopy bookCopy = DatabaseController.getBookCopy(txtBookID.getText(), txtSerialNumber.getText());
+		if (bookCopy != null) {
+			if (DatabaseController.getCount("savedCopy", "bookID", txtBookID.getText()) != lentBook
+					.getAvailableCopies()) {
+				if (bookCopy.isLent())
+					alertWarningMessage("Book with this serial number is already lent");
+				else {
+					LentBook lntbook = new LentBook(lenderAccount.getID(), lentBook, bookCopy, LocalDate.now(),
+							dtDueDate.getValue(), LocalDate.parse("1970-01-01"), false);
+					// lent the book to the user
+					bookCopy.setLent(true);
+					DatabaseController.addLentBook(lntbook);
+					DatabaseController.updateBookCopy(bookCopy);
+					DatabaseController.updateBookAvailableCopies(lentBook, -1);
+					// let the user know that the lent process has been cone successfully
+					Alert alert = new Alert(AlertType.INFORMATION, "Book has been lent successfully", ButtonType.OK);
+					alert.show();
+				}
+			} else
+				alertWarningMessage("This book has already saved copies for other users");
+		} else
+			alertWarningMessage("This book serial number doesn't exist!");
 
 	}
 
@@ -210,7 +230,7 @@ public class LendController {
 	 */
 	@FXML
 	void initialize() {
-
+		lookedUp = false;
 		// a listener to validate if the ID length is not greater than 9 digits and if
 		// it's only contain numbers
 		txtBookID.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -245,8 +265,7 @@ public class LendController {
 		btnBookLookup.disableProperty().bind(booleanBind);
 	}
 
-	void start(Stage stage, Book selectedBook) throws Exception {
-		this.selectedBook = selectedBook;
+	void start(Stage stage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
 		Scene scene = new Scene(root);
 		stage.setTitle("Lend book");

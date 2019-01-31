@@ -107,31 +107,40 @@ public class ExtendLendController {
 					"The book " + selectedBook.getBook().getName() + " is a 'Wanted'\n book and cannot be extended.");
 		} else {
 			// validate if there is a week or less to return that book
-			if (LocalDate.now().isAfter(selectedBook.getIssueDate().plusWeeks(1)) == false
-					&& LocalDate.now().isEqual(selectedBook.getIssueDate().plusWeeks(1)) == false) {
+			if ((LocalDate.now().isBefore(selectedBook.getDueDate().minusWeeks(1))) == true
+					|| (LocalDate.now().isEqual(selectedBook.getDueDate().minusWeeks(1))) == true) {
 				// if not then let the user know that he can't extend the book return time
 				alertWarningMessage(
 						"You have more than 1 week left to return this book, therefore you can extend this book returning time.");
 			} else {
-
 				// validate if the orders on that book is lesser than the actual available
 				// copies in the library
 				if (selectedBook.getBook().getAvailableCopies() <= selectedBook.getBook().getBookOrders()) {
 					// if not , then let the user know that he can't extend the book return time
-					alertWarningMessage("There is a lot of orders on that book , \nTherefore the book "
-							+ "'"+selectedBook.getBook().getName()+"'" + " cannot be extended.");
+					alertWarningMessage("There is a lot of orders on that book , \nTherefore the book " + "'"
+							+ selectedBook.getBook().getName() + "'" + " cannot be extended.");
 				} else {
 					// extend the book return time to 1 more weeks
-					selectedBook.setDueDate(selectedBook.getDueDate().plusWeeks(1));
+					boolean update = false;
+					if (selectedBook.isLate())
+						new Alert(AlertType.WARNING, "Book is already in a late return and cannot be extended",
+								ButtonType.OK).show();
+					else {
+						selectedBook.setDueDate(selectedBook.getDueDate().plusWeeks(1));
+						update = true;
+					}
 
-					// DatabaseController.updateLentBook(selectedBook);
-
-					// let the user know that the return time for the his book has been extended
-					// successfully
-					Alert alert = new Alert(AlertType.INFORMATION,
-							"The book" + selectedBook.getBook().getName() + " Due time has been extended successfully.",
-							ButtonType.OK);
-					alert.show();
+					if (update) {
+						if (DatabaseController.updateLentBook(selectedBook)) {
+							tableView.refresh();
+							// let the user know that the return time for the his book has been extended
+							// successfully
+							new Alert(AlertType.INFORMATION, "The book" + selectedBook.getBook().getName()
+									+ " Due time has been extended successfully.", ButtonType.OK).show();
+						} else
+							new Alert(AlertType.ERROR, "An error has occured!\n Executing extend failed!",
+									ButtonType.OK).show();
+					}
 				}
 			}
 		}
@@ -182,8 +191,7 @@ public class ExtendLendController {
 		if (loggedAccount.getStatus() == accountStatus.Active) {
 			btnExtendBook.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 			btnExtendBook.setText("Extend Book Lend");
-		}
-		else {
+		} else {
 			btnExtendBook.setText("Suspended Account");
 			btnExtendBook.setDisable(true);
 		}
@@ -196,19 +204,6 @@ public class ExtendLendController {
 	 */
 	private ObservableList<LentBook> getLentBookList() {
 
-		/*
-		 * LentBook LntBK1 = new LentBook(1248,new Book(123, "book1", "fadi", "1", 6,
-		 * "action", "anananana", 1, "annon", "shelf", 12, "regular", 1), null,
-		 * LocalDate.now(), LocalDate.now().plusWeeks(2), false); LentBook LntBK2 = new
-		 * LentBook(123448,new Book(1233, "book2", "adam", "1", 6, "action",
-		 * "anananana", 1, "annon", "shelf", 12, "regular", 1), null, LocalDate.now(),
-		 * LocalDate.now().plusWeeks(2), false); ArrayList<LentBook> arr = new
-		 * ArrayList<>(Arrays.asList(LntBK1, LntBK2));
-		 */
-
-		/*
-		 * DatabaseController.getExtendBookList(account.getID()) ** & send it
-		 */
 		// create an observablelist that contains the user let books
 		ObservableList<LentBook> list = FXCollections
 				.observableArrayList(DatabaseController.getLentBookList(loggedAccount.getAccountID()));
