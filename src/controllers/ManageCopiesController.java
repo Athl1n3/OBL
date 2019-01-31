@@ -1,98 +1,200 @@
 package controllers;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import entities.Book;
+import entities.BookCopy;
+import javafx.beans.binding.BooleanBinding;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class ManageCopiesController {
+	Book editedBook;
 
-    @FXML
-    private ResourceBundle resources;
+	@FXML
+	private ImageView imgBack;
 
-    @FXML
-    private URL location;
+	@FXML
+	private Label lblBookName;
 
-    @FXML
-    private ImageView imgBack;
+	@FXML
+	private Label lblBookID;
 
-    @FXML
-    private TextField txtSearch;
+	@FXML
+	private TableView<BookCopy> tableView;
 
-    @FXML
-    private Button btnAddBook;
+	@FXML
+	private TableColumn<BookCopy, String> colSerialNumber;
 
-    @FXML
-    private Button btnDeleteBook;
+	@FXML
+	private TableColumn<BookCopy, String> colPurchaseDate;
 
-    @FXML
-    private Button btnEditBook;
+	@FXML
+	private TableColumn<BookCopy, String> colLendStatus;
 
-    @FXML
-    private ImageView imgRef;
+	@FXML
+	private DatePicker dtPurchaseDate;
 
-    @FXML
-    private Button btnManageCopies;
+	@FXML
+	private TextField txtSerialNumber;
 
-    @FXML
-    private TableView<?> tableView;
+	@FXML
+	private Button btnAddCopy;
 
-    @FXML
-    private TableColumn<?, ?> bookID;
+	@FXML
+	private Button btnDeleteCopy;
 
-    @FXML
-    private TableColumn<?, ?> name;
+	private static Book selectedBook;
 
-    @FXML
-    private TableColumn<?, ?> author;
+	/**
+	 * when "add copy" button is pressed this method will be called, checks input
+	 * validation and add new copy to DB
+	 * 
+	 * @param event
+	 */
+	@FXML
+	void btnAddCopyPressed(ActionEvent event) {
+		BookCopy newCopy = new BookCopy(selectedBook.getBookID(), txtSerialNumber.getText(), dtPurchaseDate.getValue(),
+				false);
+		// DatabaseController.addCopy(newCopy);
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Succsess");
+		alert.setHeaderText("The book has been added successfully");
+		alert.showAndWait();
+		initialize();
+	}
 
-    @FXML
-    private TableColumn<?, ?> edition;
+	/**
+	 * when "Delete copy" button presses this method will called and delete this copy 
+	 * @param event
+	 */
+	@FXML
+	void btnDeleteCopyPressed(ActionEvent event) {
 
-    @FXML
-    private TableColumn<?, ?> year;
+		BookCopy selectedForDelete = (BookCopy) tableView.getSelectionModel().getSelectedItem();
+		try {
 
-    @FXML
-    private TableColumn<?, ?> copies;
+			if (selectedForDelete == null)
+				throw new Exception();
+			else {
+				Alert confirmation = new Alert(AlertType.CONFIRMATION);
+				confirmation.setTitle("Confirmation");
+				confirmation.setHeaderText("Are you sure want to delete this book");
+				// confirmation.setContentText("Select a book for delete!");
+				confirmation.showAndWait().ifPresent(response -> {
+					if (response == ButtonType.OK) {
+						// DatabaseController.deleteCopy(selectedForDelete.getBookID());
+						initialize();
+					}
+				});
 
-    @FXML
-    private TableColumn<?, ?> availableCopies;
+			}
 
-    @FXML
-    void btnAddBookPressed(ActionEvent event) {
+		} catch (Exception e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("No book has selected");
+			alert.setContentText("Select a book for delete!");
+			alert.showAndWait();
+		}
 
-    }
+	}
 
-    @FXML
-    void btnDeleteBookPressed(ActionEvent event) {
+	/**
+	 * back to the previous screen when image "back"
+	 * @param event
+	 * @throws IOException
+	 */
+	@FXML
+	void imgBackClicked(MouseEvent event) throws IOException {
+		((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
+	}
 
-    }
+	public void start(Stage primaryStage, Book selectedBook) {
+		try {
+			this.selectedBook = selectedBook;
+			Parent root = FXMLLoader.load(getClass().getResource("../gui/ManageCopiesForm.fxml"));
+			Stage stage = new Stage();
+			stage.initOwner(primaryStage);
+			stage.initModality(Modality.WINDOW_MODAL);
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setTitle("Manage compies Form");
+			stage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    @FXML
-    void btnEditBookPressed(ActionEvent event) {
+	/**
+	 * initialize the current screen with all the relevant information
+	 */
+	@FXML
+	void initialize() {
 
-    }
+		lblBookName.setText(selectedBook.getName());
+		lblBookID.setText(Integer.toString(selectedBook.getBookID()));
 
-    @FXML
-    void btnManageCopiesPressed(ActionEvent event) {
+		dtPurchaseDate.setValue(LocalDate.now());
+		ArrayList<BookCopy> copiesList = new ArrayList<BookCopy>();
+		copiesList = DatabaseController.getbookCopyList(selectedBook.getBookID());
+		if (copiesList == null)
+			return;
+		colSerialNumber.setCellValueFactory(new PropertyValueFactory<BookCopy, String>("SerialNumber"));
+		colPurchaseDate.setCellValueFactory(new PropertyValueFactory<BookCopy, String>("purchaseDate"));
+		colLendStatus.setCellValueFactory(new PropertyValueFactory<BookCopy, String>("lent"));
+		tableView.setItems(getCopies());
 
-    }
+		BooleanBinding bb = new BooleanBinding() {
+			{
+				super.bind(txtSerialNumber.textProperty());
 
-    @FXML
-    void imgBackClicked(MouseEvent event) {
-    	
-    }
+			}
 
-    @FXML
-    void initialize() {
-        
-    }
-    
-    
+			// this function return true if at least one field not filled
+			@Override
+			protected boolean computeValue() {
+				return (txtSerialNumber.getText().isEmpty());
+			}
+		};
+		btnAddCopy.disableProperty().bind(bb);
+	}
+
+	/**
+	 * this private method returns all the copies to specific book
+	 * @return
+	 */
+	private ObservableList<BookCopy> getCopies() {
+		ArrayList<BookCopy> allCopies;
+		allCopies = DatabaseController.getbookCopyList(selectedBook.getBookID());
+		ObservableList<BookCopy> Copies = FXCollections.observableArrayList();
+		for (int i = 0; i < allCopies.size(); i++)
+			Copies.add(allCopies.get(i));
+		return Copies;
+	}
+
 }

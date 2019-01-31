@@ -42,7 +42,7 @@ public class AddBookController {
 	private TextField txtEdition;
 
 //	@FXML
-	//private TextArea txtTableO33333fContents;
+	// private TextArea txtTableO33333fContents;
 
 	@FXML
 	private TextField txtPrintYear;
@@ -62,8 +62,6 @@ public class AddBookController {
 	@FXML
 	private TextField txtCatalog;
 
-	@FXML
-	private TextField txtCopies;
 
 	@FXML
 	private TextField txtShelf;
@@ -84,7 +82,8 @@ public class AddBookController {
 
 	/**
 	 *
-	 * checks input validity and add this new book to the DB 
+	 * checks input validity and add this new book to the DB
+	 * 
 	 * @param event
 	 * @throws IOException
 	 */
@@ -92,17 +91,16 @@ public class AddBookController {
 	void btnAddBookPressed(ActionEvent event) throws IOException {
 		boolean input;
 		input = validateInput();
-		
+
 		if (input == true) {
 			newBook = new Book(Integer.parseInt(txtBookID.getText()), txtBookName.getText(), txtAuthor.getText(),
 					txtEdition.getText(), Integer.parseInt(txtPrintYear.getText()), txtBookSubject.getText(),
 					txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()), txtTableOfContents.getText(),
-					txtShelf.getText(), Integer.parseInt(txtCopies.getText()),
-					bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()),
-					Integer.parseInt(txtCopies.getText()));
+					txtShelf.getText(), 0,
+					bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()), 0);
 			System.out.println(newBook.getBookID());
 
-			//check if this id exist 
+			// check if this id exist
 			if ((DatabaseController.getBook(newBook.getBookID())) == null) {
 				DatabaseController.addBook(newBook);
 				System.out.println("Ddd");
@@ -127,6 +125,7 @@ public class AddBookController {
 	/**
 	 * when browse button clicked this method open the window to get the path of the
 	 * file
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -141,10 +140,10 @@ public class AddBookController {
 
 	/**
 	 * this method clears all the data in the fields when clear button clicked
+	 * 
 	 * @param event
 	 */
-	
-	
+
 	@FXML
 	void btnClearPressed(ActionEvent event) {
 		txtBookName.clear();
@@ -154,7 +153,6 @@ public class AddBookController {
 		txtPrintYear.clear();
 		txtBookSubject.clear();
 		txtCatalog.clear();
-		txtCopies.clear();
 		txtShelf.clear();
 		txtDescirption.clear();
 		txtTableOfContents.clear();
@@ -165,7 +163,6 @@ public class AddBookController {
 		((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
 	}
 
-	
 	/**
 	 * initialize the relevant fields and disable "Add book button" until fill all
 	 * the fields
@@ -180,8 +177,8 @@ public class AddBookController {
 		BooleanBinding bb = new BooleanBinding() {
 			{
 				super.bind(txtBookName.textProperty(), txtAuthor.textProperty(), txtBookID.textProperty(),
-						txtEdition.textProperty(), txtPrintYear.textProperty(),
-						txtBookSubject.textProperty(), txtCatalog.textProperty(), txtCopies.textProperty(),
+						txtEdition.textProperty(), txtPrintYear.textProperty(), txtBookSubject.textProperty(),
+						txtCatalog.textProperty(),
 						txtShelf.textProperty(), txtDescirption.textProperty(), txtTableOfContents.textProperty());
 			}
 
@@ -190,10 +187,10 @@ public class AddBookController {
 			protected boolean computeValue() {
 				return (txtBookName.getText().isEmpty() || txtAuthor.getText().isEmpty()
 						|| txtBookID.getText().isEmpty() || txtEdition.getText().isEmpty()
-						|| txtPrintYear.getText().isEmpty()
-						|| txtBookSubject.getText().isEmpty() || txtCatalog.getText().isEmpty()
-						|| txtCopies.getText().isEmpty() || txtShelf.getText().isEmpty()
-						|| txtDescirption.getText().isEmpty() || txtTableOfContents.getText().isEmpty());
+						|| txtPrintYear.getText().isEmpty() || txtBookSubject.getText().isEmpty()
+						|| txtCatalog.getText().isEmpty() 
+						|| txtShelf.getText().isEmpty() || txtDescirption.getText().isEmpty()
+						|| txtTableOfContents.getText().isEmpty());
 			}
 		};
 
@@ -204,7 +201,8 @@ public class AddBookController {
 	}
 
 	/**
-	 * loads "add book form" and show it  
+	 * loads "add book form" and show it
+	 * 
 	 * @param primaryStage
 	 */
 	public void start(Stage primaryStage) {
@@ -238,7 +236,6 @@ public class AddBookController {
 		txtPrintYear.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtBookSubject.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtCatalog.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
-		txtCopies.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtShelf.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtDescirption.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 
@@ -264,7 +261,6 @@ public class AddBookController {
 				break;
 			}
 
-
 		for (char c : txtCatalog.getText().toCharArray())// Parse text field into chars array and validate
 			if (!Character.isDigit(c)) {
 				errorMsg += "Book Catalog number must contain numbers only!\n";
@@ -272,12 +268,6 @@ public class AddBookController {
 				break;
 			}
 
-		for (char c : txtCopies.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isDigit(c)) {
-				errorMsg += "Copies number must contain numbers only!\n";
-				txtCopies.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				break;
-			}
 		for (char c : txtPrintYear.getText().toCharArray())// Parse text field into chars array and validate
 			if (!Character.isDigit(c)) {
 				errorMsg += "Year must contain numbers only!\n";

@@ -98,10 +98,6 @@
                      <GridPane.margin>
                         <Insets right="3.0" />
                      </GridPane.margin></TextField>
-                  <TextField fx:id="txtCopies" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" prefWidth="203.0" promptText="Number of total copies" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets right="3.0" />
-                     </GridPane.margin></TextField>
                   <TextField fx:id="txtShelf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" prefWidth="203.0" promptText="Book shelf" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets right="3.0" />
@@ -124,6 +120,8 @@
                   </TextField>
                   <Label prefHeight="27.0" prefWidth="82.0" text="Book type" GridPane.rowIndex="5" />
                   <ChoiceBox fx:id="bookTypeCB" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Button fx:id="btnEditCopies" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#btnEditCopiesPressed" prefHeight="26.0" prefWidth="95.0" text="Edit copies" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                  <TextField fx:id="txtcopiesNumber" maxWidth="57.0" minHeight="-Infinity" prefHeight="31.0" prefWidth="57.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
             </GridPane>
          </right>

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.time.Year;
 import java.util.ArrayList;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+
 import entities.Book;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -269,7 +271,31 @@ public class ManageLibraryController {
 
 	@FXML
 	void btnManageCopiesPressed(ActionEvent event) {
+	
+	Book selectedForEdit = (Book) tableView.getSelectionModel().getSelectedItem();
 
+	try {
+		if (selectedForEdit == null)
+			throw new Exception();
+		else {
+			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			ManageCopiesController manageCopiesForm = new ManageCopiesController();
+			try {
+				manageCopiesForm.start(stage, selectedForEdit);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	} catch (Exception e) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText("No book has selected");
+		alert.setContentText("Select a book for manage copies!");
+		alert.showAndWait();
 	}
+
+}
+	
 
 }

@@ -58,9 +58,12 @@ public class EditBookController {
 	@FXML
 	private TextField txtCatalog;
 
-	@FXML
-	private TextField txtCopies;
-
+    @FXML
+    private TextField txtcopiesNumber;
+    
+    @FXML
+    private Button btnEditCopies;
+    
 	@FXML
 	private TextField txtShelf;
 
@@ -75,13 +78,24 @@ public class EditBookController {
 
 	@FXML
     private ChoiceBox<String> bookTypeCB;
-
-    @FXML
-    private TextArea txtTableOfCont333333333ents;
-    
+	
+	
 	private static Book selectedBook;
 
 
+	
+    @FXML
+    void btnEditCopiesPressed(ActionEvent event) {
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		ManageCopiesController manageCopiesForm = new ManageCopiesController();
+		try {
+			manageCopiesForm.start(stage,selectedBook);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+    }
+	
 	/** 
 	 * Browse the contents PDF file and write the path in the relevant text field
 	 * @param event
@@ -111,7 +125,7 @@ public class EditBookController {
 		editedBook.setPrintYear(Integer.parseInt(txtPrintYear.getText()));
 		editedBook.setSubject(txtSubject.getText());
 		editedBook.setCatalog(Integer.parseInt(txtCatalog.getText()));
-		editedBook.setCopiesNumber(Integer.parseInt(txtCopies.getText()));
+		editedBook.setDescription(txtDescription.getText());
 		editedBook.setShelf(txtShelf.getText());
 		editedBook.setEdition(txtEdition.getText());
 		editedBook.setSubject(txtDescription.getText());
@@ -141,11 +155,14 @@ public class EditBookController {
 	 */
 	@FXML
 	void initialize() {
+		
+	    txtcopiesNumber.setEditable(false);
+	  
 		btnEditBook.setDisable(true);
 		ObservableList<String> options = 
     		    FXCollections.observableArrayList(
-    		        "Wanted",
-    		        "Regular"
+    		       ( selectedBook.getBookType().name()=="Wanted"?  "Regular" : "Wanted")
+    		       
     		    );
 		ObservableList<String> init = 
     		    FXCollections.observableArrayList(
@@ -159,7 +176,7 @@ public class EditBookController {
 		txtPrintYear.setText(Integer.toString(selectedBook.getPrintYear()));
 		txtSubject.setText(selectedBook.getSubject());
 		txtCatalog.setText(Integer.toString(selectedBook.getCatalog()));
-		txtCopies.setText(Integer.toString(selectedBook.getCopiesNumber()));
+		txtcopiesNumber.setText(Integer.toString(selectedBook.getCopiesNumber()));
 		txtShelf.setText(selectedBook.getShelf());
 		txtDescription.setText(selectedBook.getDescription());
 		bookTypeCB.getItems().addAll(init);
@@ -170,7 +187,7 @@ public class EditBookController {
 			{
 				super.bind(txtBookName.textProperty(), txtAuthor.textProperty(), txtBookID.textProperty(),
 						txtEdition.textProperty(),  txtPrintYear.textProperty(),
-						txtSubject.textProperty(), txtCatalog.textProperty(), txtCopies.textProperty(),
+						txtSubject.textProperty(), txtCatalog.textProperty(), 
 						txtShelf.textProperty(), txtDescription.textProperty(), txtTableOfContents.textProperty());
 			}
 
@@ -181,7 +198,7 @@ public class EditBookController {
 						|| txtBookID.getText().isEmpty() || txtEdition.getText().isEmpty()
 					 || txtPrintYear.getText().isEmpty()
 						|| txtSubject.getText().isEmpty() || txtCatalog.getText().isEmpty()
-						|| txtCopies.getText().isEmpty() || txtShelf.getText().isEmpty()
+						||  txtShelf.getText().isEmpty()
 						|| txtDescription.getText().isEmpty() || txtTableOfContents.getText().isEmpty());
 			}
 		};
@@ -224,7 +241,7 @@ public class EditBookController {
 		txtPrintYear.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtSubject.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtCatalog.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
-		txtCopies.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
+		
 		txtShelf.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtDescription.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 
@@ -244,12 +261,7 @@ public class EditBookController {
 
 
 
-		for (char c : txtCopies.getText().toCharArray())// Parse text field into chars array and validate
-			if (!Character.isDigit(c)) {
-				errorMsg += "Copies number must contain numbers only!\n";
-				txtCopies.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-				break;
-			}
+	
 		
 		for (char c : txtCatalog.getText().toCharArray())// Parse text field into chars array and validate
 			if (!Character.isDigit(c)) {

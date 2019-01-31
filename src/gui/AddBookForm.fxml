@@ -103,17 +103,15 @@
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="218.0" minWidth="10.0" prefWidth="167.99995117187504" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="52.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="57.0" minHeight="10.0" prefHeight="57.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="77.0" minHeight="10.0" prefHeight="39.60001831054686" valignment="TOP" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="164.60003662109375" minHeight="10.0" prefHeight="59.59998168945313" valignment="TOP" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="124.0" minHeight="10.0" prefHeight="39.39996337890625" valignment="TOP" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="40.0" valignment="CENTER" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="79.99998779296875" minHeight="10.0" prefHeight="40.0" valignment="CENTER" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="40.0" valignment="CENTER" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="124.0" minHeight="10.0" prefHeight="40.0" valignment="CENTER" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="124.0" minHeight="10.0" prefHeight="83.99997558593748" valignment="TOP" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
                   <Label text="Catalog:" />
-                  <Label text="Copies:" GridPane.rowIndex="1" />
-                  <Label text="Shelf:" GridPane.rowIndex="2" />
+                  <Label text="Shelf:" GridPane.rowIndex="1" />
                   <Label text="Description:" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets top="5.0" />
@@ -124,12 +122,7 @@
                         <Insets right="3.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField fx:id="txtCopies" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" prefWidth="203.0" promptText="Number of total copies" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets right="3.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="txtShelf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" prefWidth="203.0" promptText="Book shelf" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <TextField fx:id="txtShelf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" prefWidth="203.0" promptText="Book shelf" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets right="3.0" />
                      </GridPane.margin>
@@ -139,19 +132,19 @@
                         <Insets top="5.0" />
                      </GridPane.margin>
                   </TextArea>
-                  <Label prefHeight="33.0" prefWidth="85.0" text="Contents PDF:" wrapText="true" GridPane.rowIndex="3" />
-                  <Button fx:id="btnBrowsePath" mnemonicParsing="false" onAction="#btnBrowsePathPressed" text="Browse" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                  <Label alignment="BOTTOM_CENTER" prefHeight="33.0" prefWidth="85.0" text="Contents PDF:" wrapText="true" GridPane.rowIndex="2" />
+                  <Button fx:id="btnBrowsePath" mnemonicParsing="false" onAction="#btnBrowsePathPressed" text="Browse" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets right="2.0" />
                      </GridPane.margin>
                   </Button>
-                  <TextField fx:id="txtTableOfContents" maxHeight="-Infinity" maxWidth="120.0" minHeight="-Infinity" prefHeight="28.0" prefWidth="120.0" promptText="PDF Path" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <TextField fx:id="txtTableOfContents" maxHeight="-Infinity" maxWidth="120.0" minHeight="-Infinity" prefHeight="28.0" prefWidth="120.0" promptText="PDF Path" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets top="3.0" />
                      </GridPane.margin>
                   </TextField>
-                  <Label text="Book type" GridPane.rowIndex="5" />
-                  <ComboBox fx:id="bookTypeCB" prefWidth="150.0" promptText="Book type" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Label text="Book type" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="bookTypeCB" prefWidth="150.0" promptText="Book type" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
          </right>
