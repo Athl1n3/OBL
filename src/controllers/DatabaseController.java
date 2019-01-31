@@ -812,6 +812,83 @@ public class DatabaseController {
 		return Integer.parseInt(arr.get(0));
 	}
 
+	public static boolean updateLentBook(LentBook lentBook) {
+		clientConnection.executeQuery(
+				"UPDATE lentbook SET dueDate = '" + lentBook.getDueDate() + "', late = '0' WHERE userID = '"
+						+ lentBook.getUserID() + "' AND bookID = '" + lentBook.getBook().getBookID() + "';");
+		return ((Boolean) clientConnection.getObject()) == true ? true : false;
+	}
+	
+	public static void saveFile() {
+		ArrayList<String> arr = new ArrayList<String>();
+		arr.add("Give and Take Contents.pdf");
+		arr.add("C:\\Users\\saleh\\Desktop\\braude\\OBL project\\Assignment3\\Give and take.pdf");
+		arr.add("&");
+		clientConnection.saveFile(arr);
+	}
+	
+	public static boolean addManualExtend(ManualExtend extendLog)
+    {
+        String query = "INSERT INTO ManualExtend(bookID, userID, workerName, extendDate, dueDate) VALUES(?,?,?,?,?)";
+        ArrayList<String> arr = new ArrayList<String>();
+        arr.add(String.valueOf(extendLog.getBookID()));
+        arr.add(String.valueOf(extendLog.getUserID()));
+        arr.add(String.valueOf(extendLog.getWorkerName()));
+        //arr.add(String.valueOf(extendLog.getExtendDate()));
+        //arr.add(String.valueOf(extendLog.getDueDate()));
+        arr.add(query);
+        clientConnection.executeQuery(arr);
+        
+        return ((Boolean) clientConnection.getObject()) == true ? true : false;
+    }
+	
+	/**
+	 * Get user scheduled suspension if it exists
+	 * @param userID to get suspension scheduled
+	 * @return scheduled suspension data / Null if it doesn't exist
+	 */
+	public static LocalDate getSchedueledSuspension(int userID)
+	{
+		if (ifExists("scheduledSuspension", "userID", String.valueOf(userID)))
+		{
+			clientConnection.executeQuery("SELECT untilDate FROM scheduledSuspension WHERE userID = '"+userID+"'");
+			return LocalDate.parse(clientConnection.getList().get(0));
+		}
+		return null;
+	}
+
+	/**
+	 * Add a scheduled suspension
+	 * @param userID to suspend
+	 * @param untilDate until what date 
+	 * @return if executed successfully
+	 */
+	public static boolean addScheduledSuspension(int userID, LocalDate untilDate) {
+		if (ifExists("scheduledSuspension", "userID", String.valueOf(userID))) {
+			clientConnection.executeQuery(
+					"UPDATE scheduledSuspension SET untilDate ='" + untilDate + "' WHERE userID = '"+userID+"'");
+		}
+		else
+			clientConnection.executeQuery(
+					"INSERT INTO scheduledSuspension(userID, untilDate)VALUES ('" + userID + "','" + untilDate + "')");
+		return ((Boolean) clientConnection.getObject()) == true ? true : false;
+	}
+	
+	/**
+	 * Delete scheduled account suspension
+	 * @param userID
+	 * @return if executed successfully
+	 */
+	public static boolean deleteScheduledSuspension(int userID)
+	{
+		if (ifExists("scheduledSuspension", "userID", String.valueOf(userID))) {
+			clientConnection.executeQuery("DELETE FROM scheduledSuspension WHERE userID = '"+userID+"'");
+			return true;
+		}
+		return false;
+	}
+	
+
 	/**
 	 * Initiate a new client connection to the server
 	 * 
@@ -844,26 +921,4 @@ public class DatabaseController {
 		clientConnection.graduateStudent(studentID);
 	}
 
-	public static void saveFile() {
-		ArrayList<String> arr = new ArrayList<String>();
-		arr.add("Give and Take Contents.pdf");
-		arr.add("C:\\Users\\saleh\\Desktop\\braude\\OBL project\\Assignment3\\Give and take.pdf");
-		arr.add("&");
-		clientConnection.saveFile(arr);
-	}
-	
-	public static boolean addManualExtend(ManualExtend extendLog)
-    {
-        String query = "INSERT INTO ManualExtend(bookID, userID, workerName, extendDate, dueDate) VALUES(?,?,?,?,?)";
-        ArrayList<String> arr = new ArrayList<String>();
-        arr.add(String.valueOf(extendLog.getBookID()));
-        arr.add(String.valueOf(extendLog.getUserID()));
-        arr.add(String.valueOf(extendLog.getWorkerName()));
-        //arr.add(String.valueOf(extendLog.getExtendDate()));
-        //arr.add(String.valueOf(extendLog.getDueDate()));
-        arr.add(query);
-        clientConnection.executeQuery(arr);
-        
-        return ((Boolean) clientConnection.getObject()) == true ? true : false;
-    }
 }
