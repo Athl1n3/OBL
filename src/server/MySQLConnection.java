@@ -91,7 +91,7 @@ public class MySQLConnection {
 	 * @param id
 	 */
 	public void updateFile(InputStream inputStream, int id) {
-		//String sql = "INSERT INTO BookContentsFile (upload_file) values (?)";
+		
 		String sql = "UPDATE Book SET tableOfContents =? WHERE bookID = '" + id + "';";
 		try {
 			PreparedStatement statement = conn.prepareStatement(sql);
@@ -100,7 +100,6 @@ public class MySQLConnection {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-			//updateBookTableOfContents(id);
 	}
 
 	/**

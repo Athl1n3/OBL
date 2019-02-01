@@ -1,8 +1,10 @@
 package server;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,13 +52,13 @@ public class EchoServer extends AbstractServer {
 		} else if (msg instanceof ArrayList) {
 			ArrayList<String> arr = (ArrayList<String>) msg;
 			if (arr.get(arr.size() - 1).equals("@")) {
-				getFileFromDB(arr);
-			}
-			if (arr.get(0).equals("#")) {
+				getFileFromDB(arr, client);
+			} else if (arr.get(0).equals("#")) {
 				arr.remove(0);
 				orderNotification(Integer.parseInt(arr.get(0))); // book ID
-			}
-			obj = DBcon.executeQuery(msg);
+				obj = DBcon.executeQuery(msg);
+			} else
+				obj = DBcon.executeQuery(msg);
 		} else
 			obj = DBcon.executeQuery(msg);
 		if (obj == null)
@@ -73,13 +75,12 @@ public class EchoServer extends AbstractServer {
 		DBcon.updateFile(is, ((PDFfile) msg).getBookID());
 	}
 
-	public void uploadFile(Object msg, ConnectionToClient client, String outputFileName) throws IOException {
-		String localFilePath = outputFileName;
+	public void uploadFileToServer(Object msg, ConnectionToClient client, String outputFileName) throws IOException {
 		System.out.println("upload file");
 		FileOutputStream fos = null;
 		BufferedOutputStream bos = null;
 		try {
-			fos = new FileOutputStream(localFilePath);
+			fos = new FileOutputStream(outputFileName);
 			bos = new BufferedOutputStream(fos);
 			bos.write(((PDFfile) msg).getMybytearray(), 0, ((PDFfile) msg).getSize());
 			bos.flush();
@@ -93,18 +94,59 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
-	public void getFileFromDB(ArrayList<String> arr) {
+	public void getFileFromDB(ArrayList<String> arr, ConnectionToClient client) {
+		FileOutputStream output = null;
+		BufferedInputStream buffer = null;
 		try {
 			ResultSet rs = DBcon.executeFileQuery(Integer.parseInt(arr.get(0)));
+
+			File newFile = new File("C:\\obl\\" + arr.get(1));
+			output = new FileOutputStream(newFile);
 			if (rs.next()) {
-				PDFfile msg = new PDFfile("kasem.pdf");
-				File newfile = new File(arr.get(1));
+				byte[] mybytearray = new byte[2048];
+				InputStream is = rs.getBinaryStream("tableOfContents");
+				buffer = new BufferedInputStream(is);
+				while (is.read(mybytearray) > 0) {
+					output.write(mybytearray);
+				}
+				sentFileToCient(arr, newFile, client);
 
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (output != null)
+					output.close();
+				if (buffer != null)
+					buffer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+	}
+
+	public void sentFileToCient(ArrayList<String> arr, File newFile, ConnectionToClient client) {
+		try {
+			PDFfile uploadedFile = new PDFfile(arr.get(1));
+			uploadedFile.setFilePath(arr.get(2));
+
+			byte[] mybytearray = new byte[(int) newFile.length()];
+			FileInputStream fis = new FileInputStream(newFile);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			uploadedFile.initArray(mybytearray.length);
+			uploadedFile.setSize(mybytearray.length);
+
+			bis.read(uploadedFile.getMybytearray(), 0, mybytearray.length);
+			client.sendToClient(uploadedFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (newFile.exists())
+				newFile.delete();
+		}
+
 	}
 
 	/**
