@@ -39,7 +39,7 @@ public class ManageCopiesController {
 	private ImageView imgBack;
 
 	@FXML
-	private Label lblBookName;
+	private Label lblBookName; 
 
 	@FXML
 	private Label lblBookID;
