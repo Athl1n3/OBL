@@ -42,9 +42,9 @@ public class ClientConnection implements OBLclientIF {
 	public void executeQuery(Object obj) {
 		client.handleMessageFromClientUI(obj);
 	}
-	
-	public void saveFile(ArrayList<String> arr) {
-		client.handleMessageFromClientUI(arr);
+
+	public void saveFile(String bookName, String filePath, int bookID) {
+		client.handleFileFromClientUI(bookName, filePath, bookID);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class ClientConnection implements OBLclientIF {
 	 * Terminate client connection to the server
 	 */
 	public void terminate() {
-			client.quit();
+		client.quit();
 	}
 
 	public void init() {

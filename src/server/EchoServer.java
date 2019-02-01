@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import common.MyFile;
+import common.PDFfile;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -39,7 +39,7 @@ public class EchoServer extends AbstractServer {
 	@Override
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("[Client " + client.getId() + "] Message received: " + msg.toString());
-		if (msg instanceof MyFile)
+		if (msg instanceof PDFfile)
 			handelFileMessageFromClient(msg, client);
 		else if (msg instanceof Integer) {
 			graduateStudent((Integer) msg);
@@ -63,8 +63,8 @@ public class EchoServer extends AbstractServer {
 	}
 
 	public void handelFileMessageFromClient(Object msg, ConnectionToClient client) {
-		InputStream is = new ByteArrayInputStream(((MyFile)msg).getMybytearray()); 
-		DBcon.updateFile(is, ((MyFile)msg).getBookID());
+		InputStream is = new ByteArrayInputStream(((PDFfile)msg).getMybytearray()); 
+		DBcon.updateFile(is, ((PDFfile)msg).getBookID());
 		/*int fileSize = ((MyFile) msg).getSize();
 		System.out.println("Message received: " + ((MyFile) msg).getFileName() + " from " + client);
 		System.out.println("length " + fileSize);
@@ -84,7 +84,7 @@ public class EchoServer extends AbstractServer {
 		try {
 			fos = new FileOutputStream(localFilePath);
 			bos = new BufferedOutputStream(fos);
-			bos.write(((MyFile) msg).getMybytearray(), 0, ((MyFile) msg).getSize());
+			bos.write(((PDFfile) msg).getMybytearray(), 0, ((PDFfile) msg).getSize());
 			bos.flush();
 		} catch (IOException e) {
 			e.printStackTrace();

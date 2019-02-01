@@ -2,7 +2,7 @@ package common;
 
 import java.io.Serializable;
 
-public class MyFile implements Serializable {
+public class PDFfile implements Serializable {
 	
 	private String Description=null;
 	private String fileName=null;	
@@ -17,7 +17,7 @@ public class MyFile implements Serializable {
 		mybytearray = new byte [size];	
 	}
 	
-	public MyFile( String fileName) {
+	public PDFfile( String fileName) {
 		this.fileName = fileName;
 	}
 	

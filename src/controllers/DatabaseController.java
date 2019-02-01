@@ -10,10 +10,22 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import client.ClientConnection;
-import entities.*;
+import entities.Account;
 import entities.Account.UserType;
+import entities.ActivitiesReport;
+import entities.Archive;
+import entities.Book;
 import entities.Book.bookType;
+import entities.BookCopy;
+import entities.BookOrder;
+import entities.LentBook;
+import entities.LibrarianAccount;
+import entities.ManagerAccount;
+import entities.ManualExtend;
+import entities.Notification;
+import entities.UserAccount;
 import entities.UserAccount.accountStatus;
+import entities.UserActivity;
 
 public class DatabaseController {
 
@@ -1037,12 +1049,8 @@ public class DatabaseController {
 	}
 
 	public static void saveFile(String bookName, String filePath, int bookID) {
-		ArrayList<String> arr = new ArrayList<String>();
-		arr.add(bookName + ".pdf");
-		arr.add(filePath);
-		arr.add(String.valueOf(bookID));
-		arr.add("&");
-		clientConnection.saveFile(arr);
+		bookName.concat(".pdf");
+		clientConnection.saveFile(bookName,filePath,bookID);
 	}
 
 }
