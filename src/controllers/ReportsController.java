@@ -31,6 +31,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.log.SysoCounter;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -136,6 +137,7 @@ public class ReportsController {
 
 	private static LibrarianAccount loggedLibAccount;
 	private String filePath = "D:\\";
+	static int[] Per = new int[11];
 
 	@FXML
 	void btnGetReportPressed(ActionEvent event) {
@@ -156,7 +158,6 @@ public class ReportsController {
 				alertWarningMessage("Something went wrong while retrieving the activity report..");
 				break;
 			}
-
 			try {
 				int width, height;
 				PdfPCell cell;
@@ -421,8 +422,8 @@ public class ReportsController {
 					jFreeChart1.draw(graphics2d1, rectangle2d1);
 
 					graphics2d1.dispose();
-					pdfContentByte1.addTemplate(pdfTemplate, 100, 500); // 0, 0 will draw PIE chart on bottom left of
-																		// page
+					pdfContentByte1.addTemplate(pdfTemplate1, 100, 500); // 0, 0 will draw PIE chart on bottom left of
+																			// page
 					document.newPage();
 					/* end pie chart */
 
@@ -453,7 +454,8 @@ public class ReportsController {
 					table3.addCell(cell);
 
 					// iterate through the accounts and display the data for each account
-					for (Account acc : accounts) {
+					for (UserAccount acc : accounts) {
+
 						cell = new PdfPCell(new Paragraph(String.valueOf(acc.getID())));
 						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 						table3.addCell(cell);
@@ -506,8 +508,8 @@ public class ReportsController {
 				// if the file is open , let the user know
 				new Alert(AlertType.ERROR, "The file 'Lends Report.pdf' is already opened.", ButtonType.OK).show();
 			} else {
-				/*ArrayList<LentBook> books = DatabaseController.getLentBookList(-1);*/
-				ArrayList<LentBook> books = getLentBookList();
+				/* ArrayList<LentBook> books = DatabaseController.getLentBookList(-1); */
+				ArrayList<LentBook> books = DatabaseController.getLentBookList(-1);
 
 				// validate if we have retrieved the data from the data base
 				if (books == null) {
@@ -552,7 +554,8 @@ public class ReportsController {
 						if (book.getBook().getBookType().toString().equals(Book.bookType.Wanted.toString()) == true) {
 							wantedBooks.add(book);
 							wntdBooks = wntdBooks + book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS);
-							wantedbks.add(String.valueOf(book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS)));
+							wantedbks.add(
+									String.valueOf(book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS)));
 							// check whether the user of this lent book request is late to return the book
 							if (book.isLate() == true)
 								// if yes then count it
@@ -564,7 +567,8 @@ public class ReportsController {
 							// the book is not a 'regular' book , so we add it to the regular books list
 							regularBooks.add(book);
 							rglrBooks = rglrBooks + book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS);
-							regularbks.add(String.valueOf(book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS)));
+							regularbks.add(
+									String.valueOf(book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS)));
 							// check whether the user of this lent book request is late to return the book
 							if (book.isLate() == true)
 								// if yes then count it
@@ -837,81 +841,73 @@ public class ReportsController {
 					document.add(new Paragraph(
 							"----------------------------------------------------------------------------------------------------------------------------------"));
 
+					ArrayList<Book> books = DatabaseController.getAllLateBooks();
 					// validate if we have retrieved the data from the data base
-					/*
-					 * ArrayList<LentBook> accounts = DatabaseController.getLentBookList(-1);
-					 * if(accounts.isEmpty() == true) {
-					 * alertWarningMessage("Something went wrong while retrieving the lent books.");
-					 * break; document.close(); }
-					 */
+					if (books == null) {
+						// if not , then let the user know
+						alertWarningMessage("Something went wrong while retrieving the books from data base.");
+						break;
+					}
+					
+					for (Book book : books) {
+						ArrayList<LentBook> lentBooks = DatabaseController
+								.getLateCopiesForSpecificBook(book.getBookID());
+						if (lentBooks == null) {
+							alertWarningMessage("Something went wrong while retrieving lent books from data base.");
+							break;
+						} 
+						else {
+							
+							PdfPTable table = new PdfPTable(2);
+							table.setSpacingBefore(100);
+							
+							cell = new PdfPCell(new Paragraph("Book ID : " + String.valueOf(book.getBookID()), FontFactory.getFont(FontFactory.TIMES_BOLD)));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							cell.setBackgroundColor(BaseColor.ORANGE);
+							table.addCell(cell);
 
-					/*
-					 * int[] bookID =DatabaseController.getLateBooks(); if(delays.length == 0 ) {
-					 * alertWarningMessage("Something went wrong while retrieving the lent books.");
-					 * break; document.close(); }
-					 */
+							cell = new PdfPCell(new Paragraph("Book Name : " + book.getName(), FontFactory.getFont(FontFactory.TIMES_BOLD)));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							cell.setBackgroundColor(BaseColor.ORANGE);
+							table.addCell(cell);
+							document.add(table);
+							
+							
+							int i = 0;
+							long[] delays = new long[lentBooks.size()];
+							for (LentBook lntBook : lentBooks) 
+								/*delays[i] = lntBook.getIssueDate().until(lntBook.getReturnDate(), ChronoUnit.DAYS);*/
+								delays[i++] = lntBook.getIssueDate().until(lntBook.getReturnDate(), ChronoUnit.DAYS);
+							
+							int max =  (int)Arrays.stream(delays).max().getAsLong();
 
-					// Info Table Header (Start)
-					PdfPTable table = new PdfPTable(3);
-					table.setSpacingBefore(100);
+							
+							PdfPTable table2 = new PdfPTable(3);
+							
+							cell = new PdfPCell(new Paragraph("Days", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+							table2.addCell(cell);
 
-					// inserting header cells into the table
-					cell = new PdfPCell(new Paragraph("Book ID : ", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.GRAY);
-					table.addCell(cell);
-					cell = new PdfPCell(new Paragraph("Book Name : ", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.GRAY);
-					table.addCell(cell);
-					document.add(table);
-					// Info Table Header (End)
+							cell = new PdfPCell(new Paragraph("Percentage", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+							table2.addCell(cell);
 
-					// Info Table (Start)
-					PdfPTable table2 = new PdfPTable(4);
-					table2.setSpacingBefore(100);
-
-					// inserting header cells into the table
-					cell = new PdfPCell(new Paragraph("ID", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table2.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("First Name", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table2.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("Last Name", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table2.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("Delay Time", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table2.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("316544345"));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table2.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("ALAA"));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table2.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("Grable"));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table2.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("3 days"));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table2.addCell(cell);
-
-					document.add(table2);
-
+							cell = new PdfPCell(new Paragraph("total", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+							table2.addCell(cell);
+							document.add(table2);
+							System.out.println(max);
+							if (max >= 10) 
+								maxIsGreaterThan10(document, max, delays);
+							else 
+								maxIsLesserThan10(document, max, delays);
+						}
+					}
 					document.close();
-				
+
 					// alert the user that the report has been created successfully
 					new Alert(AlertType.INFORMATION, "Return Delays Report has been created successfully\nat "
 							+ filePath + "Return Delays Report.pdf", ButtonType.OK).show();
@@ -1159,7 +1155,7 @@ public class ReportsController {
 			cell = new PdfPCell(new Paragraph(book.getName()));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			table.addCell(cell);
-			
+
 			cell = new PdfPCell(new Paragraph(book.getAuthor()));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			table.addCell(cell);
@@ -1167,7 +1163,6 @@ public class ReportsController {
 			cell = new PdfPCell(new Paragraph(book.getEdition()));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			table.addCell(cell);
-
 
 			cell = new PdfPCell(new Paragraph(String.valueOf(book.getBookOrders())));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -1281,12 +1276,11 @@ public class ReportsController {
 			table.addCell(cell);
 
 			// validate if the user has returned this lent book or not
-			if (lent.getReturnDate() == null) {
+			if (lent.isReturned() == false) {
 				notReturned++;
 				cell = new PdfPCell(new Paragraph("--"));
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(cell);
-
 				cell = new PdfPCell(new Paragraph("No"));
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(cell);
@@ -1403,7 +1397,7 @@ public class ReportsController {
 
 		// iterate through lent books list and display it's data
 		for (LentBook book : lents) {
-			if(book.getBookCopy() != null) {
+			if (book.getBookCopy() != null) {
 				if (book.getIssueDate().getYear() == LocalDate.now().getYear()) {
 					cell = new PdfPCell(new Paragraph(String.valueOf(book.getUserID())));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -1923,55 +1917,79 @@ public class ReportsController {
 
 	}
 
-	public ActivitiesReport getActivityReport() {
+	public static void maxIsGreaterThan10(Document document, int max, long[] delays) throws DocumentException {
 
-		ArrayList<Book> books = new ArrayList<Book>();
-		books.add(new Book(123, "Calculus", "ALAA", "7th", 1994, "Math", "Math", 15, "asd", "ag42", 15,
-				bookType.Regular, 15));
-		books.add(new Book(123, "Algebra", "fadi", "1th", 1994, "Math", "Math", 18, "rbhn", "45h7u", 7,
-				bookType.Regular, 3));
-		books.add(new Book(123, "C++", "ALAA", "9th", 1992, "Programming", "Programming", 2, "asd35", "4yun", 2,
-				bookType.Regular, 2));
-		books.add(new Book(123, "Java", "ALAA", "2th", 1991, "Programming", "Programming", 10, "zxc", "45h7u", 7,
-				bookType.Regular, 4));
+		PdfPCell cell;
+		PdfPTable table = new PdfPTable(3);
+		System.out.println("Greater");
 
-		ArrayList<UserAccount> accounts = new ArrayList<UserAccount>();
+		int[] count = new int[10];
+		int c = 0, mode = 0;
+		double j = 10.00;
 
-		accounts.add(new UserAccount(316544345, "ALAA", "Grable", "Alaatg.7", "0522985313", 123, "ZeroxTM", "asd123",
-				accountStatus.Active, 0, false));
-		accounts.add(new UserAccount(312420155, "Fadi", "Habeb", "Adam.zbe", "052122147", 147, "b45hy", "asd123",
-				accountStatus.Active, 0, false));
-		accounts.add(new UserAccount(310154124, "Adam", "Mhamed", "fadi.zbe", "0522314784", 752, "4tvhe", "asd123",
-				accountStatus.Active, 0, false));
-		accounts.add(new UserAccount(310514711, "Kassem", "Saleh", "kassem.zbe", "522815421", 232, "64byjjnh", "3rvr",
-				accountStatus.Active, 0, false));
-
-		ActivitiesReport report = new ActivitiesReport(100, 70, 20, 10, null, accounts);
-		return report;
+		for (int i = 1; i < 11; i++, j = j + 10.00) {
+			Per[i] = (int) Math.ceil(max * j / 100.00);
+			for (int k = 0; k < delays.length; k++) {
+				if (((int) delays[k]) >= Per[i - 1] && ((int) delays[k]) < Per[i]) {
+					count[c]++;
+				}
+				if (mode == 0)
+					if (((int)delays[k]) == max)
+						count[9]++;
+			}
+			mode = 1;
+			cell = new PdfPCell(new Paragraph(String.valueOf(Per[i - 1]) + " - " + String.valueOf(Per[i])));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.addCell(cell);
+			
+			cell = new PdfPCell(new Paragraph(String.valueOf(Math.round((count[c] * 100.00) / delays.length)) + "%"));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.addCell(cell);
+			
+			cell = new PdfPCell(new Paragraph(String.valueOf(count[c])));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.addCell(cell);
+			c++;
+		}
+		document.add(table);
 	}
-	
-	public ArrayList<LentBook> getLentBookList(){
-		
-		ArrayList<LentBook> books = new ArrayList<LentBook>();
-		
-		Book book1 = new Book(123, "Calculus", "ALAA", "7th", 1994, "Math", "Math", 15, "asd", "ag42", 15,
-				bookType.Regular, 15);
-		BookCopy bc1 = new BookCopy(123, "123a", LocalDate.now(), false);
-		Book book2 = new Book(145, "Algebra", "fadi", "1th", 1994, "Math", "Math", 18, "rbhn", "45h7u", 7,
-				bookType.Wanted, 3);
-		BookCopy bc2 = new BookCopy(145, "654f", LocalDate.now().minusDays(15), true);
-		Book book3 = new Book(001, "C++", "ALAA", "9th", 1992, "Programming", "Programming", 2, "asd35", "4yun", 2,
-				bookType.Regular, 2);
-		BookCopy bc3 = new BookCopy(001, "24tv2", LocalDate.now().plusDays(20), true);
-		Book book4 = new Book(779, "Java", "ALAA", "2th", 1991, "Programming", "Programming", 10, "zxc", "45h7u", 7,
-				bookType.Regular, 4);
-		BookCopy bc4 = new BookCopy(779, "235vtt", LocalDate.now().minusDays(30), false);
-		
-		books.add(new LentBook(779, book4, bc4 , LocalDate.now() ,LocalDate.now().plusWeeks(2), LocalDate.now().plusDays(4), false));
-		books.add(new LentBook(001, book3, bc3 , LocalDate.now().minusDays(2) ,LocalDate.now().minusDays(2).plusWeeks(2), LocalDate.now().plusDays(15), true));
-		books.add(new LentBook(145, book2, bc2 , LocalDate.now(),LocalDate.now().plusDays(3),   LocalDate.now().plusDays(6), true));
-		books.add(new LentBook(123, book1, bc1, LocalDate.now() ,LocalDate.now().plusWeeks(2), LocalDate.now().plusWeeks(2).plusDays(2), false));
-		return books;
-		
+
+	public static void maxIsLesserThan10(Document document, int max, long[] delays) throws DocumentException {
+
+		PdfPCell cell;
+		PdfPTable table = new PdfPTable(3);
+		System.out.println("Lesser");
+
+		int[] array = new int[max + 1];
+
+		for (int i = 0; i < array.length; i++)
+			array[i] = i;
+
+		int[] count = new int[max];
+		int c = 0, mode = 0;
+
+		for (int i = 1; i < array.length; i++) {
+			for (int k = 0; k < delays.length; k++) {
+				if ((int) delays[k] >= array[i - 1] && (int) delays[k] < array[i]) {
+					count[c]++;
+				}
+				if (mode == 0)
+					if (delays[k] == max)
+						count[max - 1]++;
+
+			}
+			mode = 1;
+			cell = new PdfPCell(new Paragraph(String.valueOf(array[i - 1]) + " - " + String.valueOf(array[i])));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.addCell(cell);
+			cell = new PdfPCell(new Paragraph(String.valueOf(Math.round((count[c] * 100.00) / delays.length)) + "%"));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.addCell(cell);
+			cell = new PdfPCell(new Paragraph(String.valueOf(count[c])));
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.addCell(cell);
+			c++;
+		}
+		document.add(table);
 	}
 }
