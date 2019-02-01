@@ -70,7 +70,9 @@ public class LibraryManagementController {
 	void start(Stage primaryStage, Account loggedLibAccount) throws Exception {
 		this.loggedLibAccount = (LibrarianAccount) loggedLibAccount;
 		stage = primaryStage;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/LibraryManagmentForm.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/LibraryManagmentForm.fxml"));
+		Parent root = fxmlLoader.load();
 		scene = new Scene(root);
 		primaryStage.setTitle("Library Management");
 		primaryStage.setScene(scene);

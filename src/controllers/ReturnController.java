@@ -170,7 +170,9 @@ public class ReturnController implements Initializable {
 	}
 
 	void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/ReturnForm.fxml"));
+		FXMLLoader fxmlLoader= new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/ReturnForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Return Book");
 		primaryStage.setScene(scene);
