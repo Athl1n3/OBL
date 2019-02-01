@@ -458,6 +458,7 @@ public class UserLookupController {
 			btnLock.setVisible(false);
 			btnSuspend.setVisible(false);
 			btnArchive.setVisible(false);
+			dtDatePicker.setVisible(false);
 		}
 		lblStatus.setText("---");
 		btnEditData.setDisable(true);
