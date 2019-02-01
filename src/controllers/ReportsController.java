@@ -32,8 +32,10 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
@@ -133,7 +135,6 @@ public class ReportsController {
 
 	private static LibrarianAccount loggedLibAccount;
 	private String filePath = "D:\\";
-	int mode = 0;
 
 	@FXML
 	void btnGetReportPressed(ActionEvent event) {
@@ -147,8 +148,10 @@ public class ReportsController {
 		case "Activity Report": {
 			// get the corresponding data from the database
 			ActivitiesReport activitiesRprt = DatabaseController.getActivityReport();
+			ArrayList<UserAccount> accounts = activitiesRprt.getAccounts();
+			ArrayList<Book> books = activitiesRprt.getBooks();
 			// validate if we got the data
-			if (activitiesRprt == null) {
+			if (activitiesRprt == null || accounts.isEmpty() == true || books.isEmpty() == true ) {
 				alertWarningMessage("Something went wrong while retrieving the activity report..");
 				break;
 			}
@@ -168,7 +171,7 @@ public class ReportsController {
 					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath + "Activity Report.pdf"));
 					document.open();
 					// set the logo in the pdf
-					Image img = Image.getInstance("../images/pdfLogo.png");
+					Image img = Image.getInstance("src/images/pdfLogo.png");
 					img.setAlignment(1);
 					document.add(img);
 					
@@ -340,15 +343,6 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table2.addCell(cell);
 					
-					// get the books list from the database
-					ArrayList<Book> books = activitiesRprt.getBooks();
-					// validate if we got the books data successfully from database
-					if(books.isEmpty() == true) {
-						// if not then let the user now
-						alertWarningMessage("Something went wrong while retrieving books data from database.");
-						break;document.close();
-					}
-					
 					// iterate through the books to display data for each book
 					int libraryBooks = activitiesRprt.getAllLibraryBooksNum();
 					DefaultPieDataset defaultCategoryDataset1 = new DefaultPieDataset();
@@ -440,14 +434,7 @@ public class ReportsController {
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table3.addCell(cell);
-
-					ArrayList<Account> accounts = activitiesRprt.getAccounts();
-					// validate if we got the books data successfully from database
-					if(accounts.isEmpty() == true) {
-						// if not , let the user know
-						alertWarningMessage("Something went wrong while retrieving the accounts data.");
-						break; document.close();
-					}
+					
 					// iterate through the accounts and display the data for each account
 					for (Account acc : accounts) {
 						cell = new PdfPCell(new Paragraph(String.valueOf(acc.getID())));
@@ -475,6 +462,8 @@ public class ReportsController {
 					document.close();
 					// display the file immediately after creating it
 					Desktop.getDesktop().open(new File(filePath + "Activity Report.pdf"));
+					// alert the user that the report has been created successfully
+					new Alert(AlertType.INFORMATION, "Activity Report has been created successfully\n at "+ filePath + "Activity Report.pdf", ButtonType.OK).show();
 				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -485,8 +474,6 @@ public class ReportsController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			// alert the user that the report has been created successfully
-			new Alert(AlertType.INFORMATION, "Activity Report has been created successfully\n at "+ filePath + "Activity Report.pdf", ButtonType.OK).show();
 			break;
 		}
 		// if the chosen option was 'Lends Report'
@@ -495,17 +482,26 @@ public class ReportsController {
 			PdfPCell cell;
 			try {
 				int width , height;
-				Document document = new Document();
 				// check if the file is already open or not 
-				if (isFileOpen(filePath + "Lends Report.pdf")) {
+				if (isFileOpen(filePath + "Lends Report.pdf") == true) {
 					// if the file is open , let the user know
 					new Alert(AlertType.ERROR, "The file 'Lends Report.pdf' is already opened.", ButtonType.OK).show();
-				} else {
+				}
+				else {
+					ArrayList<LentBook> books = DatabaseController.getLentBookList(-1);
+					
+					// validate if we have retrieved the data from the data base
+					if(books.isEmpty() == true) {
+						// if not , then let the user know 
+						alertWarningMessage("Something went wrong while retrieving lent books data from data base.");
+						break;
+					}
 					// if not then create an instance of a pdf
+					Document document = new Document();
 					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath + "Lends Report.pdf"));
 					document.open();
 					// insert the logo in the header of the pdf
-					Image img = Image.getInstance("../images/pdfLogo.png");
+					Image img = Image.getInstance("src/images/pdfLogo.png");
 					img.setAlignment(1);
 					document.add(img);
 
@@ -518,16 +514,6 @@ public class ReportsController {
 					document.add(new Paragraph(
 							"----------------------------------------------------------------------------------------------------------------------------------"));
 
-					// DatabaseController call ..
-					ArrayList<LentBook> books = DatabaseController.getLentBookList(-1);
-					
-					// validate if we have retrieved the data from the data base
-					if(books.isEmpty() == true) {
-						// if not , then let the user know 
-						alertWarningMessage("Something went wrong while retrieving lent books data from data base.");
-						document.close();
-						break;
-					}
 					// create 2 areas to sort the lentbooks by they bookType
 					ArrayList<LentBook> wantedBooks = new ArrayList<LentBook>();
 					ArrayList<LentBook> regularBooks = new ArrayList<LentBook>();
@@ -782,6 +768,8 @@ public class ReportsController {
 					document.close();
 					// display the file immediately after creating it
 					Desktop.getDesktop().open(new File(filePath + "Lends Report.pdf"));
+					// alert the user that the report has been created successfully
+					new Alert(AlertType.INFORMATION, "Lends Report has been created successfully\nat " + filePath + "Lends Report.pdf", ButtonType.OK).show();
 				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -792,8 +780,6 @@ public class ReportsController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			// alert the user that the report has been created successfully
-			new Alert(AlertType.INFORMATION, "Lends Report has been created successfully\nat " + filePath + "Lends Report.pdf", ButtonType.OK).show();
 			break;
 
 		}
@@ -803,7 +789,7 @@ public class ReportsController {
 				PdfPCell cell;
 				Document document = new Document();
 				// check if the file is already open or not 
-				if (isFileOpen(filePath + "Return Delays Report.pdf")) {
+				if (isFileOpen(filePath + "Return Delays Report.pdf") == true) {
 					// if the file is open , let the user know
 					new Alert(AlertType.ERROR, "The file 'Return Delays Report.pdf' is already opened.", ButtonType.OK)
 							.show();
@@ -827,14 +813,20 @@ public class ReportsController {
 							"----------------------------------------------------------------------------------------------------------------------------------"));
 
 					// validate if we have retrieved the data from the data base
-					ArrayList<LentBook> accounts = DatabaseController.getLentBookList(-1);
+				/*	ArrayList<LentBook> accounts = DatabaseController.getLentBookList(-1);
 					if(accounts.isEmpty() == true) {
 						alertWarningMessage("Something went wrong while retrieving the lent books.");
 						break; document.close();
-					}
+					}*/
 
+				/*	int[] bookID =DatabaseController.getLateBooks();
+					if(delays.length == 0 ) {
+						alertWarningMessage("Something went wrong while retrieving the lent books.");
+						break; document.close();
+					}*/
+					
 					// Info Table Header (Start)
-					PdfPTable table = new PdfPTable(2);
+					PdfPTable table = new PdfPTable(3);
 					table.setSpacingBefore(100);
 					
 					// inserting header cells into the table
@@ -895,6 +887,8 @@ public class ReportsController {
 					document.close();
 					// display the file immediately after creating it
 					Desktop.getDesktop().open(new File(filePath + "Return Delays Report.pdf"));
+					// alert the user that the report has been created successfully
+					new Alert(AlertType.INFORMATION, "Return Delays Report has been created successfully\nat " + filePath + "Return Delays Report.pdf", ButtonType.OK).show();
 				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -905,8 +899,6 @@ public class ReportsController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			// alert the user that the report has been created successfully
-			new Alert(AlertType.INFORMATION, "Return Delays Report has been created successfully\nat " + filePath + "Return Delays Report.pdf", ButtonType.OK).show();
 			break;
 		}
 
@@ -945,45 +937,33 @@ public class ReportsController {
 							String name = checkMenuItem.getText();
 							switch (name) {
 							case "Orders": {
-								if(mode != 0)
-									document.newPage();
-								else mode = 1;
 								ordersPDF(document, writer);
+								document.newPage();
 								break;
 							}
 							case "Late Users": {
-								if(mode != 0)
-									document.newPage();
-								else mode = 1;
 								lateUsersPDF(document,writer);
+								document.newPage();
 								break;
 							}
 							case "Lents": {
-								if(mode != 0)
-									document.newPage();
-								else mode = 1;
 								lentsPDF(document, writer);
+								document.newPage();
 								break;
 							}
 							case "Suspend Accounts": {
-								if(mode != 0)
-									document.newPage();
-								else mode = 1;
 								 suspendPDF(document, writer); 
+									document.newPage();
 								break;
 							}
 							case "Locked Accounts": {
-								if(mode != 0)
-									document.newPage();
-								else mode = 1;
 								 lockedPDF(document, writer); 
+									document.newPage();
 								break;
 							}
 							case "Active Accounts": {
-								if(mode != 0)
-									document.newPage();
-								else mode = 1;
 								 activePDF(document, writer); 
+									document.newPage();
 								break;
 							}
 							default: {
@@ -991,7 +971,6 @@ public class ReportsController {
 								break;
 							}
 							}
-
 						}
 					}
 					document.close();
@@ -1009,9 +988,9 @@ public class ReportsController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			break;
 		}
 		}
-		break;
 
 	}
 
@@ -1083,6 +1062,7 @@ public class ReportsController {
 	 * @throws DocumentException
 	 */
 	private void ordersPDF(Document document, PdfWriter writer) throws DocumentException {
+		
 		int orders = 0, width , height;
 		PdfPCell cell;
 		ArrayList<Book> books = DatabaseController.getAllBooks();
@@ -1091,6 +1071,8 @@ public class ReportsController {
 			// if there has been some error , let the user know
 			alertWarningMessage("Something went wrong while retrieving the books."); return;
 		}
+		PdfDocument pdfDoc =
+			    new PdfDocument();
 		// iterate through the books to sum up the total orders
 		for (Book tmp : books) {
 			orders = orders + tmp.getBookOrders();
@@ -1345,7 +1327,8 @@ public class ReportsController {
 		// validate if the data has been retrieved successfully from the data base
 		if(lents.isEmpty() == true) {
 			// if there has been some error , let the user know
-			alertWarningMessage("Something went wrong while retrieving lent books.");return;
+			alertWarningMessage("Something went wrong while retrieving lent books.");
+			return;
 		}
 		// inserting header cells into the table
 		cell = new PdfPCell(new Paragraph(String.valueOf(LocalDate.now().getYear()) + " Lents Report",
@@ -1755,8 +1738,9 @@ public class ReportsController {
 	/**
 	 * Creates a report with active users information
 	 * @param document
+	 * @throws DocumentException 
 	 */
-	private void activePDF(Document document, PdfWriter writer) {
+	private void activePDF(Document document, PdfWriter writer) throws DocumentException {
 		PdfPCell cell;
 		PdfPTable table = new PdfPTable(5);
 		table.setSpacingBefore(100);
@@ -1881,14 +1865,18 @@ public class ReportsController {
 	private boolean isFileOpen(String path) {
 		File file = new File(path);
 
-		// try to rename the file with the same name
-		File sameFileName = new File(path);
-
-		if (file.renameTo(sameFileName))
-			// if the file is renamed then it's not open
+		if(file.exists() == false)
 			return false;
-		// then the file is open
-		return true;
+		else {
+			// try to rename the file with the same name
+			File sameFileName = new File(path);
+			if (file.renameTo(sameFileName) == true) {
+				// if the file is renamed then it's not open
+				return false;
+			}
+			// then the file is open
+			return true;
+		}
 
 	}
 }
