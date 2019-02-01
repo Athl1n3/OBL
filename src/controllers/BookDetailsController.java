@@ -1,9 +1,13 @@
 package controllers;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import entities.Book;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -65,6 +69,22 @@ public class BookDetailsController {
     private Button btnTableOfContents;
     
     private static Book selectedBook;
+    
+    @FXML
+    void btnTableOfCententsPressed(ActionEvent event) {
+    	String path = "C:\\obl\\";
+    	DatabaseController.getFileFromDB(selectedBook.getBookID(), selectedBook.getName(), "C:\\obl\\");
+    	try {
+    		
+			Desktop.getDesktop().open(new File(path + selectedBook.getName()+" Contents.pdf"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	
+    	
+    }
 
     @FXML
     void imgBackClicked(MouseEvent event) {
@@ -73,14 +93,28 @@ public class BookDetailsController {
 
     @FXML
     void initialize() {
-        
+    	txtBookType.setText(selectedBook.toString());
+		txtBookName.setText(selectedBook.getName());
+		txtAuthor.setText(selectedBook.getAuthor());
+		txtBookID.setText(Integer.toString(selectedBook.getBookID()));
+		txtEdition.setText(selectedBook.getEdition());
+		txtPrintYear.setText(Integer.toString(selectedBook.getPrintYear()));
+		txtBookSubject.setText(selectedBook.getSubject());
+		txtCatalog.setText(Integer.toString(selectedBook.getCatalog()));
+		txtCopies.setText(Integer.toString(selectedBook.getCopiesNumber()));
+		txtShelf.setText(selectedBook.getShelf());
+		txtDescirption.setText(selectedBook.getDescription());
+		
+    	
     }
     
     public void start(Stage primaryStage, Book selectedBook) {
 		try {
 			BookDetailsController.selectedBook = selectedBook;
-			Parent root = FXMLLoader.load(getClass().getResource("../gui/BookDetailsForm.fxml"));
-			Stage stage = new Stage();
+			FXMLLoader fxmlLoader = new FXMLLoader();
+			fxmlLoader.setLocation(getClass().getResource("/gui/BookDetailsForm.fxml"));
+			Parent root = fxmlLoader.load();
+			Stage stage = new Stage();	
 			stage.initOwner(primaryStage);
 			stage.initModality(Modality.WINDOW_MODAL);
 			Scene scene = new Scene(root);

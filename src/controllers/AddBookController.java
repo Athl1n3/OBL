@@ -41,9 +41,6 @@ public class AddBookController {
 	@FXML
 	private TextField txtEdition;
 
-//	@FXML
-	// private TextArea txtTableO33333fContents;
-
 	@FXML
 	private TextField txtPrintYear;
 
@@ -99,6 +96,8 @@ public class AddBookController {
 					txtShelf.getText(), 0,
 					bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()), 0);
 			System.out.println(newBook.getBookID());
+			
+			DatabaseController.saveFile(txtBookName.getText(), txtTableOfContents.getText(), Integer.parseInt(txtBookID.getText()));
 
 			// check if this id exist
 			if ((DatabaseController.getBook(newBook.getBookID())) == null) {
@@ -200,14 +199,15 @@ public class AddBookController {
 
 	}
 
-	/**
-	 * loads "add book form" and show it
+	 /** loads "add book form" and show it
 	 * 
 	 * @param primaryStage
 	 */
 	public void start(Stage primaryStage) {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("../gui/AddBookForm.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader();
+			fxmlLoader.setLocation(getClass().getResource("/gui/AddBookForm.fxml"));
+			Parent root = fxmlLoader.load();
 			Stage stage = new Stage();
 			stage.initOwner(primaryStage);
 			stage.initModality(Modality.WINDOW_MODAL);
@@ -219,7 +219,6 @@ public class AddBookController {
 			e.printStackTrace();
 		}
 	}
-
 	/**
 	 * Validate updated user data
 	 * 
