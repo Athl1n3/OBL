@@ -9,8 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import common.PDFfile;
 import ocsf.server.AbstractServer;
@@ -214,15 +214,22 @@ public class EchoServer extends AbstractServer {
 		System.out.println("Client " + client.getId() + " has disconnected from the server");
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		int port = 0; // Port to listen on
+		Properties props = new Properties();
+		FileInputStream in = new FileInputStream("@/../Server.properties");
+		props.load(in);
+		in.close();
+		String schema = props.getProperty("jdbc.schema");
+		String username = props.getProperty("jdbc.username");
+		String password = props.getProperty("jdbc.password");
 
 		try {
-			port = Integer.parseInt(args[3]); // Get port from command line
+			port = Integer.parseInt(props.getProperty("server.port")); // Get port from command line
 		} catch (Throwable t) {
 			port = DEFAULT_PORT; // Set port to 5555
 		}
-		DBcon = new MySQLConnection(args[0], args[1], args[2]);
+		DBcon = new MySQLConnection(schema, username, password);
 		EchoServer sv = new EchoServer(port);
 		libraryServices = new LibraryServices(EchoServer.DBcon);
 		try {
