@@ -416,18 +416,18 @@ public class DatabaseController {
 	 * @param newLentBook
 	 */
 	public static void addLentBook(LentBook newLentBook) {
-        ArrayList<String> arr = new ArrayList<String>();
-        String query = "INSERT INTO LentBook(userID, bookID,copySerialNumber, issueDate, dueDate, late) VALUES(?,?,?,?,?,?)";
-        arr.add(String.valueOf(newLentBook.getUserID()));
-        arr.add(String.valueOf(newLentBook.getBook().getBookID()));
-        arr.add(String.valueOf(newLentBook.getBookCopy().getSerialNumber()));
-        arr.add(String.valueOf(newLentBook.getIssueDate()));
-        arr.add(String.valueOf(newLentBook.getDueDate()));
-        arr.add(String.valueOf("0"));
-        arr.add(query);
-        clientConnection.executeQuery(arr);
-    }
-	
+		ArrayList<String> arr = new ArrayList<String>();
+		String query = "INSERT INTO LentBook(userID, bookID,copySerialNumber, issueDate, dueDate, late) VALUES(?,?,?,?,?,?)";
+		arr.add(String.valueOf(newLentBook.getUserID()));
+		arr.add(String.valueOf(newLentBook.getBook().getBookID()));
+		arr.add(String.valueOf(newLentBook.getBookCopy().getSerialNumber()));
+		arr.add(String.valueOf(newLentBook.getIssueDate()));
+		arr.add(String.valueOf(newLentBook.getDueDate()));
+		arr.add(String.valueOf("0"));
+		arr.add(query);
+		clientConnection.executeQuery(arr);
+	}
+
 	public static void deleteLendBook(int accountID, int bookID) {
 		clientConnection
 				.executeQuery("DELETE FROM LentBook WHERE userID = '" + accountID + "' AND bookID = '" + bookID + "';");
@@ -470,8 +470,8 @@ public class DatabaseController {
 	public static LentBook getLentBook(int userID, int bookID, String serialNumber) {
 		clientConnection.executeQuery(
 				"SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '"
-						+ userID + "' AND bookID = '" + bookID + "' AND copySerialNumber = '" + 
-						serialNumber + "' AND returned = '0';");
+						+ userID + "' AND bookID = '" + bookID + "' AND copySerialNumber = '" + serialNumber
+						+ "' AND returned = '0';");
 		ArrayList<String> res = clientConnection.getList();
 		LentBook lentBook;
 		if (!res.isEmpty()) {
@@ -528,10 +528,10 @@ public class DatabaseController {
 	 * @param bookCopy
 	 */
 	public static void updateBookCopy(BookCopy bookCopy) {
-		clientConnection.executeQuery(
-				"UPDATE bookCopy SET isLent = '" + (bookCopy.isLent()? 1 : 0) + "' WHERE bookID = '"
+		clientConnection
+				.executeQuery("UPDATE bookCopy SET isLent = '" + (bookCopy.isLent() ? 1 : 0) + "' WHERE bookID = '"
 						+ bookCopy.getBookID() + "' AND serialNumber = '" + bookCopy.getSerialNumber() + "';");
-		//return ((Boolean) clientConnection.getObject()) == true ? true : false;
+		// return ((Boolean) clientConnection.getObject()) == true ? true : false;
 	}
 
 	/**
@@ -540,36 +540,36 @@ public class DatabaseController {
 	 * @param LentBook
 	 */
 	public static void updateBookReturnDate(LentBook lentBook) {
-		clientConnection.executeQuery("UPDATE LentBook SET dueDate = '" + lentBook.getDueDate() + 
-				"' WHERE userID = '" + lentBook.getUserID() + 
-				"' AND bookID = '" + lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
-				+ lentBook.getBookCopy().getSerialNumber() + "';");
+		clientConnection.executeQuery("UPDATE LentBook SET dueDate = '" + lentBook.getDueDate() + "' WHERE userID = '"
+				+ lentBook.getUserID() + "' AND bookID = '" + lentBook.getBook().getBookID()
+				+ "' AND copySerialNumber = '" + lentBook.getBookCopy().getSerialNumber() + "';");
 	}
-	
+
 	/**
 	 * update returned and return date fields in lentBook table
+	 * 
 	 * @param lentBook
 	 */
 	public static void returnBook(LentBook lentBook) {
 		ArrayList<String> arr = new ArrayList<>();
-		String query = "UPDATE LentBook SET returnDate = '" + lentBook.getReturnDate() + "', returned = '" + 
-				(lentBook.isReturned() ? 1 : 0) + "' WHERE userID = '" + lentBook.getUserID() + 
-				"' AND bookID = '" + lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
+		String query = "UPDATE LentBook SET returnDate = '" + lentBook.getReturnDate() + "', returned = '"
+				+ (lentBook.isReturned() ? 1 : 0) + "' WHERE userID = '" + lentBook.getUserID() + "' AND bookID = '"
+				+ lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
 				+ lentBook.getBookCopy().getSerialNumber() + "';";
 		arr.add("#");
 		arr.add(query);
 		clientConnection.executeQuery(query);
 	}
-	
+
 	public static boolean isLate(LentBook lentBook) {
-		clientConnection.executeQuery("SELECT late FROM LentBook WHERE userID = '" + lentBook.getUserID() + 
-				"' AND bookID = '" + lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
+		clientConnection.executeQuery("SELECT late FROM LentBook WHERE userID = '" + lentBook.getUserID()
+				+ "' AND bookID = '" + lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
 				+ lentBook.getBookCopy().getSerialNumber() + "';");
-		 if(Integer.parseInt(clientConnection.getList().get(0)) == 1)
-			 return true;
-		 return false;
+		if (Integer.parseInt(clientConnection.getList().get(0)) == 1)
+			return true;
+		return false;
 	}
-	
+
 	/**
 	 * place an Book Order in DB
 	 * 
@@ -692,7 +692,7 @@ public class DatabaseController {
 		ArrayList<String> arr = new ArrayList<String>();
 		String query = "INSERT INTO userActivity(userID, activityName, date) VALUES(?,?,?);";
 		clientConnection.executeQuery("SELECT COUNT(*) FROM account;");
-		//arr.add(String.valueOf(getTableRowsNumber("userActivity", null) + 1));
+		// arr.add(String.valueOf(getTableRowsNumber("userActivity", null) + 1));
 		arr.add(String.valueOf(ID));
 		arr.add(activity);
 		// get the current date and time to be saved in DB
@@ -778,9 +778,17 @@ public class DatabaseController {
 
 		// get book list from DB
 		report.setBooks(getAllBooks());
+		report.setAccounts(getAllLateUsers());
+		return report;
+	}
 
-		// get the users list witch they where late in return book at least once
-		String query = "SELECT DISTINCT userID FROM LentBook WHERE late = '1' ;";
+	/**
+	 * get the users list witch they where late in return book at least once
+	 * 
+	 * @return users accounts
+	 */
+	public static ArrayList<UserAccount> getAllLateUsers() {
+		String query = "SELECT DISTINCT userID FROM LentBook WHERE late = '1' AND returned = '1';";
 		clientConnection.executeQuery(query);
 		try {
 			ArrayList<UserAccount> accounts = new ArrayList<UserAccount>();
@@ -789,11 +797,80 @@ public class DatabaseController {
 				accounts.add((UserAccount) getAccount(Integer.parseInt(res.get(0))));
 				res.remove(0);
 			}
-			report.setAccounts(accounts);
+			return accounts;
+
 		} catch (NullPointerException e) {
-			report.setAccounts(null);
+			return null;
 		}
-		return report;
+	}
+	
+	/**
+	 * get the late book list from lentBook table
+	 * @return book list
+	 */
+	public static ArrayList<Book> getAllLateBooks() {
+		String query = "SELECT DISTINCT bookID FROM LentBook WHERE late = '1' AND returned = '1';";
+		clientConnection.executeQuery(query);
+		try {
+			ArrayList<Book> bookList = new ArrayList<Book>();
+			ArrayList<String> res = clientConnection.getList();
+			while (res.size() != 0) {
+				Book book = getBook(Integer.parseInt(res.get(0)));
+				if(book!=null)
+					bookList.add(book);
+				res.remove(0);
+			}
+			return bookList;
+
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * get all the late copies for specific Book as list of lentBooks
+	 * @param bookID
+	 * @return
+	 */
+	public static ArrayList<LentBook> getLateCopiesForSpecificBook(int bookID) {
+		String query = "SELECT DISTINCT copySerialNumber FROM LentBook WHERE  bookID= '" + bookID + "' AND late = '1' AND returned = '1' ;";
+		clientConnection.executeQuery(query);
+		try {
+			ArrayList<LentBook> arr = new ArrayList<LentBook>();
+			ArrayList<String> res = clientConnection.getList();
+			while (res.size() != 0) {
+				LentBook lentBook = getlentBook(bookID, res.get(0)); 
+				if(lentBook!=null)
+					arr.add(lentBook);
+				res.remove(0);
+			}
+			return arr;
+
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * get late lentBook according to bookID and copy SerialNumber 
+	 * @param bookID
+	 * @param serialNumber
+	 * @return lentBook
+	 */
+	private static LentBook getlentBook(int bookID, String serialNumber) {
+		clientConnection.executeQuery("SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late"
+				+ " FROM LentBook WHERE bookID= '" + bookID + "' AND copySerialNumber = '"
+				+ serialNumber + "' AND late = '1' AND returned = '1' ;");
+		ArrayList<String> res = clientConnection.getList();
+		LentBook lentBook;
+		if (!res.isEmpty()) {
+			lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
+					getBookCopy(res.get(1), res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
+					LocalDate.parse(res.get(5)), res.get(6).equals("1") ? true : false);
+			return lentBook;
+		}
+		return null;
+
 	}
 
 	/**
@@ -818,7 +895,7 @@ public class DatabaseController {
 						+ lentBook.getUserID() + "' AND bookID = '" + lentBook.getBook().getBookID() + "';");
 		return ((Boolean) clientConnection.getObject()) == true ? true : false;
 	}
-	
+
 	public static void saveFile() {
 		ArrayList<String> arr = new ArrayList<String>();
 		arr.add("Give and Take Contents.pdf");
@@ -826,32 +903,30 @@ public class DatabaseController {
 		arr.add("&");
 		clientConnection.saveFile(arr);
 	}
-	
-	public static boolean addManualExtend(ManualExtend extendLog)
-    {
-        String query = "INSERT INTO ManualExtend(bookID, userID, workerName, extendDate, dueDate) VALUES(?,?,?,?,?)";
-        ArrayList<String> arr = new ArrayList<String>();
-        arr.add(String.valueOf(extendLog.getBookID()));
-        arr.add(String.valueOf(extendLog.getUserID()));
-        arr.add(String.valueOf(extendLog.getWorkerName()));
-        //arr.add(String.valueOf(extendLog.getExtendDate()));
-        //arr.add(String.valueOf(extendLog.getDueDate()));
-        arr.add(query);
-        clientConnection.executeQuery(arr);
-        
-        return ((Boolean) clientConnection.getObject()) == true ? true : false;
-    }
-	
+
+	public static boolean addManualExtend(ManualExtend extendLog) {
+		String query = "INSERT INTO ManualExtend(bookID, userID, workerName, extendDate, dueDate) VALUES(?,?,?,?,?)";
+		ArrayList<String> arr = new ArrayList<String>();
+		arr.add(String.valueOf(extendLog.getBookID()));
+		arr.add(String.valueOf(extendLog.getUserID()));
+		arr.add(String.valueOf(extendLog.getWorkerName()));
+		// arr.add(String.valueOf(extendLog.getExtendDate()));
+		// arr.add(String.valueOf(extendLog.getDueDate()));
+		arr.add(query);
+		clientConnection.executeQuery(arr);
+
+		return ((Boolean) clientConnection.getObject()) == true ? true : false;
+	}
+
 	/**
 	 * Get user scheduled suspension if it exists
+	 * 
 	 * @param userID to get suspension scheduled
 	 * @return scheduled suspension data / Null if it doesn't exist
 	 */
-	public static LocalDate getSchedueledSuspension(int userID)
-	{
-		if (ifExists("scheduledSuspension", "userID", String.valueOf(userID)))
-		{
-			clientConnection.executeQuery("SELECT untilDate FROM scheduledSuspension WHERE userID = '"+userID+"'");
+	public static LocalDate getSchedueledSuspension(int userID) {
+		if (ifExists("scheduledSuspension", "userID", String.valueOf(userID))) {
+			clientConnection.executeQuery("SELECT untilDate FROM scheduledSuspension WHERE userID = '" + userID + "'");
 			return LocalDate.parse(clientConnection.getList().get(0));
 		}
 		return null;
@@ -859,35 +934,34 @@ public class DatabaseController {
 
 	/**
 	 * Add a scheduled suspension
-	 * @param userID to suspend
-	 * @param untilDate until what date 
+	 * 
+	 * @param userID    to suspend
+	 * @param untilDate until what date
 	 * @return if executed successfully
 	 */
 	public static boolean addScheduledSuspension(int userID, LocalDate untilDate) {
 		if (ifExists("scheduledSuspension", "userID", String.valueOf(userID))) {
 			clientConnection.executeQuery(
-					"UPDATE scheduledSuspension SET untilDate ='" + untilDate + "' WHERE userID = '"+userID+"'");
-		}
-		else
+					"UPDATE scheduledSuspension SET untilDate ='" + untilDate + "' WHERE userID = '" + userID + "'");
+		} else
 			clientConnection.executeQuery(
 					"INSERT INTO scheduledSuspension(userID, untilDate)VALUES ('" + userID + "','" + untilDate + "')");
 		return ((Boolean) clientConnection.getObject()) == true ? true : false;
 	}
-	
+
 	/**
 	 * Delete scheduled account suspension
+	 * 
 	 * @param userID
 	 * @return if executed successfully
 	 */
-	public static boolean deleteScheduledSuspension(int userID)
-	{
+	public static boolean deleteScheduledSuspension(int userID) {
 		if (ifExists("scheduledSuspension", "userID", String.valueOf(userID))) {
-			clientConnection.executeQuery("DELETE FROM scheduledSuspension WHERE userID = '"+userID+"'");
+			clientConnection.executeQuery("DELETE FROM scheduledSuspension WHERE userID = '" + userID + "'");
 			return true;
 		}
 		return false;
 	}
-	
 
 	/**
 	 * Initiate a new client connection to the server
