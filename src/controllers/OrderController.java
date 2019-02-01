@@ -19,12 +19,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -68,25 +68,36 @@ public class OrderController implements Initializable {
 
 	@FXML
 	void btnPlaceOrderPressed(ActionEvent event) {
-		//check if the user status is Active
+		// check if the user status is Active
 		if (!((UserAccount) DatabaseController.loggedAccount).getStatus().equals(accountStatus.Active)) {
-			//show alert and exit
-			showAlert("Error!!!", "You Can't make an order since your acount is Suspended.", event);
-		}
-		//check if the user is already make an order for this book
-		if (DatabaseController.checkExistingOrder(DatabaseController.loggedAccount.getID(), orderedBook.getBookID())) {
-			//show alert and exit
-			showAlert("Warning!!!", "You have already placed an order for this book", event);
+			// show alert and exit
+			showAlert("ERROR", "You Can't make an order since your acount is Suspended.", event);
 		} else {
-			Timestamp now = new Timestamp(new Date().getTime());
-			BookOrder order = new BookOrder(DatabaseController.getLatestOrderID() + 1,
-					DatabaseController.loggedAccount.getID(), orderedBook.getBookID(), now);
-			DatabaseController.placeOrder(order);
-			
-			DatabaseController.addActivity(DatabaseController.loggedAccount.getID(), "Ordered Book [Book ID: " + orderedBook.getBookID() +"]");
-			//show alert and exit
-			showAlert("Order Placed Successfully", "book: " + orderedBook.getName() + "\nOrdered By: "
-					+ DatabaseController.loggedAccount.getID() + "\nOrder Date: " + now, event);		}
+			// check if the user is already make an order for this book
+			if (DatabaseController.checkExistingOrder(DatabaseController.loggedAccount.getAccountID(),
+					orderedBook.getBookID()) || DatabaseController.ifExists("savedCopy", "userID = '" + DatabaseController.loggedAccount.getAccountID()
+					+ "' AND bookID = '" + orderedBook.getBookID() + "'")) {
+				// show alert and exit
+				showAlert("WARNING", "You have already have an existing order for this book", event);
+				
+			} else if (DatabaseController.getCount("bookOrder", "bookID",
+					String.valueOf(orderedBook.getBookID())) == orderedBook.getCopiesNumber()) {
+				showAlert("WARNING", "There are already too many orders for this book!", event);
+			} else {
+				Timestamp currentTimeStamp = new Timestamp(new Date().getTime());
+				BookOrder order = new BookOrder(DatabaseController.loggedAccount.getAccountID(),
+						orderedBook.getBookID(), currentTimeStamp);
+				DatabaseController.placeOrder(order);
+
+				DatabaseController.addActivity(DatabaseController.loggedAccount.getAccountID(),
+						"Ordered Book [Book ID: " + orderedBook.getBookID() + "]");
+				// show alert and exit
+				showAlert(
+						"Order Placed Successfully", "book: " + orderedBook.getName() + "\nOrdered By: "
+								+ DatabaseController.loggedAccount.getID() + "\nOrder Date: " + currentTimeStamp,
+						event);
+			}
+		}
 	}
 
 	@FXML
@@ -134,7 +145,7 @@ public class OrderController implements Initializable {
 	}
 
 	public void showAlert(String header, String content, ActionEvent event) {
-		Alert alert = new Alert(AlertType.INFORMATION,content,ButtonType.OK);
+		Alert alert = new Alert(AlertType.INFORMATION, content, ButtonType.OK);
 		alert.setHeaderText(header);
 		if (alert.showAndWait().get() == ButtonType.OK)
 			((Node) event.getSource()).getScene().getWindow().hide();
