@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="377.0" prefWidth="539.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReturnController">
+<VBox prefHeight="377.0" prefWidth="539.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReturnController">
   <children>
       <BorderPane prefHeight="468.0" prefWidth="600.0">
          <top>
@@ -61,11 +61,11 @@
                      </padding>
                   </TextField>
                   <Label text="Issued date:" GridPane.rowIndex="3" />
-                  <DatePicker fx:id="dtIssueDate" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <DatePicker fx:id="dtIssueDate" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <Label text="Return date:" GridPane.rowIndex="4" />
-                  <DatePicker fx:id="dtReturnDate" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <DatePicker fx:id="dtReturnDate" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                   <Label text="Book Name:" GridPane.rowIndex="2" />
-                  <TextField fx:id="txtBookName" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" promptText="Lent book name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="txtBookName" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" promptText="Lent book name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <TextField fx:id="txtSerialNumber" promptText="Enter Copy Serial Number" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Serial Number:" GridPane.rowIndex="1" />
                </children>
@@ -96,12 +96,12 @@
                   </TextField>
                   <Label text="Due Date:" GridPane.rowIndex="3" />
                   <Label text="Name:" GridPane.rowIndex="2" />
-                  <TextField fx:id="txtName" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="171.0" promptText="User Name" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <TextField fx:id="txtName" editable="false" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="171.0" promptText="User Name" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <padding>
                         <Insets bottom="10.0" />
                      </padding>
                   </TextField>
-                  <DatePicker fx:id="dtDueDate" disable="true" prefHeight="26.0" prefWidth="180.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <DatePicker fx:id="dtDueDate" editable="false" prefHeight="26.0" prefWidth="180.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <Button fx:id="btnLookup" mnemonicParsing="false" onAction="#btnLookupPressed" prefHeight="25.0" prefWidth="83.0" text="Lookup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
                <BorderPane.margin>

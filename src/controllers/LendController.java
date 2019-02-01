@@ -137,9 +137,10 @@ public class LendController {
 							// the user account status is active , then validate if there is copies of that
 							// book
 
-							if (lentBook.getAvailableCopies() == 0) {
+							if (lentBook.getAvailableCopies() == 0 || (DatabaseController.getCount("savedCopy",
+									"bookID", String.valueOf(lentBook.getBookID())) == lentBook.getAvailableCopies())) {
 								// if there is no copies of that book then let the user know that
-								alertWarningMessage("There are no copies are available of the book " + "'"
+								alertWarningMessage("There are no copies available to lend this book \n" + "'"
 										+ lentBook.getName() + "'");
 								btnLendBook.setDisable(true);
 							} else {
@@ -196,7 +197,7 @@ public class LendController {
 				if (bookCopy.isLent())
 					alertWarningMessage("Book with this serial number is already lent");
 				else {
-					LentBook lntbook = new LentBook(lenderAccount.getID(), lentBook, bookCopy, LocalDate.now(),
+					LentBook lntbook = new LentBook(lenderAccount.getAccountID(), lentBook, bookCopy, LocalDate.now(),
 							dtDueDate.getValue(), LocalDate.parse("1970-01-01"), false);
 					// lent the book to the user
 					bookCopy.setLent(true);
@@ -204,6 +205,8 @@ public class LendController {
 					DatabaseController.updateBookCopy(bookCopy);
 					DatabaseController.updateBookAvailableCopies(lentBook, -1);
 					// let the user know that the lent process has been cone successfully
+					DatabaseController.addActivity(lenderAccount.getAccountID(),
+							"Lent Book [Book ID: " + lntbook.getBook().getBookID() + "]");
 					Alert alert = new Alert(AlertType.INFORMATION, "Book has been lent successfully", ButtonType.OK);
 					alert.show();
 				}
@@ -237,8 +240,9 @@ public class LendController {
 		txtBookID.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("\\d*")) {
 				txtBookID.setText(newValue.replaceAll("[^\\d]", ""));
-				alertWarningMessage("The user ID must contain only numbers");
+				alertWarningMessage("The book ID must contain only numbers");
 			}
+
 		});
 
 		// a listener to validate if the ID length is not greater than 9 digits and if
@@ -274,9 +278,9 @@ public class LendController {
 		stage.setScene(scene);
 		stage.show();
 	}
-	
+
 	void start(Stage stage, Book selectedBook) throws Exception {
-		this.selectedBook= selectedBook;
+		this.selectedBook = selectedBook;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
 		Scene scene = new Scene(root);
 		stage.setTitle("Lend book");
