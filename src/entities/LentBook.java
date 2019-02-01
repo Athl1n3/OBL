@@ -12,6 +12,7 @@ public class LentBook {
 	private LocalDate dueDate;
 	private LocalDate returnDate;
 	private boolean  late;
+	private boolean returned;
 	
 	public LentBook(int userID,Book book, BookCopy bookCopy, LocalDate issueDate, LocalDate dueDate, LocalDate returnDate,boolean late) {
 		this.userID = userID;
@@ -22,7 +23,7 @@ public class LentBook {
 		this.late = late;
 		this.returnDate = returnDate;
 	}
-	
+
 	/**
 	 * Gets the user ID.
 	 * 
@@ -117,5 +118,28 @@ public class LentBook {
 	 */
 	public LocalDate getReturnDate() {
 		return returnDate;
+	}
+	/**
+	 * set actual return date
+	 * @param returnDate
+	 */
+	public void setReturnDate(LocalDate returnDate) {
+		this.returnDate = returnDate;
+	}
+	
+	/**
+	 * check if the book returned
+	 * @return returned
+	 */
+	public boolean isReturned() {
+		return returned;
+	}
+
+	/**
+	 * set returned
+	 * @param returned
+	 */
+	public void setReturned(boolean returned) {
+		this.returned = returned;
 	}
 }

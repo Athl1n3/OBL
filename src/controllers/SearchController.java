@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import entities.Account;
+import entities.Account.UserType;
 import entities.Book;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
@@ -28,6 +29,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -109,7 +111,6 @@ public class SearchController implements Initializable {
 		txtSearch.clear();
 		txtSearch.setStyle("-fx-border-color: black ; -fx-border-width: 1px ;");
 
-
 	}
 
 	/**
@@ -127,10 +128,10 @@ public class SearchController implements Initializable {
 			if (selectedBook.getAvailableCopies() == 0)
 				orderController.start(selectedBook);
 			else
-				showAlert("",
+				showErrorAlert("",
 						"There is already an avialable copy!!!\n You can find it on Shelf: " + selectedBook.getShelf());
 		} catch (NullPointerException e) {
-			showAlert("Error!!!", "Please Selecte Book First");
+			showErrorAlert("Error!!!", "Please Selecte Book First");
 		}
 	}
 
@@ -160,11 +161,11 @@ public class SearchController implements Initializable {
 			bookList = FXCollections.observableArrayList(arr);
 			tableView.setItems(bookList);
 		} catch (NullPointerException e) {
-			showAlert("No Match Result For " + txtSearch.getText(), "Please Enter New " + cmbSearchBy.getValue());
+			showErrorAlert("No Match Result For " + txtSearch.getText(), "Please Enter New " + cmbSearchBy.getValue());
 			tableView.getItems().clear();
 			tableView.refresh();
-		}catch (NumberFormatException e) {
-			showAlert("Input Error!", "Book ID number must contain numbers only!\n");
+		} catch (NumberFormatException e) {
+			showErrorAlert("Input Error!", "Book ID number must contain numbers only!\n");
 			txtSearch.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 		}
 
@@ -219,6 +220,25 @@ public class SearchController implements Initializable {
 			else
 				btnOrderBook.setDisable(false);
 		});
+		// open the lend book form on row double Click
+		tableView.setRowFactory(tableView -> {
+			TableRow<Book> row = new TableRow<>();
+			row.setOnMouseClicked(event -> {
+				try {
+					if (event.getClickCount() == 2 && (!row.isEmpty()) && DatabaseController.loggedAccount !=null) {
+						if (DatabaseController.loggedAccount.userType.equals(UserType.User)) {
+							LendController lendController = new LendController();
+							Book selectedBook = tableView.getSelectionModel().getSelectedItem();
+							Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+							lendController.start(stage, selectedBook);
+						}
+					}
+				}catch (Exception e) {
+					showErrorAlert("Error!", "Can't open the form");
+				}
+			});
+			return row;
+		});
 		if (DatabaseController.loggedAccount instanceof UserAccount && DatabaseController.loggedAccount != null)
 			btnOrderBook.setVisible(true);
 	}
@@ -237,7 +257,7 @@ public class SearchController implements Initializable {
 						+ "\nYou can find it on Shelf: " + selectedBook.getShelf());
 			alert.show();
 		} catch (NullPointerException e) {
-			showAlert("Error!!!", "Please Selecte Book First");
+			showErrorAlert("Error!", "Please Selecte Book First");
 		}
 	}
 
@@ -266,8 +286,14 @@ public class SearchController implements Initializable {
 
 	}
 
-	public void showAlert(String header, String content) {
+	public void showErrorAlert(String header, String content) {
 		Alert alert = new Alert(AlertType.ERROR, content);
+		alert.setHeaderText(header);
+		alert.show();
+	}
+	
+	public void showWarningAlert(String header, String content) {
+		Alert alert = new Alert(AlertType.WARNING, content);
 		alert.setHeaderText(header);
 		alert.show();
 	}

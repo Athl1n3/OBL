@@ -42,6 +42,10 @@ public class ClientConnection implements OBLclientIF {
 	public void executeQuery(Object obj) {
 		client.handleMessageFromClientUI(obj);
 	}
+	
+	public void saveFile(ArrayList<String> arr) {
+		client.handleMessageFromClientUI(arr);
+	}
 
 	/**
 	 * This method was built only for testing purposes (External system sends a

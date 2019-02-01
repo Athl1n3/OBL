@@ -1,5 +1,6 @@
 package server;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -52,7 +53,7 @@ public class MySQLConnection {
 					return null;
 				} else
 					return executeSelectQuery(msg);
-				
+
 			} else if (msg instanceof String) {
 				query = msg.toString();
 				if (query.startsWith("INSERT") || query.startsWith("UPDATE") || query.startsWith("DELETE")) {
@@ -86,12 +87,29 @@ public class MySQLConnection {
 			return null;
 		}
 	}
+	
+	/**
+	 * save the file in bookContentsFile table
+	 * @param inputStream
+	 * @param id
+	 */
+	public void updateFile(InputStream inputStream, int id) {
+		String sql = "INSERT INTO BookContentsFile (upload_file) values (?)";
+		try {
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setBlob(1, inputStream);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+			updateBookTableOfContents(id);
+	}
 
 	/**
 	 * Parse database result set into an ArrayList with rows separated by commas
 	 * 
 	 * @param rs
-	 * @return  ArrayList<String>
+	 * @return ArrayList<String>
 	 */
 	public ArrayList<String> parseResultSet(ResultSet rs) {
 		ArrayList<String> arr = new ArrayList<>();
@@ -104,11 +122,21 @@ public class MySQLConnection {
 				while (i <= rsmd.getColumnCount()) {
 					arr.add(rs.getString(i++));
 				}
-				//arr.add("\n");
 			}
 		} catch (SQLException Exception) {
 			System.out.println("ERROR while parsing array!");
 		}
 		return arr;
+	}
+	
+	/**
+	 * save the id of the blob file into book table of Contents field 
+	 * @param bookID
+	 */
+	@SuppressWarnings("unchecked")
+	public void updateBookTableOfContents(int bookID) {
+		ArrayList<String> res = (ArrayList<String>) executeSelectQuery("SELECT id FROM bookContentsFile ORDER BY id DESC LIMIT 1 ;");
+		executeQuery("UPDATE Book SET tableOFContents = '" + Integer.parseInt(res.get(0))+ "' WHERE bookID = '" +
+				bookID + "';");
 	}
 }

@@ -1,14 +1,18 @@
 package controllers;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import entities.Account;
 import entities.Book;
 import entities.LentBook;
+import entities.UserAccount;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,7 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class ReturnController {
+public class ReturnController implements Initializable {
 
 	@FXML
 	private ResourceBundle resources;
@@ -35,6 +39,9 @@ public class ReturnController {
 
 	@FXML
 	private TextField txtBookID;
+
+	@FXML
+	private TextField txtSerialNumber;
 
 	@FXML
 	private DatePicker dtIssueDate;
@@ -55,7 +62,7 @@ public class ReturnController {
 	private TextField txtName;
 
 	@FXML
-	private Button btnBookLookup;
+	private Button btnLookup;
 
 	@FXML
 	private Button btnReturnBook;
@@ -64,20 +71,28 @@ public class ReturnController {
 	private Button btnClear;
 
 	private LentBook returnedBook;
-	private Account userAccount;
+	private UserAccount userAccount;
 
 	@FXML
-	void btnBookLookup(ActionEvent event) {
-		returnedBook = DatabaseController.getLentBook(Integer.parseInt(txtUserID.getText()),
-				Integer.parseInt(txtBookID.getText()));
-		if (returnedBook != null) {
-			userAccount = DatabaseController.getAccountByAccountID(returnedBook.getUserID());
+	void btnLookupPressed(ActionEvent event) {
+		try {
+			returnedBook = DatabaseController.getLentBook(Integer.parseInt(txtUserID.getText()),
+					Integer.parseInt(txtBookID.getText()), txtSerialNumber.getText());
+
+			userAccount = (UserAccount) DatabaseController.getAccount(returnedBook.getUserID());
+
 			txtBookName.setText(returnedBook.getBook().getName());
 			txtName.setText(userAccount.getFullName());
 			dtIssueDate.setValue(returnedBook.getIssueDate());
 			dtDueDate.setValue(returnedBook.getDueDate());
-		} else {
-			showAlert("Warning!!!", "there is No lents");
+			dtReturnDate.setValue(LocalDate.now());
+
+		} catch (NumberFormatException e) {
+			Alert alert = new Alert(AlertType.ERROR, "Please Insert VAlid BookID and UserID.");
+			alert.setHeaderText("Inpute Format Error!");
+			alert.show();
+		} catch (NullPointerException e) {
+			showAlert("", "There is No lents");
 		}
 	}
 
@@ -88,37 +103,42 @@ public class ReturnController {
 
 	@FXML
 	void btnReturnBookPressed(ActionEvent event) {
-		if (returnedBook != null) {
-			//update Book AvailableCopies += 1
+		try {
+			// update Book AvailableCopies += 1
 			DatabaseController.updateBookAvailableCopies(returnedBook.getBook(), 1);
-			//update Book Copy Lent Field to false
+			//update lent field to false in book copy table
 			returnedBook.getBookCopy().setLent(false);
-			DatabaseController.updateBookCopyLentField(returnedBook.getBookCopy());
-			if (dtReturnDate.getValue().isBefore(returnedBook.getDueDate())
-					|| dtReturnDate.getValue().isEqual(returnedBook.getDueDate())) {
-				showAlert("Book returned successfully!!!", null);
-			} else {
-				showAlert("Warning!!!", "The book returned in late");
-				// need to check the late times number and creating a new field in account table
-				// called lateCount
+			DatabaseController.updateBookCopy(returnedBook.getBookCopy());
+			
+			returnedBook.setReturnDate(dtReturnDate.getValue());
+			returnedBook.setReturned(true);
+			// update lent Book in DB lentBook table
+			DatabaseController.returnBook(returnedBook);
+			//DatabaseController.addActivity(userAccount.getID(),
+				//	"Returned Book [Book ID: " + returnedBook.getBook().getBookID() + "]");
+			if(!DatabaseController.isLate(returnedBook)) {
+				showAlert("","Book returned successfully");
 			}
-			//DatabaseController.deleteLendBook(returnedBook.getUserID(), returnedBook.getBook().getBookID());
-			DatabaseController.addActivity(DatabaseController.loggedAccount.getID(), "Returned Book [Book ID: " + returnedBook.getBook().getBookID() +"]");
-
-		}
-		else{
+			else
+				showAlert("","Book returned in late");
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 			showAlert("Warning, Empty Input!!!", "Please Insert User ID and Book ID First");
-			//also we need to check if he already pressed bookLokeUp btn
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	private void clear() {
 		txtBookID.setText(null);
+		txtUserID.setText(null);
 		txtName.setText(null);
 		txtBookName.setText(null);
 		txtName.setText(null);
 		dtIssueDate.setValue(null);
 		dtDueDate.setValue(null);
+		dtReturnDate.setValue(null);
+		txtSerialNumber.setText(null);
 		returnedBook = null;
 	}
 
@@ -142,8 +162,17 @@ public class ReturnController {
 	public void showAlert(String header, String content) {
 		Alert alert = new Alert(AlertType.INFORMATION, content, ButtonType.OK);
 		alert.setHeaderText(header);
-		if (alert.showAndWait().get() == ButtonType.OK)
-			clear();
+		alert.show();
+		clear();
+	}
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		// disable Book\User Lookup button until the user enters both the bookID and
+		// UserID
+		BooleanBinding booleanBind = txtBookID.textProperty().isEmpty().or(txtUserID.textProperty().isEmpty()).or(txtSerialNumber.textProperty().isEmpty());
+		btnLookup.disableProperty().bind(booleanBind);
+		
 	}
 
 }

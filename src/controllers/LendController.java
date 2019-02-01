@@ -90,6 +90,7 @@ public class LendController {
 	private Account lenderAccount;
 	private Book lentBook;
 	private boolean lookedUp;
+	private Book selectedBook;
 
 	/**
 	 * When BookLookUp button is pressed , this method will be called
@@ -266,6 +267,16 @@ public class LendController {
 	}
 
 	void start(Stage stage) throws Exception {
+		Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
+		Scene scene = new Scene(root);
+		stage.setTitle("Lend book");
+		stage.sizeToScene();
+		stage.setScene(scene);
+		stage.show();
+	}
+	
+	void start(Stage stage, Book selectedBook) throws Exception {
+		this.selectedBook= selectedBook;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
 		Scene scene = new Scene(root);
 		stage.setTitle("Lend book");

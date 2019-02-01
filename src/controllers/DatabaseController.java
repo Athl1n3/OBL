@@ -77,6 +77,11 @@ public class DatabaseController {
 		return Integer.parseInt(clientConnection.getList().get(0));
 	}
 
+	public static int getCount(String table, String field, String fieldVal) {
+		clientConnection.executeQuery("SELECT COUNT(*) FROM " + table + " WHERE " + field + "= '" + fieldVal + "';");
+		return Integer.parseInt(clientConnection.getList().get(0));
+	}
+
 	/**
 	 * update account details including logged field
 	 * 
@@ -150,7 +155,7 @@ public class DatabaseController {
 	 * @return Account
 	 */
 	public static Account getAccount(int ID) {
-		clientConnection.executeQuery("SELECT * FROM Account WHERE ID = +" + ID + ";");
+		clientConnection.executeQuery("SELECT * FROM Account WHERE ID = " + ID + ";");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
 			Account userAccount;
@@ -177,7 +182,7 @@ public class DatabaseController {
 	 * @return Account
 	 */
 	public static Account getAccountByAccountID(int accountID) {
-		clientConnection.executeQuery("SELECT * FROM Account WHERE userID = +" + accountID + ";");
+		clientConnection.executeQuery("SELECT * FROM Account WHERE userID = " + accountID + ";");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
 			Account userAccount;
@@ -291,7 +296,11 @@ public class DatabaseController {
 	public static void editBook(Book existingBook) {
 		clientConnection.executeQuery("UPDATE book SET copiesNumber = '" + existingBook.getCopiesNumber()
 				+ "', shelf = '" + existingBook.getShelf() + "', description = '" + existingBook.getDescription()
-				+ "' WHERE bookID = '" + existingBook.getBookID() + "' ;");
+				+ "', author = '" + existingBook.getAuthor() + "', edition = '" + existingBook.getEdition()
+				+ "', printYear = '" + existingBook.getPrintYear() + "', catalog = '" + existingBook.getCatalog()
+				+ "', subject = '" + existingBook.getSubject() + "', tableOfContents = '"
+				+ existingBook.getTableOfContents() + "', type = '" + existingBook.getBookType().name() + "', name = '"
+				+ existingBook.getName() + "' WHERE bookID = '" + existingBook.getBookID() + "' ;");
 		// need to update the pdf contents file path
 	}
 
@@ -412,9 +421,9 @@ public class DatabaseController {
 		arr.add(String.valueOf(newLentBook.getUserID()));
 		arr.add(String.valueOf(newLentBook.getBook().getBookID()));
 		arr.add(String.valueOf(newLentBook.getBookCopy().getSerialNumber()));
-		arr.add(String.valueOf(newLentBook.getDueDate()));
 		arr.add(String.valueOf(newLentBook.getIssueDate()));
-		arr.add(String.valueOf(newLentBook.isLate()));
+		arr.add(String.valueOf(newLentBook.getDueDate()));
+		arr.add(String.valueOf("0"));
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 	}
@@ -429,18 +438,17 @@ public class DatabaseController {
 	 * lent Book list, if(userID<0) return the whole lent Book list, if userID = 0
 	 * return only the late users
 	 * 
-	 * @return ArrayList<LentBook>
+	 * @return ArrayList
 	 */
 	public static ArrayList<LentBook> getLentBookList(int userID) {
 		String query;
 		if (userID > 0) // only for specific user according to userID
 			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook WHERE userID  = '"
-					+ userID + "';";
-		else // all the list
-		if (userID < 0)
-			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook ;";
-		else // only the late one
-			query = "SELECT userID,bookID, copySerialNumber, issueDate ,dueDate, returnDate, late FROM LentBook WHERE late = '1' ;";
+					+ userID + "' AND returned = '0';";
+		else if (userID < 0)// all the list
+			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook AND returned = '0';";
+		else // only the late one [userID = 0]
+			query = "SELECT userID,bookID, copySerialNumber, issueDate ,dueDate, returnDate, late FROM LentBook WHERE late = '1' AND returned = '0';";
 
 		clientConnection.executeQuery(query);
 		try {
@@ -459,10 +467,11 @@ public class DatabaseController {
 		}
 	}
 
-	public static LentBook getLentBook(int userID, int bookID) {
+	public static LentBook getLentBook(int userID, int bookID, String serialNumber) {
 		clientConnection.executeQuery(
 				"SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '"
-						+ userID + "' AND bookID = '" + bookID + "';");
+						+ userID + "' AND bookID = '" + bookID + "' AND copySerialNumber = '" + serialNumber
+						+ "' AND returned = '0';");
 		ArrayList<String> res = clientConnection.getList();
 		LentBook lentBook;
 		if (!res.isEmpty()) {
@@ -475,19 +484,19 @@ public class DatabaseController {
 	}
 
 	/**
-	 * return book copy instance from data base according to its serialNumber
+	 * get book copy
 	 * 
+	 * @param bookID
 	 * @param serialNumber
-	 * @return BookCopy
+	 * @return
 	 */
-	private static BookCopy getBookCopy(String bookID, String serialNumber) {
-
+	public static BookCopy getBookCopy(String bookID, String serialNumber) {
 		clientConnection.executeQuery(
 				"SELECT * FROM BookCopy WHERE serialNumber= '" + serialNumber + "' AND bookID = '" + bookID + "' ;");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
 			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
-					res.get(2).equals("1") ? true : false);
+					res.get(3).equals("1") ? true : false);
 			return bookCopy;
 		}
 		return null;
@@ -514,24 +523,96 @@ public class DatabaseController {
 	}
 
 	/**
-	 * update the BookCopy late field
+	 * get all the copies
 	 * 
-	 * @param bookCopy
+	 * @return bookCopy list
 	 */
-	public static void updateBookCopyLentField(BookCopy bookCopy) {
-		clientConnection
-				.executeQuery("UPDATE BookCopy SET lent = '" + (bookCopy.isLent() ? 1 : 0) + "' WHERE bookID = '"
-						+ bookCopy.getBookID() + "' AND serialNumber = '" + bookCopy.getSerialNumber() + "';");
+	public static ArrayList<BookCopy> getAllCopies() {
+		clientConnection.executeQuery("SELECT * FROM BookCopy;");
+		ArrayList<String> res = clientConnection.getList();
+		ArrayList<BookCopy> bookCopyList = new ArrayList<BookCopy>();
+		while (res.size() != 0) {
+			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
+					res.get(2).equals("1") ? true : false);
+			res.subList(0, 4).clear();
+			bookCopyList.add(bookCopy);
+		}
+
+		return bookCopyList;
 	}
 
 	/**
-	 * update the return date of a specific lent book
+	 * deletes specific copy from booCopy table in DB
+	 * @param bookID
+	 * @param serialNumber
+	 */
+	public static void deleteBookCopy(int bookID, String serialNumber) {
+
+		clientConnection
+				.executeQuery("DELETE FROM BookCopy WHERE bookID = '" + bookID + "' AND copySerialNumber = '" + serialNumber + "';");
+	}
+	
+	/**
+	 * add new book Copy to BookCopy table in DB
+	 * @param copy
+	 */
+	public static void addBookCopy(BookCopy copy) {
+		ArrayList<String> arr = new ArrayList<String>();
+		String query = "INSERT INTO BookCopy(bookID,serialNumber, purchaseDate) VALUES(?,?,?)";
+		arr.add(String.valueOf(copy.getBookID()));
+		arr.add(copy.getSerialNumber());
+		//we don't need to set the lent field, because its given a default value = 0
+		arr.add(String.valueOf(copy.getPurchaseDate()));
+		arr.add(query);
+		clientConnection.executeQuery(arr);
+	}
+
+	/**
+	 * update the BookCopy isLent field
+	 * 
+	 * @param bookCopy
+	 */
+	public static void updateBookCopy(BookCopy bookCopy) {
+		clientConnection
+				.executeQuery("UPDATE bookCopy SET isLent = '" + (bookCopy.isLent() ? 1 : 0) + "' WHERE bookID = '"
+						+ bookCopy.getBookID() + "' AND serialNumber = '" + bookCopy.getSerialNumber() + "';");
+		// return ((Boolean) clientConnection.getObject()) == true ? true : false;
+	}
+
+	/**
+	 * update return date or due date in lent book table
 	 * 
 	 * @param LentBook
 	 */
-	public static void updateBookReturnDate(LentBook lentbook) {
-		clientConnection.executeQuery("UPDATE LentBook SET dueDate = '" + lentbook.getDueDate() + "' WHERE bookID = '"
-				+ lentbook.getBook().getBookID() + "';");
+	public static void updateBookReturnDate(LentBook lentBook) {
+		clientConnection.executeQuery("UPDATE LentBook SET dueDate = '" + lentBook.getDueDate() + "' WHERE userID = '"
+				+ lentBook.getUserID() + "' AND bookID = '" + lentBook.getBook().getBookID()
+				+ "' AND copySerialNumber = '" + lentBook.getBookCopy().getSerialNumber() + "';");
+	}
+
+	/**
+	 * update returned and return date fields in lentBook table
+	 * 
+	 * @param lentBook
+	 */
+	public static void returnBook(LentBook lentBook) {
+		ArrayList<String> arr = new ArrayList<>();
+		String query = "UPDATE LentBook SET returnDate = '" + lentBook.getReturnDate() + "', returned = '"
+				+ (lentBook.isReturned() ? 1 : 0) + "' WHERE userID = '" + lentBook.getUserID() + "' AND bookID = '"
+				+ lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
+				+ lentBook.getBookCopy().getSerialNumber() + "';";
+		arr.add("#");
+		arr.add(query);
+		clientConnection.executeQuery(query);
+	}
+
+	public static boolean isLate(LentBook lentBook) {
+		clientConnection.executeQuery("SELECT late FROM LentBook WHERE userID = '" + lentBook.getUserID()
+				+ "' AND bookID = '" + lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
+				+ lentBook.getBookCopy().getSerialNumber() + "';");
+		if (Integer.parseInt(clientConnection.getList().get(0)) == 1)
+			return true;
+		return false;
 	}
 
 	/**
@@ -649,15 +730,15 @@ public class DatabaseController {
 	/**
 	 * adding user activity to userActivity table in DB
 	 * 
-	 * @param accountID
+	 * @param ID
 	 * @param activity
 	 */
-	public static void addActivity(int accountID, String activity) {
+	public static void addActivity(int ID, String activity) {
 		ArrayList<String> arr = new ArrayList<String>();
-		String query = "INSERT INTO userActivity(activityNum, userID, activityName, date) VALUES(?,?,?,?)";
+		String query = "INSERT INTO userActivity(userID, activityName, date) VALUES(?,?,?);";
 		clientConnection.executeQuery("SELECT COUNT(*) FROM account;");
-		arr.add(String.valueOf(getTableRowsNumber("userActivity", null) + 1));
-		arr.add(String.valueOf(accountID));
+		// arr.add(String.valueOf(getTableRowsNumber("userActivity", null) + 1));
+		arr.add(String.valueOf(ID));
 		arr.add(activity);
 		// get the current date and time to be saved in DB
 		Timestamp now = new Timestamp(new Date().getTime());
@@ -742,9 +823,17 @@ public class DatabaseController {
 
 		// get book list from DB
 		report.setBooks(getAllBooks());
+		report.setAccounts(getAllLateUsers());
+		return report;
+	}
 
-		// get the users list witch they where late in return book at least once
-		String query = "SELECT DISTINCT userID FROM LentBook WHERE late = '1' ;";
+	/**
+	 * get the users list witch they where late in return book at least once
+	 * 
+	 * @return users accounts
+	 */
+	public static ArrayList<UserAccount> getAllLateUsers() {
+		String query = "SELECT DISTINCT userID FROM LentBook WHERE late = '1' AND returned = '1';";
 		clientConnection.executeQuery(query);
 		try {
 			ArrayList<UserAccount> accounts = new ArrayList<UserAccount>();
@@ -753,11 +842,84 @@ public class DatabaseController {
 				accounts.add((UserAccount) getAccount(Integer.parseInt(res.get(0))));
 				res.remove(0);
 			}
-			report.setAccounts(accounts);
+			return accounts;
+
 		} catch (NullPointerException e) {
-			report.setAccounts(null);
+			return null;
 		}
-		return report;
+	}
+
+	/**
+	 * get the late book list from lentBook table
+	 * 
+	 * @return book list
+	 */
+	public static ArrayList<Book> getAllLateBooks() {
+		String query = "SELECT DISTINCT bookID FROM LentBook WHERE late = '1' AND returned = '1';";
+		clientConnection.executeQuery(query);
+		try {
+			ArrayList<Book> bookList = new ArrayList<Book>();
+			ArrayList<String> res = clientConnection.getList();
+			while (res.size() != 0) {
+				Book book = getBook(Integer.parseInt(res.get(0)));
+				if (book != null)
+					bookList.add(book);
+				res.remove(0);
+			}
+			return bookList;
+
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * get all the late copies for specific Book as list of lentBooks
+	 * 
+	 * @param bookID
+	 * @return
+	 */
+	public static ArrayList<LentBook> getLateCopiesForSpecificBook(int bookID) {
+		String query = "SELECT DISTINCT copySerialNumber FROM LentBook WHERE  bookID= '" + bookID
+				+ "' AND late = '1' AND returned = '1' ;";
+		clientConnection.executeQuery(query);
+		try {
+			ArrayList<LentBook> arr = new ArrayList<LentBook>();
+			ArrayList<String> res = clientConnection.getList();
+			while (res.size() != 0) {
+				LentBook lentBook = getlentBook(bookID, res.get(0));
+				if (lentBook != null)
+					arr.add(lentBook);
+				res.remove(0);
+			}
+			return arr;
+
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * get late lentBook according to bookID and copy SerialNumber
+	 * 
+	 * @param bookID
+	 * @param serialNumber
+	 * @return lentBook
+	 */
+	private static LentBook getlentBook(int bookID, String serialNumber) {
+		clientConnection.executeQuery("SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late"
+				+ " FROM LentBook WHERE bookID= '" + bookID + "' AND copySerialNumber = '" + serialNumber
+				+ "' AND late = '1' AND returned = '1' ;");
+		ArrayList<String> res = clientConnection.getList();
+		LentBook lentBook;
+		if (!res.isEmpty()) {
+			lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
+					getBookCopy(res.get(1), res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
+					LocalDate.parse(res.get(5)), res.get(6).equals("1") ? true : false);
+			return lentBook;
+		}
+		return null;
+
 	}
 
 	/**
@@ -774,6 +936,72 @@ public class DatabaseController {
 			return 0;
 		}
 		return Integer.parseInt(arr.get(0));
+	}
+
+	public static boolean updateLentBook(LentBook lentBook) {
+		clientConnection.executeQuery(
+				"UPDATE lentbook SET dueDate = '" + lentBook.getDueDate() + "', late = '0' WHERE userID = '"
+						+ lentBook.getUserID() + "' AND bookID = '" + lentBook.getBook().getBookID() + "';");
+		return ((Boolean) clientConnection.getObject()) == true ? true : false;
+	}
+
+	public static boolean addManualExtend(ManualExtend extendLog) {
+		String query = "INSERT INTO ManualExtend(bookID, userID, workerName, extendDate, dueDate) VALUES(?,?,?,?,?)";
+		ArrayList<String> arr = new ArrayList<String>();
+		arr.add(String.valueOf(extendLog.getBookID()));
+		arr.add(String.valueOf(extendLog.getUserID()));
+		arr.add(String.valueOf(extendLog.getWorkerName()));
+		arr.add(String.valueOf(extendLog.getExtendDate()));
+		arr.add(String.valueOf(extendLog.getDueDate()));
+		arr.add(query);
+		clientConnection.executeQuery(arr);
+
+		return ((Boolean) clientConnection.getObject()) == true ? true : false;
+	}
+
+	/**
+	 * Get user scheduled suspension if it exists
+	 * 
+	 * @param userID to get suspension scheduled
+	 * @return scheduled suspension data / Null if it doesn't exist
+	 */
+	public static LocalDate getSchedueledSuspension(int userID) {
+		if (ifExists("scheduledSuspension", "userID", String.valueOf(userID))) {
+			clientConnection.executeQuery("SELECT untilDate FROM scheduledSuspension WHERE userID = '" + userID + "'");
+			return LocalDate.parse(clientConnection.getList().get(0));
+		}
+		return null;
+	}
+
+	/**
+	 * Add a scheduled suspension
+	 * 
+	 * @param userID    to suspend
+	 * @param untilDate until what date
+	 * @return if executed successfully
+	 */
+	public static boolean addScheduledSuspension(int userID, LocalDate untilDate) {
+		if (ifExists("scheduledSuspension", "userID", String.valueOf(userID))) {
+			clientConnection.executeQuery(
+					"UPDATE scheduledSuspension SET untilDate ='" + untilDate + "' WHERE userID = '" + userID + "'");
+		} else
+			clientConnection.executeQuery(
+					"INSERT INTO scheduledSuspension(userID, untilDate)VALUES ('" + userID + "','" + untilDate + "')");
+		return ((Boolean) clientConnection.getObject()) == true ? true : false;
+	}
+
+	/**
+	 * Delete scheduled account suspension
+	 * 
+	 * @param userID
+	 * @return if executed successfully
+	 */
+	public static boolean deleteScheduledSuspension(int userID) {
+		if (ifExists("scheduledSuspension", "userID", String.valueOf(userID))) {
+			clientConnection.executeQuery("DELETE FROM scheduledSuspension WHERE userID = '" + userID + "'");
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -807,4 +1035,14 @@ public class DatabaseController {
 	public static void graduateStudent(Integer studentID) {
 		clientConnection.graduateStudent(studentID);
 	}
+
+	public static void saveFile(String bookName, String filePath, int bookID) {
+		ArrayList<String> arr = new ArrayList<String>();
+		arr.add(bookName + ".pdf");
+		arr.add(filePath);
+		arr.add(String.valueOf(bookID));
+		arr.add("&");
+		clientConnection.saveFile(arr);
+	}
+
 }

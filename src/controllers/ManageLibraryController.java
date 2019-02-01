@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.time.Year;
 import java.util.ArrayList;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-
 import entities.Book;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -1,9 +1,13 @@
 package client;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
+import common.MyFile;
 import common.OBLclientIF;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -37,7 +41,7 @@ public class OBLclient extends AbstractClient {
 
 	Semaphore sem = new Semaphore(0);
 
-	static Alert load = new Alert(AlertType.INFORMATION, "Please wait...\n Loading data from database");
+	//static Alert load = new Alert(AlertType.INFORMATION, "Please wait...\n Loading data from database");
 
 	// Instance methods ************************************************
 	// This method handles all data that comes in from the server.
@@ -50,24 +54,40 @@ public class OBLclient extends AbstractClient {
 
 	/**
 	 * This method handles all data coming from the UI
+	 * 
 	 * @param obj data recieved from client
 	 */
 	@SuppressWarnings("unchecked")
 	public void handleMessageFromClientUI(Object obj) {
 		try {
-			sendToServer(obj);
-			if (obj instanceof String) {
-				if (((String) obj).startsWith("SELECT"))
-					load.show();
-			} else if (obj instanceof ArrayList) {
-				if (((ArrayList<String>) obj).get(((ArrayList<String>) obj).size() - 1).toString().startsWith("SELECT"))
-					load.show();
+			if (obj instanceof ArrayList) {
+				ArrayList<String> arr = (ArrayList<String>) obj;
+				if (arr.get(arr.size() - 1).equals("&")) {
+					MyFile msg = new MyFile(arr.get(0));
+
+					String filePath = arr.get(1);
+					msg.setFilePath(arr.get(1));
+					msg.setBookID(Integer.parseInt(arr.get(2)));
+					File newFile = new File(filePath);
+					byte[] mybytearray = new byte[(int) newFile.length()];
+					FileInputStream fis = new FileInputStream(newFile);
+					BufferedInputStream bis = new BufferedInputStream(fis);
+
+					msg.initArray(mybytearray.length);
+					msg.setSize(mybytearray.length);
+
+					bis.read(msg.getMybytearray(), 0, mybytearray.length);
+					sendToServer(msg);
+				}
 			}
+			else
+				sendToServer(obj);
 			sem.acquire();
-			load.close();
 		} catch (IOException | InterruptedException e) {
 			clientUI.display("Could not send message to server.  Terminating client.");
 			quit();
+		} catch (Exception e) {
+			System.out.println("Error send (Files)msg) to Server");
 		}
 	}
 
@@ -81,7 +101,7 @@ public class OBLclient extends AbstractClient {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Hook method called after the connection has been closed.
 	 */
