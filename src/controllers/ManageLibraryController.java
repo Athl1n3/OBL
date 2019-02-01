@@ -244,7 +244,9 @@ public class ManageLibraryController {
 	 * @throws Exception
 	 */
 	void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/ManageLibraryForm.fxml"));
+		FXMLLoader fxmlLoader= new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/ManageLibraryForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Manage");
 		primaryStage.setScene(scene);

@@ -64,6 +64,7 @@ public class ArchivedDataController {
 
 	/**
 	 * Close form GUI
+	 * 
 	 * @param event
 	 * @throws IOException
 	 */
@@ -94,7 +95,9 @@ public class ArchivedDataController {
 
 	void start(Stage primaryStage, int ID) throws Exception {
 		this.ID = ID;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/ArchivedDataForm.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/ArchivedDataForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Stage stage = new Stage();
 		stage.initOwner(primaryStage);
 		stage.initModality(Modality.WINDOW_MODAL);

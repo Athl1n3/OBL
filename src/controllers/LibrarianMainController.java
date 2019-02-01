@@ -165,7 +165,9 @@ public class LibrarianMainController {
 
 	void start(Stage primaryStage, Account loggedLibAccount) throws Exception {
 		this.loggedLibAccount = (LibrarianAccount) loggedLibAccount;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/LibrarianMainForm.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/LibrarianMainForm.fxml"));
+		Parent root = fxmlLoader.load();
 		stage = primaryStage;
 		scene = new Scene(root);
 		primaryStage.setTitle("Librarian Main");

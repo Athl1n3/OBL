@@ -226,7 +226,9 @@ public class ExtendLendController {
 
 	void start(Stage stage, Account loggedAccount) throws Exception {
 		this.loggedAccount = (UserAccount) loggedAccount;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/ExtendLendForm.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/ExtendLendForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		stage.setTitle("Extend Lend book");
 		stage.sizeToScene();

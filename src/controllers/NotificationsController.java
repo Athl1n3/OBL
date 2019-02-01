@@ -185,7 +185,9 @@ public class NotificationsController {
 	public void start(Stage stage, Account loggedAccount) {
 		try {
 			NotificationsController.loggedAccount = loggedAccount;
-			Parent root = FXMLLoader.load(getClass().getResource("../gui/NotificationsForm.fxml"));
+			FXMLLoader fxmlLoader= new FXMLLoader();
+			fxmlLoader.setLocation(getClass().getResource("/gui/NotificationsForm.fxml"));
+			Parent root = fxmlLoader.load();
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.setTitle("Notifications");

@@ -492,7 +492,9 @@ public class UserLookupController {
 	 */
 	void start(Stage primaryStage, Account librarian) throws Exception {
 		librarianAccount = (LibrarianAccount) librarian;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/UserLookupForm.fxml"));
+		FXMLLoader fxmlLoader= new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/UserLookupForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("User lookup");
 		primaryStage.setScene(scene);

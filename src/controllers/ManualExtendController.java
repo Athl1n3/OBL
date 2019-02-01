@@ -280,7 +280,9 @@ public class ManualExtendController {
 	}
 
 	void start(Stage stage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/ManualExtendForm.fxml"));
+		FXMLLoader fxmlLoader= new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/ManualExtendForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		stage.setTitle("Manual Extend Lend book");
 		stage.sizeToScene();
