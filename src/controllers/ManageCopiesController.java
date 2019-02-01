@@ -77,15 +77,26 @@ public class ManageCopiesController {
 	 * @param event
 	 */
 	@FXML
-	void btnAddCopyPressed(ActionEvent event) {
+void btnAddCopyPressed(ActionEvent event) {
+		
+		if(DatabaseController.getBookCopy(Integer.toString(selectedBook.getBookID()), txtSerialNumber.getText())==null) {
 		BookCopy newCopy = new BookCopy(selectedBook.getBookID(), txtSerialNumber.getText(), dtPurchaseDate.getValue(),
 				false);
-		// DatabaseController.addCopy(newCopy);
+		DatabaseController.addBookCopy(newCopy);
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Succsess");
 		alert.setHeaderText("The book has been added successfully");
 		alert.showAndWait();
 		initialize();
+		}
+		
+		else
+		{
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("The copy is exist!");
+			alert.showAndWait();
+		}
 	}
 
 	/**
@@ -107,7 +118,7 @@ public class ManageCopiesController {
 				// confirmation.setContentText("Select a book for delete!");
 				confirmation.showAndWait().ifPresent(response -> {
 					if (response == ButtonType.OK) {
-						// DatabaseController.deleteCopy(selectedForDelete.getBookID());
+						DatabaseController.deleteBookCopy(selectedForDelete.getBookID(), selectedForDelete.getSerialNumber());
 						initialize();
 					}
 				});
