@@ -51,18 +51,19 @@ public class OBLclient extends AbstractClient {
 	// This method handles all data that comes in from the server.
 	@Override
 	public void handleMessageFromServer(Object msg) {
-		// clientUI.display(msg.toString());
-		 clientUI.serverObj(msg);
-		 String outputFileName = ((PDFfile)msg).getFilePath() + ((PDFfile)msg).getFileName();
-		  try {
-			uploadFile(msg, outputFileName);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (msg instanceof PDFfile) {
+			String outputFileName = ((PDFfile) msg).getFilePath() + ((PDFfile) msg).getFileName();
+			try {
+				uploadFile(msg, outputFileName);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+		clientUI.serverObj(msg);
 		sem.release();
 	}
-	
-	public void uploadFile(Object msg, String outputFileName) throws IOException{
+
+	public void uploadFile(Object msg, String outputFileName) throws IOException {
 		String localFilePath = outputFileName;
 		System.out.println("upload file");
 		System.out.println(outputFileName);
