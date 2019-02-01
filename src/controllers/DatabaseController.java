@@ -257,8 +257,8 @@ public class DatabaseController {
 	 * @return arrayList of user account
 	 */
 	public static ArrayList<UserAccount> getUserAccounts(accountStatus status) {
-		clientConnection.executeQuery("SELECT * FROM Account WHERE userType = '" + UserType.User.toString()
-				+ "' AND status = " + status + "';");
+		clientConnection
+				.executeQuery("SELECT * FROM Account WHERE userType = " + "'User'" + " AND status = '" + status + "';");
 		try {
 			ArrayList<String> res = clientConnection.getList();
 			ArrayList<UserAccount> arr = new ArrayList<UserAccount>();
@@ -363,7 +363,9 @@ public class DatabaseController {
 					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), res.get(8),
 					res.get(9), Integer.parseInt(res.get(10)),
 					res.get(11).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(12)));
+			book.setBookOrders(getCount("bookorder", "bookID", res.get(0)));
 			res.subList(0, 13).clear();
+
 			bookList.add(book);
 		}
 
@@ -555,17 +557,19 @@ public class DatabaseController {
 
 	/**
 	 * deletes specific copy from booCopy table in DB
+	 * 
 	 * @param bookID
 	 * @param serialNumber
 	 */
 	public static void deleteBookCopy(int bookID, String serialNumber) {
 
-		clientConnection
-				.executeQuery("DELETE FROM BookCopy WHERE bookID = '" + bookID + "' AND copySerialNumber = '" + serialNumber + "';");
+		clientConnection.executeQuery(
+				"DELETE FROM BookCopy WHERE bookID = '" + bookID + "' AND copySerialNumber = '" + serialNumber + "';");
 	}
-	
+
 	/**
 	 * add new book Copy to BookCopy table in DB
+	 * 
 	 * @param copy
 	 */
 	public static void addBookCopy(BookCopy copy) {
@@ -573,7 +577,7 @@ public class DatabaseController {
 		String query = "INSERT INTO BookCopy(bookID,serialNumber, purchaseDate) VALUES(?,?,?)";
 		arr.add(String.valueOf(copy.getBookID()));
 		arr.add(copy.getSerialNumber());
-		//we don't need to set the lent field, because its given a default value = 0
+		// we don't need to set the lent field, because its given a default value = 0
 		arr.add(String.valueOf(copy.getPurchaseDate()));
 		arr.add(query);
 		clientConnection.executeQuery(arr);
@@ -613,9 +617,11 @@ public class DatabaseController {
 				+ (lentBook.isReturned() ? "1" : "0") + "' WHERE userID = '" + lentBook.getUserID() + "' AND bookID = '"
 				+ lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
 				+ lentBook.getBookCopy().getSerialNumber() + "';";
-		//arr.add("#");
+		/*
+		 * arr.add("#"); arr.add(String.valueOf(lentBook.getBook().getBookID()));
+		 */
 		arr.add(query);
-		clientConnection.executeQuery(query);
+		clientConnection.executeQuery(arr);
 	}
 
 	public static boolean isLate(LentBook lentBook) {
@@ -1048,7 +1054,7 @@ public class DatabaseController {
 
 	public static void saveFile(String bookName, String filePath, int bookID) {
 		bookName.concat(".pdf");
-		clientConnection.saveFile(bookName,filePath,bookID);
+		clientConnection.saveFile(bookName, filePath, bookID);
 	}
 
 }

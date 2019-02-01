@@ -137,9 +137,10 @@ public class LendController {
 							// the user account status is active , then validate if there is copies of that
 							// book
 
-							if (lentBook.getAvailableCopies() == 0) {
+							if (lentBook.getAvailableCopies() == 0 || (DatabaseController.getCount("savedCopy",
+									"bookID", String.valueOf(lentBook.getBookID())) == lentBook.getAvailableCopies())) {
 								// if there is no copies of that book then let the user know that
-								alertWarningMessage("There are no copies are available of the book " + "'"
+								alertWarningMessage("There are no copies available to lend this book \n" + "'"
 										+ lentBook.getName() + "'");
 								btnLendBook.setDisable(true);
 							} else {
@@ -241,8 +242,7 @@ public class LendController {
 				txtBookID.setText(newValue.replaceAll("[^\\d]", ""));
 				alertWarningMessage("The book ID must contain only numbers");
 			}
-			
-			
+
 		});
 
 		// a listener to validate if the ID length is not greater than 9 digits and if
@@ -278,9 +278,9 @@ public class LendController {
 		stage.setScene(scene);
 		stage.show();
 	}
-	
+
 	void start(Stage stage, Book selectedBook) throws Exception {
-		this.selectedBook= selectedBook;
+		this.selectedBook = selectedBook;
 		Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
 		Scene scene = new Scene(root);
 		stage.setTitle("Lend book");
