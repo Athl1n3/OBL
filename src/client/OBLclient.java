@@ -64,10 +64,10 @@ public class OBLclient extends AbstractClient {
 				ArrayList<String> arr = (ArrayList<String>) obj;
 				if (arr.get(arr.size() - 1).equals("&")) {
 					MyFile msg = new MyFile(arr.get(0));
-					//MyFile msg = new MyFile("Give and Take.pdf");
+
 					String filePath = arr.get(1);
-					//String filePath = "C:\\Users\\saleh\\Desktop\\braude\\OBL project\\Assignment3\\Give and take.pdf";
-					
+					msg.setFilePath(arr.get(1));
+					msg.setBookID(Integer.parseInt(arr.get(2)));
 					File newFile = new File(filePath);
 					byte[] mybytearray = new byte[(int) newFile.length()];
 					FileInputStream fis = new FileInputStream(newFile);

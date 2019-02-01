@@ -6,6 +6,8 @@ public class MyFile implements Serializable {
 	
 	private String Description=null;
 	private String fileName=null;	
+	private String filePath =null;
+	private int bookID;
 	private int size=0;
 	public  byte[] mybytearray;
 	
@@ -56,6 +58,23 @@ public class MyFile implements Serializable {
 
 	public void setDescription(String description) {
 		Description = description;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	public int getBookID() {
+		return bookID;
+	}
+
+	public void setBookID(int bookID) {
+		this.bookID = bookID;
 	}	
+	
 }
 

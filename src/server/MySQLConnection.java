@@ -87,16 +87,22 @@ public class MySQLConnection {
 			return null;
 		}
 	}
-
-	public void updateFile(InputStream inputStream) {
+	
+	/**
+	 * save the file in bookContentsFile table
+	 * @param inputStream
+	 * @param id
+	 */
+	public void updateFile(InputStream inputStream, int id) {
 		String sql = "INSERT INTO BookContentsFile (upload_file) values (?)";
 		try {
 			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setBlob(getTableRowsNumber("BookContentsFile")+1, inputStream);
+			statement.setBlob(1, inputStream);
 			statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+			updateBookTableOfContents(id);
 	}
 
 	/**
@@ -116,7 +122,6 @@ public class MySQLConnection {
 				while (i <= rsmd.getColumnCount()) {
 					arr.add(rs.getString(i++));
 				}
-				// arr.add("\n");
 			}
 		} catch (SQLException Exception) {
 			System.out.println("ERROR while parsing array!");
@@ -124,14 +129,14 @@ public class MySQLConnection {
 		return arr;
 	}
 	
-	@SuppressWarnings("unchecked")
 	/**
-	 * 
-	 * @param tableName
-	 * @return	table rows count
+	 * save the id of the blob file into book table of Contents field 
+	 * @param bookID
 	 */
-	public int getTableRowsNumber(String tableName) {
-		ArrayList<String> res = (ArrayList<String>) executeSelectQuery("SELECT COUNT(*) FROM " + tableName + ";");
-		return Integer.parseInt(res.get(0));
+	@SuppressWarnings("unchecked")
+	public void updateBookTableOfContents(int bookID) {
+		ArrayList<String> res = (ArrayList<String>) executeSelectQuery("SELECT id FROM bookContentsFile ORDER BY id DESC LIMIT 1 ;");
+		executeQuery("UPDATE Book SET tableOFContents = '" + Integer.parseInt(res.get(0))+ "' WHERE bookID = '" +
+				bookID + "';");
 	}
 }

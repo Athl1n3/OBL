@@ -64,7 +64,7 @@ public class EchoServer extends AbstractServer {
 
 	public void handelFileMessageFromClient(Object msg, ConnectionToClient client) {
 		InputStream is = new ByteArrayInputStream(((MyFile)msg).getMybytearray()); 
-		DBcon.updateFile(is);
+		DBcon.updateFile(is, ((MyFile)msg).getBookID());
 		/*int fileSize = ((MyFile) msg).getSize();
 		System.out.println("Message received: " + ((MyFile) msg).getFileName() + " from " + client);
 		System.out.println("length " + fileSize);

@@ -523,6 +523,51 @@ public class DatabaseController {
 	}
 
 	/**
+	 * get all the copies
+	 * 
+	 * @return bookCopy list
+	 */
+	public static ArrayList<BookCopy> getAllCopies() {
+		clientConnection.executeQuery("SELECT * FROM BookCopy;");
+		ArrayList<String> res = clientConnection.getList();
+		ArrayList<BookCopy> bookCopyList = new ArrayList<BookCopy>();
+		while (res.size() != 0) {
+			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
+					res.get(2).equals("1") ? true : false);
+			res.subList(0, 4).clear();
+			bookCopyList.add(bookCopy);
+		}
+
+		return bookCopyList;
+	}
+
+	/**
+	 * deletes specific copy from booCopy table in DB
+	 * @param bookID
+	 * @param serialNumber
+	 */
+	public static void deleteBookCopy(int bookID, String serialNumber) {
+
+		clientConnection
+				.executeQuery("DELETE FROM BookCopy WHERE bookID = '" + bookID + "' AND copySerialNumber = '" + serialNumber + "';");
+	}
+	
+	/**
+	 * add new book Copy to BookCopy table in DB
+	 * @param copy
+	 */
+	public static void addBookCopy(BookCopy copy) {
+		ArrayList<String> arr = new ArrayList<String>();
+		String query = "INSERT INTO BookCopy(bookID,serialNumber, purchaseDate) VALUES(?,?,?)";
+		arr.add(String.valueOf(copy.getBookID()));
+		arr.add(copy.getSerialNumber());
+		//we don't need to set the lent field, because its given a default value = 0
+		arr.add(String.valueOf(copy.getPurchaseDate()));
+		arr.add(query);
+		clientConnection.executeQuery(arr);
+	}
+
+	/**
 	 * update the BookCopy isLent field
 	 * 
 	 * @param bookCopy
@@ -803,9 +848,10 @@ public class DatabaseController {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * get the late book list from lentBook table
+	 * 
 	 * @return book list
 	 */
 	public static ArrayList<Book> getAllLateBooks() {
@@ -816,7 +862,7 @@ public class DatabaseController {
 			ArrayList<String> res = clientConnection.getList();
 			while (res.size() != 0) {
 				Book book = getBook(Integer.parseInt(res.get(0)));
-				if(book!=null)
+				if (book != null)
 					bookList.add(book);
 				res.remove(0);
 			}
@@ -829,18 +875,20 @@ public class DatabaseController {
 
 	/**
 	 * get all the late copies for specific Book as list of lentBooks
+	 * 
 	 * @param bookID
 	 * @return
 	 */
 	public static ArrayList<LentBook> getLateCopiesForSpecificBook(int bookID) {
-		String query = "SELECT DISTINCT copySerialNumber FROM LentBook WHERE  bookID= '" + bookID + "' AND late = '1' AND returned = '1' ;";
+		String query = "SELECT DISTINCT copySerialNumber FROM LentBook WHERE  bookID= '" + bookID
+				+ "' AND late = '1' AND returned = '1' ;";
 		clientConnection.executeQuery(query);
 		try {
 			ArrayList<LentBook> arr = new ArrayList<LentBook>();
 			ArrayList<String> res = clientConnection.getList();
 			while (res.size() != 0) {
-				LentBook lentBook = getlentBook(bookID, res.get(0)); 
-				if(lentBook!=null)
+				LentBook lentBook = getlentBook(bookID, res.get(0));
+				if (lentBook != null)
 					arr.add(lentBook);
 				res.remove(0);
 			}
@@ -852,15 +900,16 @@ public class DatabaseController {
 	}
 
 	/**
-	 * get late lentBook according to bookID and copy SerialNumber 
+	 * get late lentBook according to bookID and copy SerialNumber
+	 * 
 	 * @param bookID
 	 * @param serialNumber
 	 * @return lentBook
 	 */
 	private static LentBook getlentBook(int bookID, String serialNumber) {
 		clientConnection.executeQuery("SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late"
-				+ " FROM LentBook WHERE bookID= '" + bookID + "' AND copySerialNumber = '"
-				+ serialNumber + "' AND late = '1' AND returned = '1' ;");
+				+ " FROM LentBook WHERE bookID= '" + bookID + "' AND copySerialNumber = '" + serialNumber
+				+ "' AND late = '1' AND returned = '1' ;");
 		ArrayList<String> res = clientConnection.getList();
 		LentBook lentBook;
 		if (!res.isEmpty()) {
@@ -896,22 +945,14 @@ public class DatabaseController {
 		return ((Boolean) clientConnection.getObject()) == true ? true : false;
 	}
 
-	public static void saveFile() {
-		ArrayList<String> arr = new ArrayList<String>();
-		arr.add("Give and Take Contents.pdf");
-		arr.add("C:\\Users\\saleh\\Desktop\\braude\\OBL project\\Assignment3\\Give and take.pdf");
-		arr.add("&");
-		clientConnection.saveFile(arr);
-	}
-
 	public static boolean addManualExtend(ManualExtend extendLog) {
 		String query = "INSERT INTO ManualExtend(bookID, userID, workerName, extendDate, dueDate) VALUES(?,?,?,?,?)";
 		ArrayList<String> arr = new ArrayList<String>();
 		arr.add(String.valueOf(extendLog.getBookID()));
 		arr.add(String.valueOf(extendLog.getUserID()));
 		arr.add(String.valueOf(extendLog.getWorkerName()));
-		// arr.add(String.valueOf(extendLog.getExtendDate()));
-		// arr.add(String.valueOf(extendLog.getDueDate()));
+		arr.add(String.valueOf(extendLog.getExtendDate()));
+		arr.add(String.valueOf(extendLog.getDueDate()));
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 
@@ -993,6 +1034,15 @@ public class DatabaseController {
 	 */
 	public static void graduateStudent(Integer studentID) {
 		clientConnection.graduateStudent(studentID);
+	}
+
+	public static void saveFile(String bookName, String filePath, int bookID) {
+		ArrayList<String> arr = new ArrayList<String>();
+		arr.add(bookName + ".pdf");
+		arr.add(filePath);
+		arr.add(String.valueOf(bookID));
+		arr.add("&");
+		clientConnection.saveFile(arr);
 	}
 
 }
