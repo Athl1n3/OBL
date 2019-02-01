@@ -190,7 +190,6 @@ public class ManageLibraryController {
 		tableView.setItems(getBooks());
 
 		txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-			ArrayList<Book> temp;
 			ArrayList<Book> arr = new ArrayList<Book>();
 			ObservableList<Book> search = FXCollections.observableArrayList();
 			if (DatabaseController.bookSearch(txtSearch.getText(), "name") != null)
