@@ -19,6 +19,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -93,7 +94,18 @@ public class ReturnController implements Initializable {
 						txtName.setText(lenderAccount.getFullName());
 						dtIssueDate.setValue(lentBook.getIssueDate());
 						dtDueDate.setValue(lentBook.getDueDate());
+						btnReturnBook.setDisable(false);
 						lookedUp = true;
+						dtReturnDate.setDisable(false);
+						dtReturnDate.setDayCellFactory(picker -> new DateCell() {
+					        @Override
+							public void updateItem(LocalDate date, boolean empty) {
+					            super.updateItem(date, empty);
+					            LocalDate issueDate = dtIssueDate.getValue();
+
+					            setDisable(empty || date.compareTo(issueDate) < 0 || date.compareTo(LocalDate.now()) > 0);
+					        }
+					    });
 					}
 				} else
 					alertWarningMessage("Librarian ID can't be used for returns!");
@@ -120,6 +132,9 @@ public class ReturnController implements Initializable {
 		txtBookID.setDisable(false);
 		txtUserID.setDisable(false);
 		txtSerialNumber.setDisable(false);
+		dtReturnDate.setDisable(true);
+		dtReturnDate.setValue(LocalDate.now());
+		btnReturnBook.setDisable(true);
 	}
 
 	/**
@@ -173,6 +188,17 @@ public class ReturnController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		btnReturnBook.setDisable(true);
+		dtReturnDate.setEditable(false);
+		dtDueDate.setOnMouseClicked(e -> {
+		     if(!dtDueDate.isEditable())
+		    	 dtDueDate.hide();
+		});
+		dtIssueDate.setOnMouseClicked(e -> {
+		     if(!dtIssueDate.isEditable())
+		    	 dtIssueDate.hide();
+		});
+		dtReturnDate.setDisable(true);
 		txtUserID.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("\\d*")) {
 				txtUserID.setText(newValue.replaceAll("[^\\d]", ""));

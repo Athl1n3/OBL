@@ -221,6 +221,13 @@ public class DatabaseController {
 		return true;// Field value already exists
 	}
 
+	public static boolean ifExists(String table, String whereQuery) {
+		clientConnection.executeQuery("SELECT EXISTS(SELECT * FROM " + table + " WHERE " + whereQuery + ");");
+		if (clientConnection.getList().get(0).equals("0"))
+			return false;// Field value doesn't exist
+		return true;// Field value already exists
+	}
+
 	/**
 	 * finds the account in DB according to (username && password) and returned it,
 	 * if the account doesn't exists then return null
@@ -323,6 +330,20 @@ public class DatabaseController {
 	 */
 	public static void deleteBook(int bookID) {
 		clientConnection.executeQuery("DELETE FROM book WHERE bookID = '" + bookID + "';");
+	}
+
+	/**
+	 * Delete saved book copy and its notification when its orderer lents it
+	 * 
+	 * @param bookID
+	 */
+	public static void deleteSavedCopy(int bookID, int accountID) {
+		clientConnection.executeQuery("SELECT notificationNum FROM savedCopy WHERE bookID = '" + bookID
+				+ "' AND userID = '" + accountID + "';");
+		String notificationNum = clientConnection.getList().get(0);
+		clientConnection.executeQuery("DELETE FROM notification WHERE notificationNum = '" + notificationNum + "';");
+		clientConnection.executeQuery(
+				"DELETE FROM savedCopy WHERE bookID = '" + bookID + "' AND userID = '" + accountID + "';");
 	}
 
 	/**
@@ -617,9 +638,10 @@ public class DatabaseController {
 				+ (lentBook.isReturned() ? "1" : "0") + "' WHERE userID = '" + lentBook.getUserID() + "' AND bookID = '"
 				+ lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
 				+ lentBook.getBookCopy().getSerialNumber() + "';";
-		/*
-		 * arr.add("#"); arr.add(String.valueOf(lentBook.getBook().getBookID()));
-		 */
+
+		arr.add("#");
+		//IS GRADUATED
+		arr.add(String.valueOf(lentBook.getBook().getBookID()));
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 	}
@@ -640,8 +662,7 @@ public class DatabaseController {
 	 */
 	public static void placeOrder(BookOrder order) {
 		ArrayList<String> arr = new ArrayList<String>();
-		String query = "INSERT INTO BookOrder(orderID, userID, bookID, orderDate) VALUES(?,?,?,?)";
-		arr.add(String.valueOf(order.getOrderID()));
+		String query = "INSERT INTO BookOrder(userID, bookID, orderDate) VALUES(?,?,?)";
 		arr.add(String.valueOf(order.getUserID()));
 		arr.add(String.valueOf(order.getBookID()));
 		arr.add(String.valueOf(order.getOrderDate()));
@@ -658,13 +679,12 @@ public class DatabaseController {
 	 * 
 	 * @return int
 	 */
-	public static int getLatestOrderID() {
-		clientConnection.executeQuery("SELECT orderID FROM BookOrder ORDER BY orderID DESC");
-		if (clientConnection.getList().size() != 0)
-			return Integer.parseInt(clientConnection.getList().get(0));
-		else
-			return 0;
-	}
+	/*
+	 * public static int getLatestOrderID() { clientConnection.
+	 * executeQuery("SELECT orderID FROM BookOrder ORDER BY orderID DESC"); if
+	 * (clientConnection.getList().size() != 0) return
+	 * Integer.parseInt(clientConnection.getList().get(0)); else return 0; }
+	 */
 
 	/**
 	 * check existence of specific order

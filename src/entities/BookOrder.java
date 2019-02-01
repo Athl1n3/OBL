@@ -9,9 +9,8 @@ public class BookOrder {
 	private int bookID;
 	private Timestamp orderDate;
 	
-	public BookOrder(int orderID, int userID, int bookID, Timestamp orderDate) {
+	public BookOrder(int userID, int bookID, Timestamp orderDate) {
 		super();
-		this.orderID = orderID;
 		this.userID = userID;
 		this.bookID = bookID;
 		this.orderDate = orderDate;

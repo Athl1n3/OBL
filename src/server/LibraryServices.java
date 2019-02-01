@@ -152,19 +152,19 @@ public class LibraryServices {
 		Calendar calendar = Calendar.getInstance();
 		java.sql.Timestamp notificationTimeStamp = new java.sql.Timestamp(calendar.getTime().getTime());
 
-		if (lentReturns.size() == 0) {
+		if (lentReturns.size() == 0) {//Student got no lent books
 			dbCon.executeQuery(
 					"UPDATE account SET status = 'Locked' , graduate = '1' WHERE userID = '" + accountID + "';");
 			dbCon.executeQuery("INSERT INTO notification(date, message, usertype, messageType)VALUES ('"
 					+ notificationTimeStamp + "','User ID: " + accountID
 					+ " has been \"Locked\" due graduation and he has no lent books,'Librarian', 'Message')");
 			// Send proper email to the graduate
-			sendEmail(eMail, "Library Lent Books Return Due Graduation", "Hello" + firstName + " " + lastName
-					+ "\nCongratulations for your graduation\n Your library account period has expired and your library account has been locked!");
+			/*sendEmail(eMail, "Library Lent Books Return Due Graduation", "Hello" + firstName + " " + lastName
+					+ "\nCongratulations for your graduation\n Your library account period has expired and your library account has been locked!");*/
 			// Console log
 			System.out.println("Email has been sent graduate student ID:" + accountID + " => " + eMail
 					+ " notifying that his account has been locked!");
-		} else {
+		} else {//If account needs suspension [Student has lent books]
 			dbCon.executeQuery(
 					"UPDATE account SET status = 'Suspended' , graduate = '1' WHERE userID = '" + accountID + "';");
 			dbCon.executeQuery("INSERT INTO notification(date, message, usertype, messageType)VALUES ('"
@@ -177,12 +177,21 @@ public class LibraryServices {
 								.get(0)));
 				lentBooks.add("\n");
 			}
+			
+			///////////////// Delete orders data
+			dbCon.executeQuery("DELETE FROM bookorder WHERE userID = '"+accountID+"';");// Delete all student book orders
+			dbCon.executeQuery("DELETE FROM notification WHERE userID = '"+accountID+"' AND message LIKE 'Your ordered%';");//Delete student order notifications
+			ArrayList<String> savedCopiesID = (ArrayList<String>)dbCon.executeQuery("SELECT bookID FROM savedcopy WHERE userID = '"+accountID+"';");
+			dbCon.executeQuery("DELETE FROM savedcopy WHERE userID = '"+accountID+"';");// Delete saved copies for this user
+			for(String bookID : savedCopiesID) // Get next order for saved copies
+				orderNotification(Integer.parseInt(bookID));
+			
 			// Send proper email to the graduate
-			sendEmail(eMail, "Library Lent Books Return Due Graduation", "Hello " + firstName + " " + lastName
+			/*sendEmail(eMail, "Library Lent Books Return Due Graduation", "Hello " + firstName + " " + lastName
 					+ "\nCongratulations for your graduation\nYour library account period has expired and has been suspended.\nBut we can see you have a list of lent books that should be returned, please return the following books\n"
-					+ lentBooks.toString().substring(1, lentBooks.toString().length() - 1));
+					+ lentBooks.toString().substring(1, lentBooks.toString().length() - 1));*/
 			System.out.println("Email has been sent graduate student ID:" + accountID + " => " + eMail
-					+ " to return all lent books");
+					+ " to return all lent books , and all orders has been removed");
 		}
 	}
 
@@ -194,7 +203,7 @@ public class LibraryServices {
 		TimerTask returnsMailsTask = new TimerTask() {
 			@SuppressWarnings("unchecked")
 			@Override
-			public void run() {
+			public void run() {//Mails students with books they have to return until tomorrow
 				ArrayList<String> lentReturns = (ArrayList<String>) dbCon
 						.executeSelectQuery("SELECT userID, bookID FROM lentbook WHERE dueDate = '"
 								+ LocalDate.now().plusDays(1) + "' AND returned = 0;");
@@ -209,8 +218,8 @@ public class LibraryServices {
 					String bookName = ((ArrayList<String>) dbCon
 							.executeSelectQuery("SELECT name FROM book WHERE bookID = '" + lentReturns.get(i) + "';"))
 									.get(0);
-					sendEmail(eMail, "Lent Book Return", "Hello " + firstName + " " + lastName + "\nYour lent book '"
-							+ bookName + "' has to be returned by tomorrow " + LocalDate.now().plusDays(1));
+					/*sendEmail(eMail, "Lent Book Return", "Hello " + firstName + " " + lastName + "\nYour lent book '"
+							+ bookName + "' has to be returned by tomorrow " + LocalDate.now().plusDays(1));*/
 					System.out.println("Email has been sent => " + eMail + " to return '" + bookName + "'");
 				}
 				if (lentReturns.size() == 0) {
@@ -268,8 +277,6 @@ public class LibraryServices {
 		lateReturnsTimer.schedule(lateReturnsTask, TimeUnit.SECONDS.toMillis(70), TimeUnit.DAYS.toMillis(1));
 	}
 
-//smtp-mail.outlook.com	obl-project@outlook.com		adam@braude
-
 	/**
 	 * Initiate mailing service over SMT protocol via TLS@587
 	 */
@@ -290,30 +297,3 @@ public class LibraryServices {
 		mailConnection.sendMail(email);
 	}
 }
-
-/*
- * THIS CODE WORKS TOO public static void main(String[] args) { final String
- * username = "obl-project@outlook.com"; final String password = "adam@braude";
- * 
- * Properties props = new Properties(); props.put("mail.smtp.starttls.enable",
- * "true"); props.put("mail.smtp.auth", "true"); props.put("mail.smtp.host",
- * "smtp-mail.outlook.com"); props.put("mail.smtp.port", "587");
- * 
- * Session session = Session.getInstance(props, new javax.mail.Authenticator() {
- * 
- * @Override protected PasswordAuthentication getPasswordAuthentication() {
- * return new PasswordAuthentication(username, password); } });
- * 
- * try { Message message = new MimeMessage(session); message.setFrom(new
- * InternetAddress("obl-project@outlook.com"));
- * message.setRecipients(Message.RecipientType.TO,
- * InternetAddress.parse("adam.spark199@gmail.com"));
- * message.setSubject("Testing Subject"); message.setText("Dear Mail Crawler," +
- * "\n\n No spam to my email, please!");
- * 
- * Transport.send(message);
- * 
- * System.out.println("Done");
- * 
- * } catch (MessagingException e) { throw new RuntimeException(e); } }
- */
