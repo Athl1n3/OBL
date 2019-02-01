@@ -129,7 +129,9 @@ public class EditBookController {
 		editedBook.setShelf(txtShelf.getText());
 		editedBook.setEdition(txtEdition.getText());
 		editedBook.setSubject(txtDescription.getText());
+		editedBook.setTableOfContents(txtTableOfContents.getText());
 		editedBook.setBookType(bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()));
+		DatabaseController.saveFile(txtBookName.getText(), txtTableOfContents.getText(), Integer.parseInt(txtBookID.getText()));
 		DatabaseController.editBook(editedBook);
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Success");
@@ -215,7 +217,9 @@ public class EditBookController {
 	public void start(Stage primaryStage, Book selectedBook) {
 		try {
 			this.selectedBook = selectedBook;
-			Parent root = FXMLLoader.load(getClass().getResource("../gui/EditBookForm.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader();
+			fxmlLoader.setLocation(getClass().getResource("/gui/EditBookForm.fxml"));
+			Parent root = fxmlLoader.load();
 			Stage stage = new Stage();
 			stage.initOwner(primaryStage);
 			stage.initModality(Modality.WINDOW_MODAL);

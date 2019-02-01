@@ -1,4 +1,4 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="434.0" prefWidth="593.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BookDetailsController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="434.0" prefWidth="593.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BookDetailsController">
    <children>
       <BorderPane prefHeight="430.0" prefWidth="602.0">
          <left>
@@ -119,7 +119,7 @@
                      </GridPane.margin>
                   </TextField>
                   <Label text="Book type" GridPane.rowIndex="4" />
-                  <Button fx:id="btnTableOfContents" mnemonicParsing="false" text="View Table Of Contents" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Button fx:id="btnTableOfContents" mnemonicParsing="false" onAction="#btnTableOfCententsPressed" text="View Table Of Contents" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                </children>
             </GridPane>
          </right>
