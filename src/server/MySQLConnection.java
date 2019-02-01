@@ -10,9 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import entities.Account;
-import entities.UserAccount;
-
 public class MySQLConnection {
 	final String DATABASE_URL = "jdbc:mysql://localhost/";
 	private Connection conn;
@@ -94,15 +91,16 @@ public class MySQLConnection {
 	 * @param id
 	 */
 	public void updateFile(InputStream inputStream, int id) {
-		String sql = "INSERT INTO BookContentsFile (upload_file) values (?)";
+		//String sql = "INSERT INTO BookContentsFile (upload_file) values (?)";
+		String sql = "UPDATE Book SET tableOfContents =? WHERE bookID = '" + id + "';";
 		try {
 			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setBlob(1, inputStream);
+			statement.setBinaryStream(1, inputStream);
 			statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-			updateBookTableOfContents(id);
+			//updateBookTableOfContents(id);
 	}
 
 	/**
@@ -129,14 +127,18 @@ public class MySQLConnection {
 		return arr;
 	}
 	
-	/**
-	 * save the id of the blob file into book table of Contents field 
-	 * @param bookID
-	 */
-	@SuppressWarnings("unchecked")
-	public void updateBookTableOfContents(int bookID) {
-		ArrayList<String> res = (ArrayList<String>) executeSelectQuery("SELECT id FROM bookContentsFile ORDER BY id DESC LIMIT 1 ;");
-		executeQuery("UPDATE Book SET tableOFContents = '" + Integer.parseInt(res.get(0))+ "' WHERE bookID = '" +
-				bookID + "';");
+	public ResultSet executeFileQuery(int bookID) {
+		String query = "SELECT tableOfContents FROM Book WHERE bookID = '" + bookID + "';";
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			System.out.println("DB: " + query + " => Executed Successfully");
+			return rs;
+		} catch (SQLException sqlException) {
+			System.out.println("Couldn't execute query");
+			sqlException.printStackTrace();
+			return null;
+		}
 	}
+	
 }

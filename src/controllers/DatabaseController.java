@@ -458,7 +458,7 @@ public class DatabaseController {
 			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook WHERE userID  = '"
 					+ userID + "' AND returned = '0';";
 		else if (userID < 0)// all the list
-			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook AND returned = '0';";
+			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook WHERE returned = '0';";
 		else // only the late one [userID = 0]
 			query = "SELECT userID,bookID, copySerialNumber, issueDate ,dueDate, returnDate, late FROM LentBook WHERE late = '1' AND returned = '0';";
 
@@ -610,10 +610,10 @@ public class DatabaseController {
 	public static void returnBook(LentBook lentBook) {
 		ArrayList<String> arr = new ArrayList<>();
 		String query = "UPDATE LentBook SET returnDate = '" + lentBook.getReturnDate() + "', returned = '"
-				+ (lentBook.isReturned() ? 1 : 0) + "' WHERE userID = '" + lentBook.getUserID() + "' AND bookID = '"
+				+ (lentBook.isReturned() ? "1" : "0") + "' WHERE userID = '" + lentBook.getUserID() + "' AND bookID = '"
 				+ lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
 				+ lentBook.getBookCopy().getSerialNumber() + "';";
-		arr.add("#");
+		//arr.add("#");
 		arr.add(query);
 		clientConnection.executeQuery(query);
 	}
@@ -748,8 +748,6 @@ public class DatabaseController {
 	public static void addActivity(int ID, String activity) {
 		ArrayList<String> arr = new ArrayList<String>();
 		String query = "INSERT INTO userActivity(userID, activityName, date) VALUES(?,?,?);";
-		clientConnection.executeQuery("SELECT COUNT(*) FROM account;");
-		// arr.add(String.valueOf(getTableRowsNumber("userActivity", null) + 1));
 		arr.add(String.valueOf(ID));
 		arr.add(activity);
 		// get the current date and time to be saved in DB

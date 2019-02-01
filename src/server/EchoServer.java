@@ -2,9 +2,12 @@ package server;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import common.PDFfile;
@@ -40,12 +43,15 @@ public class EchoServer extends AbstractServer {
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("[Client " + client.getId() + "] Message received: " + msg.toString());
 		if (msg instanceof PDFfile)
-			handelFileMessageFromClient(msg, client);
+			handelFileFromClient(msg, client);
 		else if (msg instanceof Integer) {
 			graduateStudent((Integer) msg);
 			obj = new String("Student ID " + msg + "has been set as graduated");
 		} else if (msg instanceof ArrayList) {
 			ArrayList<String> arr = (ArrayList<String>) msg;
+			if (arr.get(arr.size() - 1).equals("@")) {
+				getFileFromDB(arr);
+			}
 			if (arr.get(0).equals("#")) {
 				arr.remove(0);
 				orderNotification(Integer.parseInt(arr.get(0))); // book ID
@@ -62,18 +68,9 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
-	public void handelFileMessageFromClient(Object msg, ConnectionToClient client) {
-		InputStream is = new ByteArrayInputStream(((PDFfile)msg).getMybytearray()); 
-		DBcon.updateFile(is, ((PDFfile)msg).getBookID());
-		/*int fileSize = ((MyFile) msg).getSize();
-		System.out.println("Message received: " + ((MyFile) msg).getFileName() + " from " + client);
-		System.out.println("length " + fileSize);
-		String outputFileName = "C:\\Users\\saleh\\Desktop\\" + ((MyFile) msg).getFileName();
-		try {
-			uploadFile(msg, client, outputFileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
+	public void handelFileFromClient(Object msg, ConnectionToClient client) {
+		InputStream is = new ByteArrayInputStream(((PDFfile) msg).getMybytearray());
+		DBcon.updateFile(is, ((PDFfile) msg).getBookID());
 	}
 
 	public void uploadFile(Object msg, ConnectionToClient client, String outputFileName) throws IOException {
@@ -94,7 +91,20 @@ public class EchoServer extends AbstractServer {
 			if (bos != null)
 				bos.close();
 		}
+	}
 
+	public void getFileFromDB(ArrayList<String> arr) {
+		try {
+			ResultSet rs = DBcon.executeFileQuery(Integer.parseInt(arr.get(0)));
+			if (rs.next()) {
+				PDFfile msg = new PDFfile("kasem.pdf");
+				File newfile = new File(arr.get(1));
+
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
