@@ -47,6 +47,10 @@ public class ClientConnection implements OBLclientIF {
 		client.handleFileFromClientUI(bookName, filePath, bookID);
 	}
 
+	public void uploadFile(Object obj) {
+		client.handleMessageFromClientUI(obj);
+	}
+	
 	/**
 	 * This method was built only for testing purposes (External system sends a
 	 * graduation note with graduated student ID to OBL server)

@@ -1076,5 +1076,20 @@ public class DatabaseController {
 		bookName.concat(".pdf");
 		clientConnection.saveFile(bookName, filePath, bookID);
 	}
+	
+
+/**
+	 * getting the file from bookContentsFile Table in DB
+	 * @param id
+	 */
+	public static void getFileFromDB(int bookID,String bookName, String filePath) {
+		ArrayList<String> arr = new ArrayList<String>();
+		arr.add(String .valueOf(bookID));
+		arr.add(bookName + " Contents.pdf");
+		arr.add(filePath);
+		arr.add("@");
+		clientConnection.uploadFile(arr);
+	}
+
 
 }

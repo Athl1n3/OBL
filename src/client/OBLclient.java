@@ -1,8 +1,10 @@
 package client;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
@@ -12,6 +14,7 @@ import common.PDFfile;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import ocsf.client.AbstractClient;
+import ocsf.server.ConnectionToClient;
 
 /**
  * This class overrides some of the methods defined in the abstract superclass
@@ -48,9 +51,37 @@ public class OBLclient extends AbstractClient {
 	// This method handles all data that comes in from the server.
 	@Override
 	public void handleMessageFromServer(Object msg) {
-		// clientUI.display(msg.toString());
+		if (msg instanceof PDFfile) {
+			String outputFileName = ((PDFfile) msg).getFilePath() + ((PDFfile) msg).getFileName();
+			try {
+				uploadFile(msg, outputFileName);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		clientUI.serverObj(msg);
 		sem.release();
+	}
+
+	public void uploadFile(Object msg, String outputFileName) throws IOException {
+		String localFilePath = outputFileName;
+		System.out.println("upload file");
+		System.out.println(outputFileName);
+		FileOutputStream fos = null;
+		BufferedOutputStream bos = null;
+		try {
+			fos = new FileOutputStream(localFilePath);
+			bos = new BufferedOutputStream(fos);
+			bos.write(((PDFfile) msg).getMybytearray(), 0, ((PDFfile) msg).getSize());
+			bos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (fos != null)
+				fos.close();
+			if (bos != null)
+				bos.close();
+		}
 	}
 
 	static Alert load = new Alert(AlertType.INFORMATION, "Please wait...\n Loading data from database");
@@ -88,7 +119,6 @@ public class OBLclient extends AbstractClient {
 			byte[] mybytearray = new byte[(int) newFile.length()];
 			FileInputStream fis = new FileInputStream(newFile);
 			BufferedInputStream bis = new BufferedInputStream(fis);
-
 			uploadedFile.initArray(mybytearray.length);
 			uploadedFile.setSize(mybytearray.length);
 
