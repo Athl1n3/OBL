@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 
 /**
  * Login GUI controller
+ * 
  * @author Saleh Kasem
  *
  */
@@ -53,8 +54,11 @@ public class LoginController implements Initializable {
 
 	private Account account;
 
+	private int loginCount;
+
 	/**
 	 * Cancel login operation and go back to the previous window
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -67,23 +71,47 @@ public class LoginController implements Initializable {
 
 	/**
 	 * Validate and log in into user
+	 * 
 	 * @param event
 	 */
 	@FXML
 	void btnLoginPressed(ActionEvent event) {
-		Alert alert = new Alert(AlertType.WARNING);
+		Alert alert = new Alert(AlertType.ERROR);
 		try {
-			account = DatabaseController.getAccount(txtUsername.getText(), txtPassword.getText());
-			if (!account.isLogged()) {
+			account = DatabaseController.getAccount(txtUsername.getText());
+			if (!account.getPassword().equals(txtPassword.getText())) {
+				if (account instanceof UserAccount) {
+					account.setLoginCount(account.getLoginCount() + 1);
+					DatabaseController.updateAccount(account);
+					if (account.getLoginCount() > 2 ) {	
+						
+						DatabaseController.lockAccount(account.getAccountID(), true);
+						alert.setContentText("Account has been LOCKED!\n\nPlease get to librarian form Help.");
+						alert.setHeaderText("Login Failure");
+						alert.show();
+					}
+				}
+				// wrong password -> Alert the user and initialize the fields
+				if (account.getLoginCount() <= 2) {
+					alert.setContentText("Incorrect Password !!!\n\n Please try again.");
+					alert.setHeaderText("Login Failure");
+					alert.show();
+					txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+					txtPassword.clear();
+				}
+
+			} else if (!account.isLogged()) {
 				Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 				if (account.getUserType() == UserType.User) {
 					if (!((UserAccount) account).getStatus().equals(accountStatus.Locked)) {
 						account.setLogged(true);
 						DatabaseController.loggedAccount = account;
+						//update the login count to 0 after the user succeeded to login 
+						account.setLoginCount(0);
+						DatabaseController.updateAccount(account);
 						DatabaseController.logAccount(account);
-						openNewForm("User", stage);	
-					}
-					else {
+						openNewForm("User", stage);
+					} else {
 						alert.setContentText("Account is \"Locked\"! \n Contact library for appeal.");
 						alert.setHeaderText("Locked");
 						alert.show();
@@ -100,7 +128,7 @@ public class LoginController implements Initializable {
 				alert.show();
 			}
 		} catch (NullPointerException e) {
-			alert.setContentText("Incorrect Username or Password!!!\n\n Please try again.");
+			alert.setContentText("Incorrect Username !!!\n\n Please try again.");
 			alert.setHeaderText("Login Failure");
 			alert.show();
 			txtUsername.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
@@ -132,6 +160,7 @@ public class LoginController implements Initializable {
 
 	/**
 	 * Open appropriate form
+	 * 
 	 * @param userType
 	 * @param primaryStage
 	 */

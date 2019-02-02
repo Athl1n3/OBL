@@ -26,6 +26,12 @@ import entities.Notification;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
 import entities.UserActivity;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 public class DatabaseController {
 
@@ -111,7 +117,8 @@ public class DatabaseController {
 		String query = "UPDATE account SET firstName = '" + account.getFirstName() + "', lastName = '"
 				+ account.getLastName() + "', eMail = '" + account.getEmail() + "', mobileNum = '"
 				+ account.getMobileNum() + "', userName = '" + account.getUserName() + "', password = '"
-				+ account.getPassword() + "' WHERE userID = '" + account.getAccountID() + "';";
+				+ account.getPassword() + "', loginCount = '" + account.getLoginCount() + "' WHERE userID = '"
+				+ account.getAccountID() + "';";
 		clientConnection.executeQuery(query);
 	}
 
@@ -128,21 +135,37 @@ public class DatabaseController {
 	public static void updateUserStatus(UserAccount userAccount, boolean resetDelays) {
 		String query;
 		if (resetDelays)
-			query = "UPDATE account SET status = '" + userAccount.getStatus() + "', delays = '0' WHERE userID = '"
-					+ userAccount.getAccountID() + "';";
+			query = "UPDATE account SET status = '" + userAccount.getStatus()
+					+ "', delays = '0', loginCount = '0' WHERE userID = '" + userAccount.getAccountID() + "';";
 		else
-			query = "UPDATE account SET status = '" + userAccount.getStatus() + "' WHERE userID = '"
+			query = "UPDATE account SET status = '" + userAccount.getStatus() + "', loginCount = '0' WHERE userID = '"
 					+ userAccount.getAccountID() + "';";
 		clientConnection.executeQuery(query);
 	}
 
 	/**
-	 * Lock user account
+	 * Add notification for librarians+managers
+	 * 
+	 * @param addNotf
+	 */
+	public static void addNotfication(String notfMessage) {
+		Timestamp now = new Timestamp(new Date().getTime());
+		clientConnection
+				.executeQuery("INSERT INTO notification(userID, date, message, usertype, messageType)VALUES ('0','"
+						+ now + "','" + notfMessage + "','Librarian','Message')");
+	}
+
+	/**
+	 * Lock user account or keep suspended and reset its delays
 	 * 
 	 * @param userAccount
 	 */
-	public static boolean lockAccount(int accountID) {
-		String query = "UPDATE account SET status = 'Locked' WHERE userID = '" + accountID + "';";
+	public static boolean lockAccount(int accountID, boolean lock) {
+		String query;
+		if (lock)
+			query = "UPDATE account SET status = 'Locked' WHERE userID = '" + accountID + "';";// Lock account
+		else
+			query = "UPDATE account SET delays = '0' WHERE userID = '" + accountID + "';";// Keep account suspended
 		clientConnection.executeQuery(query);
 		clientConnection.getObject();
 		return (Boolean) clientConnection.getObject();
@@ -236,8 +259,8 @@ public class DatabaseController {
 	 * @param password
 	 * @return Account
 	 */
-	public static Account getAccount(String username, String password) {
-		String query = "SELECT * FROM Account WHERE username = '" + username + "' AND password = '" + password + "';";
+	public static Account getAccount(String username) {
+		String query = "SELECT * FROM Account WHERE username = '" + username + "';";
 		clientConnection.executeQuery(query);
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
@@ -264,8 +287,8 @@ public class DatabaseController {
 	 * @return arrayList of user account
 	 */
 	public static ArrayList<UserAccount> getUserAccounts(accountStatus status) {
-		clientConnection.executeQuery("SELECT * FROM Account WHERE userType = " + "'User'"
-				+ " AND status = '" + status + "';");
+		clientConnection
+				.executeQuery("SELECT * FROM Account WHERE userType = " + "'User'" + " AND status = '" + status + "';");
 		try {
 			ArrayList<String> res = clientConnection.getList();
 			ArrayList<UserAccount> arr = new ArrayList<UserAccount>();
@@ -273,14 +296,13 @@ public class DatabaseController {
 				UserAccount userAccount = new UserAccount();
 				userAccount.parseArrayIntoAccount(res);
 				arr.add(userAccount);
-				res.subList(0, 13).clear();
+				res.subList(0, 14).clear();
 			}
 			return arr;
 		} catch (NullPointerException e) {
 			return null;
 		}
 	}
-
 
 	/**
 	 * adds new book to the library book list
@@ -317,8 +339,8 @@ public class DatabaseController {
 				+ "', shelf = '" + existingBook.getShelf() + "', description = '" + existingBook.getDescription()
 				+ "', author = '" + existingBook.getAuthor() + "', edition = '" + existingBook.getEdition()
 				+ "', printYear = '" + existingBook.getPrintYear() + "', catalog = '" + existingBook.getCatalog()
-				+ "', subject = '" + existingBook.getSubject() + "', type = '" + existingBook.getBookType().name() + "', name = '"
-				+ existingBook.getName() + "' WHERE bookID = '" + existingBook.getBookID() + "' ;");
+				+ "', subject = '" + existingBook.getSubject() + "', type = '" + existingBook.getBookType().name()
+				+ "', name = '" + existingBook.getName() + "' WHERE bookID = '" + existingBook.getBookID() + "' ;");
 	}
 
 	/**
@@ -352,7 +374,9 @@ public class DatabaseController {
 	 * @return Book
 	 */
 	public static Book getBook(int id) {
-		clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE  bookID= '" + id + "' ;");
+		clientConnection.executeQuery(
+				"SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE  bookID= '"
+						+ id + "' ;");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
 			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
@@ -373,7 +397,8 @@ public class DatabaseController {
 	 */
 	public static ArrayList<Book> getAllBooks() {
 
-		clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book");
+		clientConnection.executeQuery(
+				"SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book");
 
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<Book> bookList = new ArrayList<Book>();
@@ -382,15 +407,14 @@ public class DatabaseController {
 					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), null,
 					res.get(8), Integer.parseInt(res.get(9)),
 					res.get(10).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(11)));
-			book.setBookOrders(getCount("bookorder","bookID",res.get(0)));
+			book.setBookOrders(getCount("bookorder", "bookID", res.get(0)));
 			res.subList(0, 12).clear();
-		
+
 			bookList.add(book);
 		}
 
 		return bookList;
 	}
-
 
 	/**
 	 * search for specific book according to its name,author, subject or description
@@ -402,19 +426,29 @@ public class DatabaseController {
 	public static ArrayList<Book> bookSearch(String str, String searchBy) throws NumberFormatException {
 		switch (searchBy.toLowerCase()) {
 		case "book id":
-			clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE bookID = '" + Integer.parseInt(str) + "' ;");
+			clientConnection.executeQuery(
+					"SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE bookID = '"
+							+ Integer.parseInt(str) + "' ;");
 			break;
 		case "name":
-			clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE name LIKE '%" + str.toLowerCase() + "%' ;");
+			clientConnection.executeQuery(
+					"SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE name LIKE '%"
+							+ str.toLowerCase() + "%' ;");
 			break;
 		case "author":
-			clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE author LIKE '%" + str.toLowerCase() + "%' ;");
+			clientConnection.executeQuery(
+					"SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE author LIKE '%"
+							+ str.toLowerCase() + "%' ;");
 			break;
 		case "subject":
-			clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE subject LIKE '%" + str.toLowerCase() + "%' ;");
+			clientConnection.executeQuery(
+					"SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE subject LIKE '%"
+							+ str.toLowerCase() + "%' ;");
 			break;
 		case "description":
-			clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE description LIKE '%" + str.toLowerCase() + "%' ;");
+			clientConnection.executeQuery(
+					"SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE description LIKE '%"
+							+ str.toLowerCase() + "%' ;");
 			break;
 		default:
 			return null;
@@ -477,12 +511,12 @@ public class DatabaseController {
 	public static ArrayList<LentBook> getLentBookList(int userID) {
 		String query;
 		if (userID > 0) // only for specific user according to userID
-			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook WHERE userID  = '"
+			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late, returned FROM LentBook WHERE userID  = '"
 					+ userID + "' AND returned = '0';";
 		else if (userID < 0)// all the list
-			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate, late FROM LentBook WHERE returned = '0';";
+			query = "SELECT userID, bookID, copySerialNumber, issueDate, dueDate, returnDate,  late,returned FROM LentBook ;";
 		else // only the late one [userID = 0]
-			query = "SELECT userID,bookID, copySerialNumber, issueDate ,dueDate, returnDate, late FROM LentBook WHERE late = '1' AND returned = '0';";
+			query = "SELECT userID, bookID, copySerialNumber, issueDate ,dueDate, returnDate, late, returned FROM LentBook WHERE late = '1' ;";
 
 		clientConnection.executeQuery(query);
 		try {
@@ -492,7 +526,9 @@ public class DatabaseController {
 				LentBook lentBook = new LentBook(Integer.parseInt(res.get(0)), getBook(Integer.parseInt(res.get(1))),
 						getBookCopy(res.get(1), res.get(2)), LocalDate.parse(res.get(3)), LocalDate.parse(res.get(4)),
 						LocalDate.parse(res.get(5)), res.get(6).equals("1") ? true : false);
-				res.subList(0, 7).clear();
+
+				lentBook.setReturned(res.get(7).equals("1") ? true : false);
+				res.subList(0, 8).clear();
 				lentBookList.add(lentBook);
 			}
 			return lentBookList;
@@ -631,7 +667,7 @@ public class DatabaseController {
 	 * 
 	 * @param lentBook
 	 */
-	public static void returnBook(LentBook lentBook) {
+	public static void returnBook(LentBook lentBook, Integer graduateID) {
 		ArrayList<String> arr = new ArrayList<>();
 		String query = "UPDATE LentBook SET returnDate = '" + lentBook.getReturnDate() + "', returned = '"
 				+ (lentBook.isReturned() ? "1" : "0") + "' WHERE userID = '" + lentBook.getUserID() + "' AND bookID = '"
@@ -639,8 +675,11 @@ public class DatabaseController {
 				+ lentBook.getBookCopy().getSerialNumber() + "';";
 
 		arr.add("#");
-		//IS GRADUATED
 		arr.add(String.valueOf(lentBook.getBook().getBookID()));
+		if (graduateID != 0) {
+			arr.add("$");
+			arr.add(String.valueOf(graduateID));
+		}
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 	}
@@ -1039,6 +1078,48 @@ public class DatabaseController {
 		return false;
 	}
 
+	public static void addTextLimiter(final TextField tf, final int maxLength, String txtFieldName, String type) {
+		tf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue,
+					final String newValue) {
+				if (tf.getText().length() > maxLength) {
+
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Warning");
+					if (type == "int")
+						alert.setContentText(txtFieldName + " must contain maximum of " + maxLength + " digits");
+					else
+						alert.setContentText(txtFieldName + " must contain maximum of " + maxLength + " characters");
+					alert.showAndWait();
+					String s = tf.getText().substring(0, maxLength);
+					tf.setText(s);
+				}
+			}
+		});
+	}
+
+	public static void addTextLimiter(final TextArea tf, final int maxLength, String txtFieldName, String type) {
+		tf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue,
+					final String newValue) {
+				if (tf.getText().length() > maxLength) {
+
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Warning");
+					if (type == "int")
+						alert.setContentText(txtFieldName + " must contain maximum of " + maxLength + " digits");
+					else
+						alert.setContentText(txtFieldName + " must contain maximum of " + maxLength + " characters");
+					alert.showAndWait();
+					String s = tf.getText().substring(0, maxLength);
+					tf.setText(s);
+				}
+			}
+		});
+	}
+
 	/**
 	 * Initiate a new client connection to the server
 	 * 
@@ -1075,20 +1156,19 @@ public class DatabaseController {
 		bookName.concat(".pdf");
 		clientConnection.saveFile(bookName, filePath, bookID);
 	}
-	
 
-/**
+	/**
 	 * getting the file from bookContentsFile Table in DB
+	 * 
 	 * @param id
 	 */
-	public static void getFileFromDB(int bookID,String bookName, String filePath) {
+	public static void getFileFromDB(int bookID, String bookName, String filePath) {
 		ArrayList<String> arr = new ArrayList<String>();
-		arr.add(String .valueOf(bookID));
+		arr.add(String.valueOf(bookID));
 		arr.add(bookName + " Contents.pdf");
 		arr.add(filePath);
 		arr.add("@");
 		clientConnection.uploadFile(arr);
 	}
-
 
 }

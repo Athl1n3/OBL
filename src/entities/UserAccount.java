@@ -105,5 +105,6 @@ public class UserAccount extends Account {
 		this.setDelays(Integer.parseInt(accountArray.get(10)));
 		this.setLogged(accountArray.get(11).equals("1") ? true : false);
 		this.setGraduate(accountArray.get(12).equals("1") ? true : false);
+		this.setLoginCount(Integer.parseInt(accountArray.get(13)));
 	}
 }

@@ -156,7 +156,10 @@ public class ReturnController implements Initializable {
 			DatabaseController.updateBookCopy(lentBook.getBookCopy());
 			lentBook.setReturnDate(dtReturnDate.getValue());
 			lentBook.setReturned(true); // update lent Book in DB lentBook table
-			DatabaseController.returnBook(lentBook);
+			if(((UserAccount)lenderAccount).isGraduate())
+				DatabaseController.returnBook(lentBook, lenderAccount.getAccountID());//graduated
+			else
+				DatabaseController.returnBook(lentBook, 0);//Not graduated
 			DatabaseController.addActivity(lenderAccount.getAccountID(),
 					"Returned Book [Book ID: " + lentBook.getBook().getBookID() + "]");
 			if (!lentBook.isLate()) {
