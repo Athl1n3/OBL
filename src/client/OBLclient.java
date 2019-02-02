@@ -35,7 +35,6 @@ public class OBLclient extends AbstractClient {
 	 * @param port     The port number to connect on.
 	 * @param clientUI The interface type variable.
 	 */
-
 	public OBLclient(String host, int port, OBLclientIF clientUI) throws IOException {
 		super(host, port); // Call the superclass constructor
 		this.clientUI = clientUI;
@@ -63,6 +62,12 @@ public class OBLclient extends AbstractClient {
 		sem.release();
 	}
 
+	/**
+	 * upload the file received from server to specific path on he client side
+	 * @param msg
+	 * @param outputFileName
+	 * @throws IOException
+	 */
 	public void uploadFile(Object msg, String outputFileName) throws IOException {
 		String localFilePath = outputFileName;
 		System.out.println("upload file");
@@ -84,8 +89,6 @@ public class OBLclient extends AbstractClient {
 		}
 	}
 
-	static Alert load = new Alert(AlertType.INFORMATION, "Please wait...\n Loading data from database");
-
 	/**
 	 * This method handles all data coming from the UI
 	 * 
@@ -95,21 +98,26 @@ public class OBLclient extends AbstractClient {
 	public void handleMessageFromClientUI(Object obj) {
 		try {
 			sendToServer(obj);
-			if (obj instanceof String) {
+			/*if (obj instanceof String) {
 				if (((String) obj).startsWith("SELECT"))
 					load.show();
 			} else if (obj instanceof ArrayList) {
 				if (((ArrayList<String>) obj).get(((ArrayList<String>) obj).size() - 1).toString().startsWith("SELECT"))
 					load.show();
-			}
+			}*/
 			sem.acquire();
-			load.close();
 		} catch (IOException | InterruptedException e) {
 			clientUI.display("Could not send message to server.  Terminating client.");
 			quit();
 		}
 	}
 
+	/**
+	 * handle the file received from the client and send it to server
+	 * @param bookName
+	 * @param filePath
+	 * @param bookID
+	 */
 	public void handleFileFromClientUI(String bookName, String filePath, int bookID) {
 		try {
 			PDFfile uploadedFile = new PDFfile(bookName);
@@ -121,7 +129,7 @@ public class OBLclient extends AbstractClient {
 			BufferedInputStream bis = new BufferedInputStream(fis);
 			uploadedFile.initArray(mybytearray.length);
 			uploadedFile.setSize(mybytearray.length);
-
+			//read the file to buffer 
 			bis.read(uploadedFile.getMybytearray(), 0, mybytearray.length);
 			sendToServer(uploadedFile);
 		} catch (Exception e) {

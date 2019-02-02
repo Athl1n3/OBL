@@ -31,7 +31,12 @@ public class ClientConnection implements OBLclientIF {
 		 * " Terminating client."); System.exit(1); }
 		 */
 	}
-
+	
+	/**
+	 * make a connection to host on specific port 
+	 * @param host
+	 * @param port
+	 */
 	public ClientConnection(String host, int port) {
 		try {
 			client = new OBLclient(host, port, this);
@@ -41,14 +46,28 @@ public class ClientConnection implements OBLclientIF {
 		}
 	}
 
+	/**
+	 * send the query to OBLclient to be send to server and executed
+	 * @param obj
+	 */
 	public void executeQuery(Object obj) {
 		client.handleMessageFromClientUI(obj);
 	}
-
+	
+	/**
+	 * send the file details to OBLclient to be send to server and saved in DB
+	 * @param bookName
+	 * @param filePath
+	 * @param bookID
+	 */
 	public void saveFile(String bookName, String filePath, int bookID) {
 		client.handleFileFromClientUI(bookName, filePath, bookID);
 	}
 
+	/**
+	 * send file path and details to OBLclient to upload it from DB 
+	 * @param obj
+	 */
 	public void uploadFile(Object obj) {
 		client.handleMessageFromClientUI(obj);
 	}
@@ -64,16 +83,27 @@ public class ClientConnection implements OBLclientIF {
 	// **************************************//
 	private Object obj;
 
+	/**
+	 * object received from server
+	 */
 	@Override
 	public void serverObj(Object obj) {
 		System.out.println("> Object received from server.");
 		this.obj = obj;
 	}
-
+	
+	/**
+	 * return the object that has been received from server
+	 * @return obj 
+	 */
 	public Object getObject() {
 		return this.obj;
 	}
 
+	/**
+	 * parse the object received from server to ArrayList and return it
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> getList() {
 		return (ArrayList<String>) this.obj;
@@ -97,6 +127,9 @@ public class ClientConnection implements OBLclientIF {
 		client.quit();
 	}
 
+	/**
+	 * Initiate the connected client
+	 */
 	public void init() {
 		DatabaseController.InitiateClient(this);
 	}

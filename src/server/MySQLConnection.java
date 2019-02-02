@@ -10,11 +10,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+/**
+ * this class responsible about executing the queries from the clients
+ * @author Saleh Kasem
+ *
+ */
 public class MySQLConnection {
 	final String DATABASE_URL = "jdbc:mysql://localhost/";
 	private Connection conn;
 	private String schema;
 
+	/**
+	 * MYSQLConnection constructor witch prepared the connection to DB 
+	 * @param schema
+	 * @param userName
+	 * @param password
+	 */
 	public MySQLConnection(String schema, String userName, String password) {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -33,10 +44,18 @@ public class MySQLConnection {
 		}
 	}
 
+	/**
+	 * execute the queries arrived from client
+	 * @param msg
+	 * @return object
+	 */
+	@SuppressWarnings("unchecked")
 	public Object executeQuery(Object msg) {
 		String query;
 		try {
+			//if message arrived as ArrayList then extract the query from the last index
 			if (msg instanceof ArrayList) {
+				//the arrayList contains the data witch need to saved in DB and the query
 				ArrayList<String> arr = (ArrayList<String>) msg;
 				query = String.valueOf(arr.get(arr.size() - 1));
 				if (query.startsWith("INSERT") || query.startsWith("UPDATE") || query.startsWith("DELETE")) {
@@ -50,7 +69,7 @@ public class MySQLConnection {
 					return null;
 				} else
 					return executeSelectQuery(msg);
-
+				//handle String message
 			} else if (msg instanceof String) {
 				query = msg.toString();
 				if (query.startsWith("INSERT") || query.startsWith("UPDATE") || query.startsWith("DELETE")) {
@@ -70,12 +89,18 @@ public class MySQLConnection {
 		return null;
 	}
 
+	/**
+	 * execute only select queries
+	 * @param msg
+	 * @return object
+	 */
 	public Object executeSelectQuery(Object msg) {
 		String query = msg.toString();
 		try {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			System.out.println("DB: " + query + " => Executed Successfully");
+			//return the result set as ArrayList
 			return parseResultSet(rs);
 
 		} catch (SQLException sqlException) {
@@ -112,7 +137,7 @@ public class MySQLConnection {
 		ArrayList<String> arr = new ArrayList<>();
 		int i;
 
-		try {
+		try {//convert the the rs to ArrayList 
 			ResultSetMetaData rsmd = rs.getMetaData();
 			while (rs.next()) {
 				i = 1;
@@ -126,12 +151,16 @@ public class MySQLConnection {
 		return arr;
 	}
 	
+	/*
+	 * execute only the file query
+	 */
 	public ResultSet executeFileQuery(int bookID) {
 		String query = "SELECT tableOfContents FROM Book WHERE bookID = '" + bookID + "';";
 		try {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			System.out.println("DB: " + query + " => Executed Successfully");
+			//return it ass result set
 			return rs;
 		} catch (SQLException sqlException) {
 			System.out.println("Couldn't execute query");

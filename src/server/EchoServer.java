@@ -81,17 +81,29 @@ public class EchoServer extends AbstractServer {
 			ex.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * handle the file received from client and pass it to MySQLConnection class to be saved in DB
+	 * @param msg
+	 * @param client
+	 */
 	public void handelFileFromClient(Object msg, ConnectionToClient client) {
 		InputStream is = new ByteArrayInputStream(((PDFfile) msg).getMybytearray());
 		DBcon.updateFile(is, ((PDFfile) msg).getBookID());
 	}
 
+	/**
+	 * upload the file from DB to specific path on server 
+	 * @param msg
+	 * @param client
+	 * @param outputFileName
+	 * @throws IOException
+	 */
 	public void uploadFileToServer(Object msg, ConnectionToClient client, String outputFileName) throws IOException {
 		System.out.println("upload file");
 		FileOutputStream fos = null;
 		BufferedOutputStream bos = null;
-		try {
+		try {//get the file from output stream to output file path
 			fos = new FileOutputStream(outputFileName);
 			bos = new BufferedOutputStream(fos);
 			bos.write(((PDFfile) msg).getMybytearray(), 0, ((PDFfile) msg).getSize());
@@ -106,18 +118,24 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * get the from DB and prepared it to be pass to client
+	 * @param arr
+	 * @param client
+	 */
 	public void getFileFromDB(ArrayList<String> arr, ConnectionToClient client) {
 		FileOutputStream output = null;
 		BufferedInputStream buffer = null;
-		try {
+		try {//getting blob file as resultSet from DB
 			ResultSet rs = DBcon.executeFileQuery(Integer.parseInt(arr.get(0)));
-
+			//save the file on server
 			File newFile = new File("C:\\obl\\" + arr.get(1));
 			output = new FileOutputStream(newFile);
 			if (rs.next()) {
 				byte[] mybytearray = new byte[2048];
 				InputStream is = rs.getBinaryStream("tableOfContents");
 				buffer = new BufferedInputStream(is);
+				//write the file to specific path
 				while (is.read(mybytearray) > 0) {
 					output.write(mybytearray);
 				}
@@ -138,7 +156,13 @@ public class EchoServer extends AbstractServer {
 			}
 		}
 	}
-
+	
+	/**
+	 * get the file from the server where it's saved and send it to client
+	 * @param arr
+	 * @param newFile
+	 * @param client
+	 */
 	public void sentFileToCient(ArrayList<String> arr, File newFile, ConnectionToClient client) {
 		try {
 			PDFfile uploadedFile = new PDFfile(arr.get(1));
@@ -236,6 +260,11 @@ public class EchoServer extends AbstractServer {
 		System.out.println("Client " + client.getId() + " has disconnected from the server");
 	}
 
+	/**
+	 * the main witch activate the server
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException {
 		int port = 0; // Port to listen on
 		Properties props = new Properties();
