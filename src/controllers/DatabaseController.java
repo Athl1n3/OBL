@@ -1218,9 +1218,26 @@ public class DatabaseController {
 	 */
 	public static void saveFile(String bookName, String filePath, int bookID) {
 		bookName.concat(".pdf");
-		clientConnection.saveFile(bookName, filePath, bookID);
+		ArrayList<String> arr = new ArrayList<String>();
+		arr.add("&");
+		arr.add(bookName);
+		clientConnection.saveFile(arr, filePath, String.valueOf(bookID));
 	}
 
+	/**
+	 * save Activity report file to data base
+	 * @param bookName
+	 * @param filePath
+	 * @param bookID
+	 */
+	public static void saveActivityReportFile(LocalDate date, String filePath) {
+		String fileName = date.toString() + " Activity Report.pdf";
+		ArrayList<String> arr = new ArrayList<String>();
+		arr.add(" ");
+		arr.add(fileName);
+		clientConnection.saveFile(arr, filePath, date.toString());
+	}
+	
 	/**
 	 * getting the file from bookContentsFile Table in DB
 	 * 
@@ -1232,6 +1249,21 @@ public class DatabaseController {
 		arr.add(bookName + " Contents.pdf");
 		arr.add(filePath);
 		arr.add("@");
+		clientConnection.uploadFile(arr);
+	}
+	
+	/**
+	 * getting activity report file from reports Table in DB
+	 * 
+	 * @param id
+	 */
+	public static void getActivityReportFileFromDB(LocalDate date, String filePath) {
+		ArrayList<String> arr = new ArrayList<String>();
+		String fileName = date.toString() + " Activity Report.pdf";
+		arr.add(date.toString());
+		arr.add(fileName);
+		arr.add(filePath);
+		arr.add("!");
 		clientConnection.uploadFile(arr);
 	}
 
