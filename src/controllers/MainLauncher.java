@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  * Credits:
  * -Adam Mahameed [GUI Design, LibraryServices, MySQLConnection, ArchivedDataController, ActivityController,
  * 					 AccountDetailsController, SceneController, UserLookupController, NotificationsController, Main forms controllers]
- * -Saleh Qassem [DatabaseController, ReturnController, LoginController, SearchController, MySQLConnection, OrderController]
+ * -Saleh Kasem [DatabaseController, ReturnController, LoginController, SearchController, MySQLConnection, OrderController]
  * -Fadi Habeeb [AddBookController, EditBookController, ManageLibraryController]
  * -Alaa Grable [NewAccountController, ExtendLendController, ManualExtendController, LendController, ReportsController]
  * -Ahmad Qais [AccountDetailsController]

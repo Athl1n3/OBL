@@ -70,11 +70,16 @@ public class MainFormController {
 
 	@FXML
 	void initialize() {
-		//DatabaseController.saveFile();
+		//DatabaseController.getFileFromDB(1235, "give", "C:\\Users\\saleh\\Desktop\\");
+
+		//DatabaseController.g("kasem", "C:\\Users\\saleh\\Desktop\\braude\\OBL project\\Assignment3\\Give and take.pdf", 1235);
 	}
 
 	void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/MainForm.fxml"));
+		FXMLLoader fxmlLoader= new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/MainForm.fxml"));
+		Parent root = fxmlLoader.load();
+	
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Librarian Main");
 		primaryStage.setScene(scene);

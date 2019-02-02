@@ -264,8 +264,8 @@ public class DatabaseController {
 	 * @return arrayList of user account
 	 */
 	public static ArrayList<UserAccount> getUserAccounts(accountStatus status) {
-		clientConnection
-				.executeQuery("SELECT * FROM Account WHERE userType = " + "'User'" + " AND status = '" + status + "';");
+		clientConnection.executeQuery("SELECT * FROM Account WHERE userType = " + "'User'"
+				+ " AND status = '" + status + "';");
 		try {
 			ArrayList<String> res = clientConnection.getList();
 			ArrayList<UserAccount> arr = new ArrayList<UserAccount>();
@@ -281,6 +281,7 @@ public class DatabaseController {
 		}
 	}
 
+
 	/**
 	 * adds new book to the library book list
 	 * 
@@ -289,7 +290,7 @@ public class DatabaseController {
 	public static void addBook(Book newBook) {
 		ArrayList<String> arr = new ArrayList<String>();
 		String query = "INSERT INTO BOOk(bookID, name, author, edition, printYear, subject, description, catalog,"
-				+ " tableOfContents, shelf, copiesNumber, Type, availableCopies) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " shelf, copiesNumber, Type, availableCopies) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 		arr.add(String.valueOf(newBook.getBookID()));
 		arr.add(newBook.getName());
 		arr.add(newBook.getAuthor());
@@ -298,7 +299,6 @@ public class DatabaseController {
 		arr.add(newBook.getSubject());
 		arr.add(newBook.getDescription());
 		arr.add(String.valueOf(newBook.getCatalog()));
-		arr.add(newBook.getTableOfContents());
 		arr.add(newBook.getShelf());
 		arr.add(String.valueOf(newBook.getCopiesNumber()));
 		arr.add(String.valueOf(newBook.getBookType()));
@@ -317,10 +317,8 @@ public class DatabaseController {
 				+ "', shelf = '" + existingBook.getShelf() + "', description = '" + existingBook.getDescription()
 				+ "', author = '" + existingBook.getAuthor() + "', edition = '" + existingBook.getEdition()
 				+ "', printYear = '" + existingBook.getPrintYear() + "', catalog = '" + existingBook.getCatalog()
-				+ "', subject = '" + existingBook.getSubject() + "', tableOfContents = '"
-				+ existingBook.getTableOfContents() + "', type = '" + existingBook.getBookType().name() + "', name = '"
+				+ "', subject = '" + existingBook.getSubject() + "', type = '" + existingBook.getBookType().name() + "', name = '"
 				+ existingBook.getName() + "' WHERE bookID = '" + existingBook.getBookID() + "' ;");
-		// need to update the pdf contents file path
 	}
 
 	/**
@@ -354,13 +352,13 @@ public class DatabaseController {
 	 * @return Book
 	 */
 	public static Book getBook(int id) {
-		clientConnection.executeQuery("SELECT * FROM book WHERE  bookID= '" + id + "' ;");
+		clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE  bookID= '" + id + "' ;");
 		ArrayList<String> res = clientConnection.getList();
 		if (res.size() != 0) {
 			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
-					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), res.get(8),
-					res.get(9), Integer.parseInt(res.get(10)),
-					res.get(11).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(12)));
+					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), null,
+					res.get(8), Integer.parseInt(res.get(9)),
+					res.get(10).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(11)));
 
 			return book;
 		}
@@ -375,23 +373,24 @@ public class DatabaseController {
 	 */
 	public static ArrayList<Book> getAllBooks() {
 
-		clientConnection.executeQuery("SELECT * FROM book");
+		clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book");
 
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<Book> bookList = new ArrayList<Book>();
 		while (res.size() != 0) {
 			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
-					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), res.get(8),
-					res.get(9), Integer.parseInt(res.get(10)),
-					res.get(11).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(12)));
-			book.setBookOrders(getCount("bookorder", "bookID", res.get(0)));
-			res.subList(0, 13).clear();
-
+					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), null,
+					res.get(8), Integer.parseInt(res.get(9)),
+					res.get(10).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(11)));
+			book.setBookOrders(getCount("bookorder","bookID",res.get(0)));
+			res.subList(0, 12).clear();
+		
 			bookList.add(book);
 		}
 
 		return bookList;
 	}
+
 
 	/**
 	 * search for specific book according to its name,author, subject or description
@@ -403,19 +402,19 @@ public class DatabaseController {
 	public static ArrayList<Book> bookSearch(String str, String searchBy) throws NumberFormatException {
 		switch (searchBy.toLowerCase()) {
 		case "book id":
-			clientConnection.executeQuery("SELECT * FROM book WHERE bookID = '" + Integer.parseInt(str) + "' ;");
+			clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE bookID = '" + Integer.parseInt(str) + "' ;");
 			break;
 		case "name":
-			clientConnection.executeQuery("SELECT * FROM book WHERE name LIKE '%" + str.toLowerCase() + "%' ;");
+			clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE name LIKE '%" + str.toLowerCase() + "%' ;");
 			break;
 		case "author":
-			clientConnection.executeQuery("SELECT * FROM book WHERE author LIKE '%" + str.toLowerCase() + "%' ;");
+			clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE author LIKE '%" + str.toLowerCase() + "%' ;");
 			break;
 		case "subject":
-			clientConnection.executeQuery("SELECT * FROM book WHERE subject LIKE '%" + str.toLowerCase() + "%' ;");
+			clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE subject LIKE '%" + str.toLowerCase() + "%' ;");
 			break;
 		case "description":
-			clientConnection.executeQuery("SELECT * FROM book WHERE description LIKE '%" + str.toLowerCase() + "%' ;");
+			clientConnection.executeQuery("SELECT bookID, name, author, edition, printYear, subject, description, catalog, shelf, copiesNumber, Type, availableCopies FROM book WHERE description LIKE '%" + str.toLowerCase() + "%' ;");
 			break;
 		default:
 			return null;
@@ -426,10 +425,10 @@ public class DatabaseController {
 		ArrayList<Book> bookList = new ArrayList<Book>();
 		while (res.size() != 0) {
 			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
-					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), res.get(8),
-					res.get(9), Integer.parseInt(res.get(10)),
-					res.get(11).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(12)));
-			res.subList(0, 13).clear();
+					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), null,
+					res.get(8), Integer.parseInt(res.get(9)),
+					res.get(10).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(11)));
+			res.subList(0, 12).clear();
 			bookList.add(book);
 		}
 		return bookList;

@@ -148,7 +148,9 @@ void btnAddCopyPressed(ActionEvent event) {
 	public void start(Stage primaryStage, Book selectedBook) {
 		try {
 			this.selectedBook = selectedBook;
-			Parent root = FXMLLoader.load(getClass().getResource("../gui/ManageCopiesForm.fxml"));
+			FXMLLoader fxmlLoader= new FXMLLoader();
+			fxmlLoader.setLocation(getClass().getResource("/gui/ManageCopiesForm.fxml"));
+			Parent root = fxmlLoader.load();
 			Stage stage = new Stage();
 			stage.initOwner(primaryStage);
 			stage.initModality(Modality.WINDOW_MODAL);
@@ -166,7 +168,7 @@ void btnAddCopyPressed(ActionEvent event) {
 	 */
 	@FXML
 	void initialize() {
-
+		DatabaseController.addTextLimiter(txtSerialNumber, 32,"Serial number","character");
 		lblBookName.setText(selectedBook.getName());
 		lblBookID.setText(Integer.toString(selectedBook.getBookID()));
 

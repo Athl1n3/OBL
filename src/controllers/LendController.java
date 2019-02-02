@@ -284,7 +284,9 @@ public class LendController {
 	}
 
 	void start(Stage stage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/LendForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		stage.setTitle("Lend book");
 		stage.sizeToScene();
@@ -294,7 +296,9 @@ public class LendController {
 
 	void start(Stage stage, Book selectedBook) throws Exception {
 		this.selectedBook = selectedBook;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/LendForm.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/LendForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		stage.setTitle("Lend book");
 		stage.sizeToScene();

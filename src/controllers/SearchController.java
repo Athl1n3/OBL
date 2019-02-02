@@ -173,8 +173,33 @@ public class SearchController implements Initializable {
 
 	@FXML
 	void btnViewInfoPressed(ActionEvent event) {
+		Book selectedForView = (Book) tableView.getSelectionModel().getSelectedItem();
+
+		try {
+			if (selectedForView == null)
+				throw new Exception();
+			else {
+				Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+				BookDetailsController viewBookForm = new BookDetailsController();
+				try {
+					viewBookForm.start(stage, selectedForView);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+		} catch (Exception e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("No book has selected");
+			alert.setContentText("Select a book to view it!");
+			alert.showAndWait();
+		}
 
 	}
+		
+		
+	
 
 	/**
 	 * return to the previous window
@@ -241,6 +266,10 @@ public class SearchController implements Initializable {
 		});
 		if (DatabaseController.loggedAccount instanceof UserAccount && DatabaseController.loggedAccount != null)
 			btnOrderBook.setVisible(true);
+		
+		btnViewInfo.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+		btnCheck.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+
 	}
 
 	@FXML
@@ -262,7 +291,9 @@ public class SearchController implements Initializable {
 	}
 
 	public void start(Stage primaryStage, Account account) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/SearchForm.fxml"));
+		FXMLLoader fxmlLoader= new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/SearchForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Search");
 		primaryStage.setScene(scene);

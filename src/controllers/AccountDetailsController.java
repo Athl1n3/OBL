@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 
 /**
  * User account details GUI
+ * 
  * @author Adam Mahameed [Athl1n3], Ahmed Qais
  *
  */
@@ -72,6 +73,7 @@ public class AccountDetailsController implements Initializable {
 
 	/**
 	 * Apply data changes to user account
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -99,6 +101,7 @@ public class AccountDetailsController implements Initializable {
 
 	/**
 	 * Update user login details
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -127,6 +130,7 @@ public class AccountDetailsController implements Initializable {
 
 	/**
 	 * Go back to previous scene
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -263,6 +267,7 @@ public class AccountDetailsController implements Initializable {
 
 	/**
 	 * validate data input
+	 * 
 	 * @return boolean
 	 */
 	private boolean validateUsernamePasswordInput() {
@@ -304,7 +309,9 @@ public class AccountDetailsController implements Initializable {
 
 	void start(Stage primaryStage, Account acc) throws Exception {
 		loggedAccount = (UserAccount) acc;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/AccountDetailsForm.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/AccountDetailsForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Account Details");
 		primaryStage.setScene(scene);

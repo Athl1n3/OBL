@@ -1047,7 +1047,9 @@ public class ReportsController {
 
 	void start(Stage primaryStage, Account loggedLibAccount) throws Exception {
 		this.loggedLibAccount = (LibrarianAccount) loggedLibAccount;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/ReportsForm.fxml"));
+		FXMLLoader fxmlLoader= new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/ReportsForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Reports");
 		primaryStage.setScene(scene);
