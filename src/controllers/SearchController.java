@@ -268,6 +268,8 @@ public class SearchController implements Initializable {
 			btnOrderBook.setVisible(true);
 		
 		btnViewInfo.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+		btnCheck.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+
 	}
 
 	@FXML
