@@ -508,7 +508,6 @@ public class ReportsController {
 			String[] temp;
 			PdfPCell cell;
 
-			int width, height;
 			// check if the file is already open or not
 			if (isFileOpen(filePath + "Lends Report.pdf") == true) {
 				// if the file is open , let the user know
@@ -874,12 +873,19 @@ public class ReportsController {
 					if (books == null) {
 						// if not , then let the user know
 						alertWarningMessage("Something went wrong while retrieving the books from data base.");
+						document.close();
 						break;
 					}
+					/*if(books.size() == 0) {
+						alertWarningMessage("No late returnes available in the DB");
+						document.close();
+						break;
+					}*/
 					for (Book book : books) {
 						ArrayList<LentBook> lentBooks = DatabaseController.getLateCopiesForSpecificBook(book.getBookID());
 						if (lentBooks == null) {
 							alertWarningMessage("Something went wrong while retrieving lent books from data base.");
+							document.close();
 							break;
 						} 
 						else {
@@ -901,7 +907,7 @@ public class ReportsController {
 							int i = 0;
 							long[] delays = new long[lentBooks.size()];
 							for (LentBook lntBook : lentBooks) 
-								delays[i++] = lntBook.getIssueDate().until(lntBook.getReturnDate(), ChronoUnit.DAYS);
+								delays[i++] = lntBook.getDueDate().until(lntBook.getReturnDate(), ChronoUnit.DAYS);
 							
 							int max =  (int)Arrays.stream(delays).max().getAsLong();
 
@@ -1314,7 +1320,7 @@ public class ReportsController {
 				// if the user has returned the book , then calculate the difference between
 				// dates and display it
 				cell = new PdfPCell(new Paragraph(
-						String.valueOf(lent.getIssueDate().until(lent.getReturnDate(), ChronoUnit.DAYS))));
+						String.valueOf(lent.getDueDate().until(lent.getReturnDate(), ChronoUnit.DAYS))));
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(cell);
 
@@ -1998,6 +2004,7 @@ public class ReportsController {
 		PdfPCell cell;
 		PdfPTable table = new PdfPTable(3);
 
+		System.out.println(max);
 		int[] array = new int[max + 1];
 
 		for (int i = 0; i < array.length; i++)
