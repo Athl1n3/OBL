@@ -168,7 +168,7 @@ void btnAddCopyPressed(ActionEvent event) {
 	 */
 	@FXML
 	void initialize() {
-
+		DatabaseController.addTextLimiter(txtSerialNumber, 32,"Serial number","character");
 		lblBookName.setText(selectedBook.getName());
 		lblBookID.setText(Integer.toString(selectedBook.getBookID()));
 
