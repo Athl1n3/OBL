@@ -54,9 +54,21 @@ public class EchoServer extends AbstractServer {
 			if (arr.get(arr.size() - 1).equals("@")) {
 				getFileFromDB(arr, client);
 			} else if (arr.get(0).equals("#")) {
+				boolean graduate = false;
+				int graduateID = 0;
 				arr.remove(0);
 				orderNotification(Integer.parseInt(arr.get(0))); // book ID
+				arr.remove(0);// Remove book ID
+				
+				if (arr.get(0).equals("$")) {
+					arr.remove(0);//Remove $
+					graduate = true;
+					graduateID = Integer.parseInt(arr.get(0)); // Get graduate ID
+					arr.remove(0);// Remove graduate ID
+				}
 				obj = DBcon.executeQuery(msg);
+				if (graduate == true)
+					graduateReturn(graduateID);//Execute check after issuing book return
 			} else
 				obj = DBcon.executeQuery(msg);
 		} else
@@ -157,6 +169,16 @@ public class EchoServer extends AbstractServer {
 	 */
 	public void graduateStudent(int studentID) {
 		libraryServices.graduateStudent(studentID);
+	}
+
+	/**
+	 * Call libraryServices graduate student method and set student status as
+	 * graduated
+	 * 
+	 * @param studentID
+	 */
+	public void graduateReturn(int graduateID) {
+		libraryServices.graduateReturn(graduateID);
 	}
 
 	/**

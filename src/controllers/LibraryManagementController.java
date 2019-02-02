@@ -5,10 +5,12 @@ import java.util.ResourceBundle;
 
 import entities.Account;
 import entities.LibrarianAccount;
+import entities.ManagerAccount;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -82,6 +84,10 @@ public class LibraryManagementController {
 
 	@FXML
 	void initialize() {
+		if (!(loggedLibAccount instanceof ManagerAccount)) {
+				imgReports.setImage(new Image("/images/ReportsGS.png"));
+				imgReports.setDisable(true);
+		}
 
 	}
 }
