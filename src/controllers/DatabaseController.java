@@ -121,7 +121,10 @@ public class DatabaseController {
 				+ account.getAccountID() + "';";
 		clientConnection.executeQuery(query);
 	}
-
+	/**
+	 * se account to logged
+	 * @param account
+	 */
 	public static void logAccount(Account account) {
 		clientConnection.executeQuery("UPDATE account SET logged = '" + (account.isLogged() == true ? 1 : 0)
 				+ "' WHERE userID = '" + account.getAccountID() + "';");
@@ -236,6 +239,13 @@ public class DatabaseController {
 			return null;
 	}
 
+	/**
+	 * check if specific value is exists in specific table 
+	 * @param table
+	 * @param field
+	 * @param fieldVal
+	 * @return boolean
+	 */
 	public static boolean ifExists(String table, String field, String fieldVal) {
 		clientConnection
 				.executeQuery("SELECT EXISTS(SELECT * FROM " + table + " WHERE " + field + " = '" + fieldVal + "');");
@@ -244,6 +254,12 @@ public class DatabaseController {
 		return true;// Field value already exists
 	}
 
+	/**
+	 * check if value exists in table 
+	 * @param table
+	 * @param whereQuery
+	 * @return boolean
+	 */
 	public static boolean ifExists(String table, String whereQuery) {
 		clientConnection.executeQuery("SELECT EXISTS(SELECT * FROM " + table + " WHERE " + whereQuery + ");");
 		if (clientConnection.getList().get(0).equals("0"))
@@ -453,11 +469,12 @@ public class DatabaseController {
 		default:
 			return null;
 		}
+		//get the result from db
 		ArrayList<String> res = clientConnection.getList();
 		if (res.isEmpty())
 			return null;
 		ArrayList<Book> bookList = new ArrayList<Book>();
-		while (res.size() != 0) {
+		while (res.size() != 0) { //convert the result to ArrayList<Book> and return it
 			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
 					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), null,
 					res.get(8), Integer.parseInt(res.get(9)),
@@ -495,7 +512,12 @@ public class DatabaseController {
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 	}
-
+	
+	/**
+	 * delete specific lend book according to accountID and bookID
+	 * @param accountID
+	 * @param bookID
+	 */
 	public static void deleteLendBook(int accountID, int bookID) {
 		clientConnection
 				.executeQuery("DELETE FROM LentBook WHERE userID = '" + accountID + "' AND bookID = '" + bookID + "';");
@@ -506,7 +528,7 @@ public class DatabaseController {
 	 * lent Book list, if(userID<0) return the whole lent Book list, if userID = 0
 	 * return only the late users
 	 * 
-	 * @return ArrayList
+	 * @return ArrayList 
 	 */
 	public static ArrayList<LentBook> getLentBookList(int userID) {
 		String query;
@@ -519,7 +541,7 @@ public class DatabaseController {
 			query = "SELECT userID, bookID, copySerialNumber, issueDate ,dueDate, returnDate, late, returned FROM LentBook WHERE late = '1' ;";
 
 		clientConnection.executeQuery(query);
-		try {
+		try {//get teh result and convert it to ArrayList<LentBook> 
 			ArrayList<String> res = clientConnection.getList();
 			ArrayList<LentBook> lentBookList = new ArrayList<LentBook>();
 			while (res.size() != 0) {
@@ -537,6 +559,13 @@ public class DatabaseController {
 		}
 	}
 
+	/**
+	 * return specific lent Book
+	 * @param userID
+	 * @param bookID
+	 * @param serialNumber
+	 * @return lentBook
+	 */
 	public static LentBook getLentBook(int userID, int bookID, String serialNumber) {
 		clientConnection.executeQuery(
 				"SELECT userID,bookID, copySerialNumber, issueDate,dueDate,returnDate,late FROM LentBook WHERE userID  = '"
@@ -564,7 +593,7 @@ public class DatabaseController {
 		clientConnection.executeQuery(
 				"SELECT * FROM BookCopy WHERE serialNumber= '" + serialNumber + "' AND bookID = '" + bookID + "' ;");
 		ArrayList<String> res = clientConnection.getList();
-		if (res.size() != 0) {
+		if (res.size() != 0) {//convert teh result to bookCopy
 			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
 					res.get(3).equals("1") ? true : false);
 			return bookCopy;
