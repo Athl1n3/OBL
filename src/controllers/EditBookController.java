@@ -122,25 +122,27 @@ public class EditBookController {
 		/*
 		 * update the edited data in the DB
 		 */
-		if(validateInput()==true) {
-		editedBook.setName(txtBookName.getText());
-		editedBook.setAuthor(txtAuthor.getText());
-		editedBook.setPrintYear(Integer.parseInt(txtPrintYear.getText()));
-		editedBook.setSubject(txtSubject.getText());
-		editedBook.setCatalog(Integer.parseInt(txtCatalog.getText()));
-		editedBook.setDescription(txtDescription.getText());
-		editedBook.setShelf(txtShelf.getText());
-		editedBook.setEdition(txtEdition.getText());
-		editedBook.setSubject(txtDescription.getText());
-		editedBook.setTableOfContents(txtTableOfContents.getText());
-		editedBook.setBookType(bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()));
-		DatabaseController.saveFile(txtBookName.getText(), txtTableOfContents.getText(), Integer.parseInt(txtBookID.getText()));
-		DatabaseController.editBook(editedBook);
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Success");
-		alert.setContentText("this changes has updated successfully");
-		alert.showAndWait();
-		((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
+		if (validateInput() == true) {
+			editedBook.setName(txtBookName.getText());
+			editedBook.setAuthor(txtAuthor.getText());
+			editedBook.setPrintYear(Integer.parseInt(txtPrintYear.getText()));
+			editedBook.setSubject(txtSubject.getText());
+			editedBook.setCatalog(Integer.parseInt(txtCatalog.getText()));
+			editedBook.setDescription(txtDescription.getText());
+			editedBook.setShelf(txtShelf.getText());
+			editedBook.setEdition(txtEdition.getText());
+			editedBook.setSubject(txtDescription.getText());
+			editedBook.setTableOfContents(txtTableOfContents.getText());
+			editedBook.setBookType(bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()));
+			if (txtTableOfContents.getText() != null)
+				DatabaseController.saveFile(txtBookName.getText(), txtTableOfContents.getText(),
+						Integer.parseInt(txtBookID.getText()));
+			DatabaseController.editBook(editedBook);
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Success");
+			alert.setContentText("this changes has updated successfully");
+			alert.showAndWait();
+			((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
 		}
 	}
 
@@ -172,7 +174,7 @@ public class EditBookController {
 		DatabaseController.addTextLimiter(txtDescription, 256,"Description","character");
 		
 	    txtcopiesNumber.setEditable(false);
-	  
+	    txtTableOfContents.setEditable(false);
 		btnEditBook.setDisable(true);
 		ObservableList<String> options = 
     		    FXCollections.observableArrayList(
@@ -214,7 +216,7 @@ public class EditBookController {
 					 || txtPrintYear.getText().isEmpty()
 						|| txtSubject.getText().isEmpty() || txtCatalog.getText().isEmpty()
 						||  txtShelf.getText().isEmpty()
-						|| txtDescription.getText().isEmpty() || txtTableOfContents.getText().isEmpty());
+						|| txtDescription.getText().isEmpty());
 			}
 		};
 		// Enable "add book button" after fill all the fields
