@@ -94,7 +94,8 @@ public class AddBookController {
 					txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()), txtTableOfContents.getText(),
 					txtShelf.getText(), 0,
 					bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()), 0);
-			System.out.println(newBook.getBookID());
+					DatabaseController.saveFile(txtBookName.getText(), txtTableOfContents.getText(),
+					Integer.parseInt(txtBookID.getText()));
 			
 			DatabaseController.saveFile(txtBookName.getText(), txtTableOfContents.getText(), Integer.parseInt(txtBookID.getText()));
 
@@ -177,10 +178,8 @@ public class AddBookController {
 		DatabaseController.addTextLimiter(txtCatalog, 32,"Catalog","int");
 		DatabaseController.addTextLimiter(txtShelf, 32,"Shelf","character");
 		DatabaseController.addTextLimiter(txtDescirption, 256,"Description","character");
-		
-		
-		
 		btnAddBook.setDisable(true);
+		txtTableOfContents.setEditable(false);
 		ObservableList<String> options = FXCollections.observableArrayList("Wanted", "Regular");
 		bookTypeCB.getItems().addAll(options);
 
