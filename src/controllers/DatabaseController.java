@@ -712,7 +712,12 @@ public class DatabaseController {
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 	}
-
+	
+	/**
+	 * check if the book is late
+	 * @param lentBook
+	 * @return boolean
+	 */
 	public static boolean isLate(LentBook lentBook) {
 		clientConnection.executeQuery("SELECT late FROM LentBook WHERE userID = '" + lentBook.getUserID()
 				+ "' AND bookID = '" + lentBook.getBook().getBookID() + "' AND copySerialNumber = '"
@@ -818,7 +823,7 @@ public class DatabaseController {
 		ArrayList<UserActivity> activityList = new ArrayList<UserActivity>();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		while (res.size() != 0) {
-			try {
+			try {//prepare the user activity list to be returned 
 				Date parsedDate = dateFormat.parse(res.get(2));
 				UserActivity activity = new UserActivity(Integer.parseInt(res.get(0)), res.get(1),
 						new Timestamp(parsedDate.getTime()));
@@ -854,7 +859,7 @@ public class DatabaseController {
 	 * return user notifications list from DB
 	 * 
 	 * @param AccountID
-	 * @return ArrayList<Notification>
+	 * @return ArrayList Notification
 	 */
 	public static ArrayList<Notification> getNotifications(int AccountID) {
 		if (AccountID != 1 && AccountID != 2)
@@ -1041,6 +1046,11 @@ public class DatabaseController {
 		return Integer.parseInt(arr.get(0));
 	}
 
+	/**
+	 * update lent book and return true if succeeded else return false 
+	 * @param lentBook
+	 * @return boolean
+	 */
 	public static boolean updateLentBook(LentBook lentBook) {
 		clientConnection.executeQuery(
 				"UPDATE lentbook SET dueDate = '" + lentBook.getDueDate() + "', late = '0' WHERE userID = '"
@@ -1048,6 +1058,11 @@ public class DatabaseController {
 		return ((Boolean) clientConnection.getObject()) == true ? true : false;
 	}
 
+	/**
+	 * update book return date manually 
+	 * @param extendLog
+	 * @return boolean
+	 */
 	public static boolean addManualExtend(ManualExtend extendLog) {
 		String query = "INSERT INTO ManualExtend(bookID, userID, workerName, extendDate, dueDate) VALUES(?,?,?,?,?)";
 		ArrayList<String> arr = new ArrayList<String>();
@@ -1107,6 +1122,13 @@ public class DatabaseController {
 		return false;
 	}
 
+	/**
+	 * check input length 
+	 * @param tf
+	 * @param maxLength
+	 * @param txtFieldName
+	 * @param type
+	 */
 	public static void addTextLimiter(final TextField tf, final int maxLength, String txtFieldName, String type) {
 		tf.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -1128,6 +1150,13 @@ public class DatabaseController {
 		});
 	}
 
+	/**
+	 * check long input length like book description and subject 
+	 * @param tf
+	 * @param maxLength
+	 * @param txtFieldName
+	 * @param type
+	 */
 	public static void addTextLimiter(final TextArea tf, final int maxLength, String txtFieldName, String type) {
 		tf.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -1181,6 +1210,12 @@ public class DatabaseController {
 		clientConnection.graduateStudent(studentID);
 	}
 
+	/**
+	 * save the file to data base
+	 * @param bookName
+	 * @param filePath
+	 * @param bookID
+	 */
 	public static void saveFile(String bookName, String filePath, int bookID) {
 		bookName.concat(".pdf");
 		clientConnection.saveFile(bookName, filePath, bookID);
