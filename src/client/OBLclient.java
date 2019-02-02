@@ -6,15 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 import common.OBLclientIF;
 import common.PDFfile;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import ocsf.client.AbstractClient;
-import ocsf.server.ConnectionToClient;
 
 /**
  * This class overrides some of the methods defined in the abstract superclass
@@ -132,6 +128,7 @@ public class OBLclient extends AbstractClient {
 			//read the file to buffer 
 			bis.read(uploadedFile.getMybytearray(), 0, mybytearray.length);
 			sendToServer(uploadedFile);
+			sem.acquire();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

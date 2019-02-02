@@ -131,7 +131,7 @@ public class EditBookController {
 			editedBook.setDescription(txtDescription.getText());
 			editedBook.setShelf(txtShelf.getText());
 			editedBook.setEdition(txtEdition.getText());
-			editedBook.setSubject(txtDescription.getText());
+			editedBook.setSubject(txtSubject.getText());
 			editedBook.setTableOfContents(txtTableOfContents.getText());
 			editedBook.setBookType(bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()));
 			if (txtTableOfContents.getText() != null)
