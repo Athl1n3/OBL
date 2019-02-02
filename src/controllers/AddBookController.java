@@ -168,7 +168,18 @@ public class AddBookController {
 	 */
 	@FXML
 	void initialize() {
-
+		DatabaseController.addTextLimiter(txtBookName, 32,"Book name","character");
+		DatabaseController.addTextLimiter(txtAuthor, 32,"Book author","character");
+		DatabaseController.addTextLimiter(txtBookID	, 12,"Book ID","int");
+		DatabaseController.addTextLimiter(txtEdition, 32,"Edition","character");
+		DatabaseController.addTextLimiter(txtPrintYear, 4,"Print year","int");
+		DatabaseController.addTextLimiter(txtBookName, 256,"Path ","character");
+		DatabaseController.addTextLimiter(txtBookSubject, 60,"Subject","character");
+		DatabaseController.addTextLimiter(txtCatalog, 32,"Catalog","int");
+		DatabaseController.addTextLimiter(txtShelf, 32,"Shelf","character");
+		DatabaseController.addTextLimiter(txtDescirption, 256,"Description","character");
+		
+		
 		btnAddBook.setDisable(true);
 		ObservableList<String> options = FXCollections.observableArrayList("Wanted", "Regular");
 		bookTypeCB.getItems().addAll(options);
@@ -284,4 +295,8 @@ public class AddBookController {
 		return true;
 
 	}
+	
+	
+
+	
 }

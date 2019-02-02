@@ -158,6 +158,17 @@ public class EditBookController {
 	@FXML
 	void initialize() {
 		
+		DatabaseController.addTextLimiter(txtBookName, 32,"Book name","character");
+		DatabaseController.addTextLimiter(txtAuthor, 32,"Book author","character");
+		DatabaseController.addTextLimiter(txtBookID	, 12,"Book ID","int");
+		DatabaseController.addTextLimiter(txtEdition, 32,"Edition","character");
+		DatabaseController.addTextLimiter(txtBookName, 256,"Path ","character");
+		DatabaseController.addTextLimiter(txtPrintYear, 4,"Print year","int");
+		DatabaseController.addTextLimiter(txtSubject, 60,"Subject","character");
+		DatabaseController.addTextLimiter(txtCatalog, 32,"Catalog","int");
+		DatabaseController.addTextLimiter(txtShelf, 32,"Shelf","character");
+		DatabaseController.addTextLimiter(txtDescription, 256,"Description","character");
+		
 	    txtcopiesNumber.setEditable(false);
 	  
 		btnEditBook.setDisable(true);
