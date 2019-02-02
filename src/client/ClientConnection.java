@@ -2,6 +2,7 @@ package client;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import common.OBLclientIF;
@@ -60,9 +61,10 @@ public class ClientConnection implements OBLclientIF {
 	 * @param filePath
 	 * @param bookID
 	 */
-	public void saveFile(String bookName, String filePath, int bookID) {
-		client.handleFileFromClientUI(bookName, filePath, bookID);
+	public void saveFile(ArrayList<String> arr, String filePath, String value) {
+		client.handleFileFromClientUI(arr, filePath, value);
 	}
+
 
 	/**
 	 * send file path and details to OBLclient to upload it from DB 
@@ -133,6 +135,5 @@ public class ClientConnection implements OBLclientIF {
 	public void init() {
 		DatabaseController.InitiateClient(this);
 	}
-
 }
 //End of ConsoleChat class
