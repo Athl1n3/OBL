@@ -117,7 +117,7 @@ public class DatabaseController {
 		String query = "UPDATE account SET firstName = '" + account.getFirstName() + "', lastName = '"
 				+ account.getLastName() + "', eMail = '" + account.getEmail() + "', mobileNum = '"
 				+ account.getMobileNum() + "', userName = '" + account.getUserName() + "', password = '"
-				+ account.getPassword() + "' WHERE userID = '" + account.getAccountID() + "';";
+				+ account.getPassword() + "', loginCount = '" + account.getLoginCount() + "' WHERE userID = '" + account.getAccountID() + "';";
 		clientConnection.executeQuery(query);
 	}
 

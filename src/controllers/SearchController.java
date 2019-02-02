@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import entities.Account;
 import entities.Account.UserType;
 import entities.Book;
+import entities.LibrarianAccount;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
 import javafx.application.Platform;
@@ -246,24 +247,25 @@ public class SearchController implements Initializable {
 				btnOrderBook.setDisable(false);
 		});
 		// open the lend book form on row double Click
-		tableView.setRowFactory(tableView -> {
-			TableRow<Book> row = new TableRow<>();
-			row.setOnMouseClicked(event -> {
-				try {
-					if (event.getClickCount() == 2 && (!row.isEmpty()) && DatabaseController.loggedAccount !=null) {
-						if (DatabaseController.loggedAccount.userType.equals(UserType.User)) {
-							LendController lendController = new LendController();
-							Book selectedBook = tableView.getSelectionModel().getSelectedItem();
-							Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-							lendController.start(stage, selectedBook);
-						}
-					}
-				}catch (Exception e) {
-					showErrorAlert("Error!", "Can't open the form");
+				if (DatabaseController.loggedAccount instanceof LibrarianAccount) {
+					tableView.setRowFactory(tableView -> {
+						TableRow<Book> row = new TableRow<>();
+						row.setOnMouseClicked(event -> {
+							if (event.getClickCount() == 2 && (!row.isEmpty())) {
+								LendController lendController = new LendController();
+								Book selectedBook = tableView.getSelectionModel().getSelectedItem();
+								Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+								try {
+									lendController.start(stage, selectedBook);
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						});
+						return row;
+					});
 				}
-			});
-			return row;
-		});
 		if (DatabaseController.loggedAccount instanceof UserAccount && DatabaseController.loggedAccount != null)
 			btnOrderBook.setVisible(true);
 		
