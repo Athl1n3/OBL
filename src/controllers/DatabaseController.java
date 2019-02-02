@@ -121,8 +121,10 @@ public class DatabaseController {
 				+ account.getAccountID() + "';";
 		clientConnection.executeQuery(query);
 	}
+
 	/**
 	 * se account to logged
+	 * 
 	 * @param account
 	 */
 	public static void logAccount(Account account) {
@@ -240,7 +242,8 @@ public class DatabaseController {
 	}
 
 	/**
-	 * check if specific value is exists in specific table 
+	 * check if specific value is exists in specific table
+	 * 
 	 * @param table
 	 * @param field
 	 * @param fieldVal
@@ -255,7 +258,8 @@ public class DatabaseController {
 	}
 
 	/**
-	 * check if value exists in table 
+	 * check if value exists in table
+	 * 
 	 * @param table
 	 * @param whereQuery
 	 * @return boolean
@@ -469,12 +473,12 @@ public class DatabaseController {
 		default:
 			return null;
 		}
-		//get the result from db
+		// get the result from db
 		ArrayList<String> res = clientConnection.getList();
 		if (res.isEmpty())
 			return null;
 		ArrayList<Book> bookList = new ArrayList<Book>();
-		while (res.size() != 0) { //convert the result to ArrayList<Book> and return it
+		while (res.size() != 0) { // convert the result to ArrayList<Book> and return it
 			Book book = new Book(Integer.parseInt(res.get(0)), res.get(1), res.get(2), res.get(3),
 					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), null,
 					res.get(8), Integer.parseInt(res.get(9)),
@@ -512,9 +516,10 @@ public class DatabaseController {
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 	}
-	
+
 	/**
 	 * delete specific lend book according to accountID and bookID
+	 * 
 	 * @param accountID
 	 * @param bookID
 	 */
@@ -528,7 +533,7 @@ public class DatabaseController {
 	 * lent Book list, if(userID<0) return the whole lent Book list, if userID = 0
 	 * return only the late users
 	 * 
-	 * @return ArrayList 
+	 * @return ArrayList
 	 */
 	public static ArrayList<LentBook> getLentBookList(int userID) {
 		String query;
@@ -541,7 +546,7 @@ public class DatabaseController {
 			query = "SELECT userID, bookID, copySerialNumber, issueDate ,dueDate, returnDate, late, returned FROM LentBook WHERE late = '1' ;";
 
 		clientConnection.executeQuery(query);
-		try {//get teh result and convert it to ArrayList<LentBook> 
+		try {// get teh result and convert it to ArrayList<LentBook>
 			ArrayList<String> res = clientConnection.getList();
 			ArrayList<LentBook> lentBookList = new ArrayList<LentBook>();
 			while (res.size() != 0) {
@@ -561,6 +566,7 @@ public class DatabaseController {
 
 	/**
 	 * return specific lent Book
+	 * 
 	 * @param userID
 	 * @param bookID
 	 * @param serialNumber
@@ -593,7 +599,7 @@ public class DatabaseController {
 		clientConnection.executeQuery(
 				"SELECT * FROM BookCopy WHERE serialNumber= '" + serialNumber + "' AND bookID = '" + bookID + "' ;");
 		ArrayList<String> res = clientConnection.getList();
-		if (res.size() != 0) {//convert teh result to bookCopy
+		if (res.size() != 0) {// convert teh result to bookCopy
 			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
 					res.get(3).equals("1") ? true : false);
 			return bookCopy;
@@ -630,7 +636,7 @@ public class DatabaseController {
 		clientConnection.executeQuery("SELECT * FROM BookCopy;");
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<BookCopy> bookCopyList = new ArrayList<BookCopy>();
-		while (res.size() != 0) {//convert the result to arrayList<BookCopy>
+		while (res.size() != 0) {// convert the result to arrayList<BookCopy>
 			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
 					res.get(2).equals("1") ? true : false);
 			res.subList(0, 4).clear();
@@ -960,9 +966,9 @@ public class DatabaseController {
 	public static ArrayList<Book> getAllLateBooks() {
 		String query = "SELECT DISTINCT bookID FROM LentBook WHERE late = '1' AND returned = '1';";
 		clientConnection.executeQuery(query);
-		try {
-			ArrayList<Book> bookList = new ArrayList<Book>();
-			ArrayList<String> res = clientConnection.getList();
+		ArrayList<Book> bookList = new ArrayList<Book>();
+		ArrayList<String> res = clientConnection.getList();
+		if (res != null) {
 			while (res.size() != 0) {
 				Book book = getBook(Integer.parseInt(res.get(0)));
 				if (book != null)
@@ -970,10 +976,8 @@ public class DatabaseController {
 				res.remove(0);
 			}
 			return bookList;
-
-		} catch (NullPointerException e) {
-			return null;
 		}
+		return null;
 	}
 
 	/**

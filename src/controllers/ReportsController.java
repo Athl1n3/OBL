@@ -211,18 +211,18 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Total", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Number of users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Percentage", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Percentage of total users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table.addCell(cell);
 
 					// second row
-					cell = new PdfPCell(new Paragraph("Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Users type", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(cell);
@@ -354,7 +354,7 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table2.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Copies", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Number of copies", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table2.addCell(cell);
@@ -633,7 +633,7 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.GRAY);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Average", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Average 'Wanted' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table.addCell(cell);
@@ -643,7 +643,7 @@ public class ReportsController {
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Median", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Median of 'Wanted' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table.addCell(cell);
@@ -695,12 +695,12 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table2.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Percentage", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Percentage of total 'Wanted' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table2.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("total", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Number of books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table2.addCell(cell);
@@ -730,7 +730,7 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.GRAY);
 					table3.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Average", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Average 'Regular' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table3.addCell(cell);
@@ -740,7 +740,7 @@ public class ReportsController {
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table3.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Median", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Median of 'Regular' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table3.addCell(cell);
@@ -794,12 +794,12 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table4.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Percentage", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Percentage of total 'Regular' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table4.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("total", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Number of books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table4.addCell(cell);
@@ -876,11 +876,6 @@ public class ReportsController {
 						document.close();
 						break;
 					}
-					/*if(books.size() == 0) {
-						alertWarningMessage("No late returnes available in the DB");
-						document.close();
-						break;
-					}*/
 					for (Book book : books) {
 						ArrayList<LentBook> lentBooks = DatabaseController.getLateCopiesForSpecificBook(book.getBookID());
 						if (lentBooks == null) {
@@ -919,12 +914,12 @@ public class ReportsController {
 							cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 							table2.addCell(cell);
 
-							cell = new PdfPCell(new Paragraph("Percentage", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+							cell = new PdfPCell(new Paragraph("Percentage of Total Late Users ", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 							cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 							table2.addCell(cell);
 
-							cell = new PdfPCell(new Paragraph("total", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+							cell = new PdfPCell(new Paragraph("Number of Late Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 							cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 							table2.addCell(cell);
@@ -1488,17 +1483,17 @@ public class ReportsController {
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Total", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(new Paragraph("Number of late lents", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Percentage", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(new Paragraph("Percentage of total late lents", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Late Lents", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(new Paragraph("Number of Late Lents", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table2.addCell(cell);
@@ -1513,7 +1508,7 @@ public class ReportsController {
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Not Late Lents", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(new Paragraph("Number of Not Late Lents", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table2.addCell(cell);
@@ -1636,12 +1631,12 @@ public class ReportsController {
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Total", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(new Paragraph("Number of users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Percentage", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(new Paragraph("Percentage of total users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
@@ -1759,12 +1754,12 @@ public class ReportsController {
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Total", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(new Paragraph("Number of users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Percentage", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(new Paragraph("Percentage of total users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
@@ -1881,12 +1876,12 @@ public class ReportsController {
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Total", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(new Paragraph("Number of user", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Percentage", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(new Paragraph("Percentage of total users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
@@ -1990,6 +1985,31 @@ public class ReportsController {
 			c++;
 		}
 		document.add(table);
+		
+		PdfPTable table2 = new PdfPTable(2);
+		
+		cell = new PdfPCell(new Paragraph("Average (Lates)", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+		table2.addCell(cell);
+		
+		cell = new PdfPCell(new Paragraph("Median (Lates)", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+		table2.addCell(cell);
+		
+		double avg = 0;
+		for(int i = 0 ; i < delays.length;i++)
+			avg = avg + (double)delays[i];
+		cell = new PdfPCell(new Paragraph(String.valueOf(avg/delays.length)));
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		table2.addCell(cell);
+
+		cell = new PdfPCell(new Paragraph(String.valueOf((int)(delays[delays.length / 2] + delays[(delays.length - 1) / 2])/ 2)));
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		table2.addCell(cell);
+		
+		document.add(table2);
 	}
 	/**
 	 * Distributes a table according to the max with a 1 day difference.
@@ -2004,7 +2024,6 @@ public class ReportsController {
 		PdfPCell cell;
 		PdfPTable table = new PdfPTable(3);
 
-		System.out.println(max);
 		int[] array = new int[max + 1];
 
 		for (int i = 0; i < array.length; i++)
@@ -2036,5 +2055,29 @@ public class ReportsController {
 			c++;
 		}
 		document.add(table);
+		PdfPTable table2 = new PdfPTable(2);
+		
+		cell = new PdfPCell(new Paragraph("Average (Lates)", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+		table2.addCell(cell);
+		
+		cell = new PdfPCell(new Paragraph("Median (Lates)", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+		table2.addCell(cell);
+		
+		double avg = 0;
+		for(int i = 0 ; i < delays.length;i++)
+			avg = avg + (double)delays[i];
+		cell = new PdfPCell(new Paragraph(String.valueOf(avg/delays.length)));
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		table2.addCell(cell);
+
+		cell = new PdfPCell(new Paragraph(String.valueOf((int)(delays[delays.length / 2] + delays[(delays.length - 1) / 2])/ 2)));
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		table2.addCell(cell);
+		
+		document.add(table2);
 	}
 }
