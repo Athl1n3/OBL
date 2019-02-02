@@ -77,8 +77,7 @@ public class NotificationsController {
 		if (!(tableView.getSelectionModel().isEmpty())) {
 			if (deleteConfirmation.showAndWait().get() == ButtonType.YES) {
 				Notification selectedNotf = tableView.getSelectionModel().getSelectedItem();
-				// DatabaseController.deleteNotfication(selectedNotf); // DONT FORGET TO
-				// UNCOMMENT
+				DatabaseController.deleteNotfication(selectedNotf);
 				tableView.getItems().remove(selectedNotf);
 			}
 		} else
@@ -107,8 +106,7 @@ public class NotificationsController {
 		if (choice == ButtonType.YES) {
 			if (DatabaseController.lockAccount(Integer.parseInt(accountID))) {
 				new Alert(AlertType.INFORMATION, "Account has been locked successfully!").show();
-				// DatabaseController.deleteNotfication(selectedNotf); // DONT FORGET TO
-				// UNCOMMENT
+				DatabaseController.deleteNotfication(selectedNotf);
 				tableView.getItems().remove(selectedNotf);
 			} else
 				new Alert(AlertType.ERROR, "An error has occured!").show();
