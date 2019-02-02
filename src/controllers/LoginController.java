@@ -52,6 +52,8 @@ public class LoginController implements Initializable {
 	private Label lblPassword;
 
 	private Account account;
+	
+	private int loginCounter;
 
 	/**
 	 * Cancel login operation and go back to the previous window
@@ -107,6 +109,8 @@ public class LoginController implements Initializable {
 			txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			txtUsername.clear();
 			txtPassword.clear();
+			if (account.getUserType() == UserType.User)
+				loginCounter+=1;
 		}
 	}
 
@@ -114,6 +118,7 @@ public class LoginController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		BooleanBinding loginBind = txtUsername.textProperty().isEmpty().or(txtPassword.textProperty().isEmpty());
 		btnLogin.disableProperty().bind(loginBind);
+		loginCounter = 0;
 	}
 
 	public void start(Stage stage) {

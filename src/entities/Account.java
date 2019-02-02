@@ -6,6 +6,7 @@ public abstract class Account extends Person {
 	private String userName;
 	private String password;
 	private boolean logged;
+	private int loginCount;
 
 	public enum UserType {
 		User, Librarian, Manager
@@ -127,6 +128,22 @@ public abstract class Account extends Person {
 	 */
 	public String getFullName() {
 		return getFirstName() + " " + getLastName();
+	}
+
+	/**
+	 * returns login count
+	 * @return loginCount
+	 */
+	public int getLoginCount() {
+		return loginCount;
+	}
+
+	/**
+	 * set loging count
+	 * @param loginCount
+	 */
+	public void setLoginCount(int loginCount) {
+		this.loginCount = loginCount;
 	}
 
 }
