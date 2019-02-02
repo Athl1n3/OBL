@@ -90,7 +90,7 @@ public class LendController {
 	private Account lenderAccount;
 	private Book bookData;
 	private boolean lookedUp;
-	private Book selectedBook;
+	private static Book selectedBook = null;
 
 	/**
 	 * Get the relevant information of the inserted book ID. Get the relevant information of the inserted user ID.
@@ -279,6 +279,8 @@ public class LendController {
 		// disable LendBook button
 		btnLendBook.setDisable(true);
 
+		if(selectedBook != null)
+			txtBookID.setText(String.valueOf(selectedBook.getBookID()));
 		// Enable BookLookUp button only when the book ID textfield & user ID textField
 		// is not empty
 		BooleanBinding booleanBind = txtBookID.textProperty().isEmpty().or(txtUserID.textProperty().isEmpty());

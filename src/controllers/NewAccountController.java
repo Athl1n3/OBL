@@ -138,6 +138,7 @@ public class NewAccountController {
 							// inform the user that the creation has been done successfully
 							new Alert(AlertType.INFORMATION, "Account has been created successfully", ButtonType.OK)
 									.show();
+							DatabaseController.addNotfication("A new user account was created!\nName:"+newAccount.getFullName()+"\nID:"+newAccount.getID()+"\nUser ID:"+newAccount.getAccountID());
 						}
 					}
 				}
