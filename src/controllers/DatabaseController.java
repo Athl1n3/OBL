@@ -117,7 +117,7 @@ public class DatabaseController {
 		String query = "UPDATE account SET firstName = '" + account.getFirstName() + "', lastName = '"
 				+ account.getLastName() + "', eMail = '" + account.getEmail() + "', mobileNum = '"
 				+ account.getMobileNum() + "', userName = '" + account.getUserName() + "', password = '"
-				+ account.getPassword() + "' WHERE userID = '" + account.getAccountID() + "';";
+				+ account.getPassword() + "', loginCount = '" + account.getLoginCount() + "' WHERE userID = '" + account.getAccountID() + "';";
 		clientConnection.executeQuery(query);
 	}
 
@@ -650,7 +650,7 @@ public class DatabaseController {
 	 * 
 	 * @param lentBook
 	 */
-	public static void returnBook(LentBook lentBook) {
+	public static void returnBook(LentBook lentBook, Integer graduateID) {
 		ArrayList<String> arr = new ArrayList<>();
 		String query = "UPDATE LentBook SET returnDate = '" + lentBook.getReturnDate() + "', returned = '"
 				+ (lentBook.isReturned() ? "1" : "0") + "' WHERE userID = '" + lentBook.getUserID() + "' AND bookID = '"
@@ -658,8 +658,12 @@ public class DatabaseController {
 				+ lentBook.getBookCopy().getSerialNumber() + "';";
 
 		arr.add("#");
-		// IS GRADUATED
 		arr.add(String.valueOf(lentBook.getBook().getBookID()));
+		if(graduateID != 0)
+		{
+			arr.add("$");
+			arr.add(String.valueOf(graduateID));
+		}
 		arr.add(query);
 		clientConnection.executeQuery(arr);
 	}
