@@ -50,6 +50,7 @@ public class ActivityController {
 
 	/**
 	 * Go back to the previous scene
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -67,7 +68,8 @@ public class ActivityController {
 	void initialize() {
 		lblUserID.setText(String.valueOf(lookedupAccount.getAccountID()));
 		lblUsername.setText(lookedupAccount.getUserName());
-		userActivityOlist = FXCollections.observableArrayList(DatabaseController.getUserActivity(lookedupAccount.getAccountID()));// userActivityList
+		userActivityOlist = FXCollections
+				.observableArrayList(DatabaseController.getUserActivity(lookedupAccount.getAccountID()));// userActivityList
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
 		activityColumn.setCellValueFactory(new PropertyValueFactory<>("activityName"));
 		tableView.setItems(userActivityOlist);
@@ -75,7 +77,9 @@ public class ActivityController {
 
 	void start(Stage stage, UserAccount lookedupAccount) throws Exception {
 		ActivityController.lookedupAccount = lookedupAccount;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/ActivityForm.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/ActivityForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		stage.setTitle("User activity");
 		stage.sizeToScene();

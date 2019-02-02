@@ -85,7 +85,9 @@ public class UsersManagementController {
 
 	void start(Stage primaryStage, Account librarian) throws Exception {
 		librarianAccount = (LibrarianAccount) librarian;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/UsersManagementForm.fxml"));
+		FXMLLoader fxmlLoader= new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/UsersManagementForm.fxml"));
+		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Users Management");
 		primaryStage.setScene(scene);
