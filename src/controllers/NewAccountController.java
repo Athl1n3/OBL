@@ -24,6 +24,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+/**
+*
+* @author Alaa Grable
+* @version 1.0 [17.1.2019]
+*
+*/
+
 public class NewAccountController {
 
 	@FXML
@@ -70,8 +77,8 @@ public class NewAccountController {
 	public ClientConnection cc;
 
 	/**
-	 * Clear all text fields
-	 * @param event
+	 * Clears all the fields in the Current GUI.
+	 * @param event - on pressing the 'Clear ' button.
 	 */
 	@FXML
 	void btnClearPressed(ActionEvent event) {
@@ -85,8 +92,8 @@ public class NewAccountController {
 	}
 
 	/**
-	 * When CreateAccount Button is pressed , this method will be called
-	 * 
+	 * Validate the inserted username exists in the DB, and if the password match. if and only if the passwords match and the username does not exists
+	 * in the DB , a new account will be created and will be saved into the DB.
 	 * @param event
 	 */
 	@FXML
@@ -96,24 +103,30 @@ public class NewAccountController {
 		if (txtUsername.getText().length() <= 5) {
 			// if not , inform the user that the username must be at least 6 characters
 			alertWarningMessage("Username length must be longer than 5 characters");
+			txtUsername.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			txtUsername.requestFocus();
 		} else {
 			// validate if the inputed password length is greather than 6
 			if (txtConPassword.getText().length() < 6 || txtPassword.getText().length() < 6) {
 				// if not, inform the user that the password must be at least 7 characters
-				alertWarningMessage("Password length must be atleast 6 characters");
 				clearPassFields();
+				alertWarningMessage("Password length must be atleast 6 characters");
+				txtConPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			} else {
 				// validate that the two password fields are equal
 				if (!txtPassword.getText().equals(txtConPassword.getText())) {
 					// if not , inform the user that the password does not match
-					alertWarningMessage("Password does not match !");
 					clearPassFields();
+					alertWarningMessage("Password does not match !");
+					txtConPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+					txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 				} else {
 					// validate the inputed email address
 					if (!validateEmail()) {
 						// inform the user that the email is invalid
 						alertWarningMessage("Invalid email address");
+						txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 						txtEmail.requestFocus();
 					} else {
 						// if every textfield is valid , then create a new account with all the details
@@ -139,6 +152,10 @@ public class NewAccountController {
 		}
 	}
 
+	/**
+	 * Load the 'Create new account' stage after initialising it.
+	 * @param primaryStage  the stage for display.
+	 */
 	void start(Stage primaryStage) throws Exception {
 		FXMLLoader fxmlLoader= new FXMLLoader();
 		fxmlLoader.setLocation(getClass().getResource("/gui/NewAccountForm.fxml"));
@@ -151,7 +168,8 @@ public class NewAccountController {
 	}
 
 	/**
-	 * Back to the previous screen
+	 * Close this stage and get back to the previous stage.
+	 * @param event - on pressing the 'back(image)' button.
 	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
@@ -164,7 +182,7 @@ public class NewAccountController {
 	}
 
 	/**
-	 * Initialise the current screen
+	 * Initialise the current screen with listeners.
 	 */
 	@FXML
 	void initialize() {
@@ -222,7 +240,7 @@ public class NewAccountController {
 	}
 
 	/**
-	 * Clear password fields when an error occur
+	 * Clears the 'password' and the 'confirm password 'fields.
 	 */
 	private void clearPassFields() {
 		txtConPassword.clear();
@@ -230,8 +248,8 @@ public class NewAccountController {
 	}
 
 	/**
-	 * Validate the inputed email address
-	 * 
+	 * Validates the inserted Email Address. returns true if and only if the email is valid.
+	 * Otherwise returns false.
 	 * @return Boolean value
 	 */
 	private boolean validateEmail() {
@@ -244,8 +262,7 @@ public class NewAccountController {
 	}
 
 	/**
-	 * Show an appropriate alert to the user when an error occur
-	 * 
+	 * Show an appropriate alert to the user when an error or a warning occurs.
 	 * @param msg
 	 */
 	private void alertWarningMessage(String msg) {

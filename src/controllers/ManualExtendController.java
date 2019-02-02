@@ -106,10 +106,10 @@ public class ManualExtendController {
 	private LibrarianAccount loggedLibAccount;
 
 	/**
-	 * When ExtendLend button is pressed , this method will be called to check book
-	 * extention possibility
-	 * 
-	 * @param event
+	 * Validate if the book that has been selected to extend the lend duration can be extended.
+	 * if and only if the extension has been successful , an alert message will be displayed.
+	 * Otherwise an error alert message will be displayed.
+	 * @param event - on pressing the 'Extend Lend' button.
 	 */
 	@FXML
 	void btnExtendLendPressed(ActionEvent event) {
@@ -172,9 +172,9 @@ public class ManualExtendController {
 	}
 
 	/**
-	 * When UserLookUp button is pressed , this method will be called
-	 * 
-	 * @param event
+	 * Validate if the inserted user ID exists in the DB or not. if and only if the user ID exists in the DB , 
+	 * all of his information will be displayed. Otherwise an error alert will be displayed.
+	 * @param event - on pressing the 'Extend Lend' button.
 	 */
 	@FXML
 	void btnUserLookupPressed(ActionEvent event) {
@@ -209,10 +209,10 @@ public class ManualExtendController {
 			alertWarningMessage("User doesn't exist!");
 	}
 
-	@FXML
 	/**
-	 * Initialise the current screen
+	 * Initialise the 'Manual Extend Lend' stage.
 	 */
+	@FXML
 	void initialize() {
 		loggedLibAccount = (LibrarianAccount) DatabaseController.loggedAccount;
 		// a listener to validate if the ID length is not greater than 9 digits and if
@@ -264,10 +264,8 @@ public class ManualExtendController {
 	}
 
 	/**
-	 * Create an ObservableList that contains the lent books for that user
-	 * 
-	 * @param userID
-	 * @return ObservableList<LentBook>
+	 * Gets all the lentBooks for the user as an ObservableList
+	 * @return ObservableList LentBooks list
 	 */
 	private ObservableList<LentBook> getLentBookList(String userID) {
 
@@ -279,6 +277,10 @@ public class ManualExtendController {
 		return list;
 	}
 
+	/**
+	 * Load the 'Manual Extend Lend' stage after initialising it.
+	 * @param primaryStage - the stage for display.
+	 */
 	void start(Stage stage) throws Exception {
 		FXMLLoader fxmlLoader= new FXMLLoader();
 		fxmlLoader.setLocation(getClass().getResource("/gui/ManualExtendForm.fxml"));
@@ -291,14 +293,17 @@ public class ManualExtendController {
 	}
 
 	/**
-	 * Show an appropriate alert to the user when an error occur
-	 * 
+	 * Show an appropriate alert to the user when an error or a warning occurs.
 	 * @param msg
 	 */
 	private void alertWarningMessage(String msg) {
 		new Alert(AlertType.WARNING, msg, ButtonType.OK).show();
 	}
 
+	/**
+	 * Close this stage and get back to the previous stage.
+	 * @param event - on pressing the 'back(image)' button.
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());

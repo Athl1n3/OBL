@@ -83,7 +83,10 @@ public class EditBookController {
 	private static Book selectedBook;
 
 
-	
+	/**
+	 * Opens the 'Edit book Copies' stage.
+	 * @param event - on pressing the 'Edit Copies' button.
+	 */
     @FXML
     void btnEditCopiesPressed(ActionEvent event) {
 		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -97,8 +100,8 @@ public class EditBookController {
     }
 	
 	/** 
-	 * Browse the contents PDF file and write the path in the relevant text field
-	 * @param event
+	 * Browse the contents PDF file and display the path in the relevant text field.
+	 * @param event - on pressing the 'Browse' button.
 	 */
 	@FXML
 	void btnBrowsePathPressed(ActionEvent event) {
@@ -111,8 +114,8 @@ public class EditBookController {
 
 
 	/**
-	 * checks input validity and update the DB when the new data
-	 * @param event
+	 * Validate the inserted input and only then update the DB with the new modified data.
+	 * @param event- on pressing the 'Edit Book' button.
 	 */
 	@FXML
 	void btnEditBookPressed(ActionEvent event) {
@@ -142,9 +145,8 @@ public class EditBookController {
 	}
 
 	/**
-	 * back to the previous screen when image "back" 
-	 * @param event
-	 * @throws IOException
+	 * Close this stage and get back to the previous stage.
+	 * @param event - on pressing the 'back(image)' button.
 	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
@@ -152,8 +154,8 @@ public class EditBookController {
 	}
 
 	/**
-	 * this function initialize the fields in the new window previous window
-	 * selected book
+	 * Initialise the 'Edit Book' stage.
+	 * Displays the selected book information into a GUI.
 	 */
 	@FXML
 	void initialize() {
@@ -221,9 +223,8 @@ public class EditBookController {
 
 	
 	/**
-	 * Open's "edit book" form and update the static selectedBook to the selected book from the previous window 
-	 * @param primaryStage
-	 * @param selectedBook
+	 * Load the 'Edit Book' stage after initialising it.
+	 * @param primaryStage - the stage for display.
 	 */
 	public void start(Stage primaryStage, Book selectedBook) {
 		try {
@@ -244,11 +245,12 @@ public class EditBookController {
 	}
 	
 	/**
-	 * Validate the input in the text fields 
-	 * @return true if the input valid 
+	 * Validates the inserted input. returns true if and only if the inserted input is valid.
+	 * Otherwise returns false.
+	 * @return Boolean statment
 	 */
 	public boolean validateInput() {
-		// initialize the text fields to the original color
+		// Initialise the text fields to the original color
 		txtBookName.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtAuthor.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtBookID.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");

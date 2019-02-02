@@ -93,9 +93,9 @@ public class LendController {
 	private static Book selectedBook = null;
 
 	/**
-	 * When BookLookUp button is pressed , this method will be called
-	 * 
-	 * @param event
+	 * Get the relevant information of the inserted book ID. Get the relevant information of the inserted user ID.
+	 * Display the information if the inserted book ID and user ID.
+	 * @param event - on pressing the 'Look Up' button.
 	 */
 	@FXML
 	void btnBookLookupPressed(ActionEvent event) {
@@ -144,6 +144,7 @@ public class LendController {
 								alertWarningMessage("There are no copies available to lend this book \n" + "'"
 										+ bookData.getName() + "'");// if there is no copies of that book then let the
 																	// user know that
+								txtAvailableCopies.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 								btnLendBook.setDisable(true);
 							} else {
 								// if everything is okay then enable the button to let the user be able to lent
@@ -162,8 +163,9 @@ public class LendController {
 			alertWarningMessage("User/Book already looked up!");
 	}
 
-	/*
-	 * Clear all textFields
+	/**
+	 * Clears all the fields in the Current GUI.
+	 * @param event - when pressing the 'Clear' button.
 	 */
 	@FXML
 	void btnClearPressed(ActionEvent event) {
@@ -182,17 +184,13 @@ public class LendController {
 	}
 
 	/**
-	 * When LendBook button is pressed , this method will be called
-	 * 
-	 * @param event
+	 * Validate if the chosen book copy is lent or not. if and only if this book copy is not lent then creates a new lent book request
+	 * and saves the request in the DB.
+	 * @param event - on pressing the 'Lend Book' button.
 	 */
 	@FXML
 	void btnLendBookPressed(ActionEvent event) {
 
-		// create the lent book request with the appropriate returning time
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// you need to get the copy from bookCopy table
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		BookCopy bookCopy = DatabaseController.getBookCopy(txtBookID.getText(), txtSerialNumber.getText());
 
 		if (bookCopy != null) {
@@ -222,7 +220,8 @@ public class LendController {
 	}
 
 	/**
-	 * Back to the previous screen
+	 * Close this stage and get back to the previous stage.
+	 * @param event - on pressing the 'back(image)' button.
 	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
@@ -234,7 +233,7 @@ public class LendController {
 	}
 
 	/**
-	 * Initialise the current screen
+	 * Initialise the 'Lend ' stage.
 	 */
 	@FXML
 	void initialize() {
@@ -285,6 +284,11 @@ public class LendController {
 		btnBookLookup.disableProperty().bind(booleanBind);
 	}
 
+	/**
+	 * Load the 'Lend ' stage after initialising it.
+	 * @param stage - the stage for display.
+	 * @throws Exception
+	 */
 	void start(Stage stage) throws Exception {
 		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setLocation(getClass().getResource("/gui/LendForm.fxml"));
@@ -296,6 +300,11 @@ public class LendController {
 		stage.show();
 	}
 
+	/**
+	 * Load the 'Lend' stage from the 'Search' stage with the selected book after initialising it.
+	 * @param stage - the stage for display.
+	 * @throws Exception
+	 */
 	void start(Stage stage, Book selectedBook) throws Exception {
 		this.selectedBook = selectedBook;
 		FXMLLoader fxmlLoader = new FXMLLoader();
@@ -309,8 +318,7 @@ public class LendController {
 	}
 
 	/**
-	 * Show an appropriate alert to the user when an error occur
-	 * 
+	 * Show an appropriate alert to the user when an error or a warning occurs.
 	 * @param msg
 	 */
 	private void alertWarningMessage(String msg) {

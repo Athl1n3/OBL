@@ -90,9 +90,10 @@ public class ExtendLendController {
 	private static UserAccount loggedAccount;
 
 	/**
-	 * When ExtendBook button is pressed , this method will be called
-	 *
-	 * @param event
+	 * Validate if the book that has been selected to extend the lend duration can be extended.
+	 * if and only if the extension has been successful , an alert message will be displayed.
+	 * Otherwise an error alert message will be displayed.
+	 * @param event - on pressing the 'Extend Lend' button.
 	 */
 	@FXML
 	void btnExtendBookPressed(ActionEvent event) {
@@ -147,7 +148,7 @@ public class ExtendLendController {
 	}
 
 	/**
-	 * Initialise the current screen
+	 * Initialise the 'Extend Lend' stage.
 	 */
 	@FXML
 	void initialize() {
@@ -198,9 +199,8 @@ public class ExtendLendController {
 	}
 
 	/**
-	 * Create an ObservableList that contains the lent books for that user
-	 * 
-	 * @return ObservableList<LentBook>
+	 * Gets all the lentBooks for the user as an ObservableList
+	 * @return ObservableList LentBooks list
 	 */
 	private ObservableList<LentBook> getLentBookList() {
 
@@ -213,7 +213,8 @@ public class ExtendLendController {
 	}
 
 	/**
-	 * Back to the previous screen
+	 * Close this stage and get back to the previous stage.
+	 * @param event - on pressing the 'back(image)' button.
 	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
@@ -224,6 +225,10 @@ public class ExtendLendController {
 		stage.setTitle("Main");
 	}
 
+	/**
+	 * Load the 'Extend Lend' stage after initialising it.
+	 * @param primaryStage - the stage for display.
+	 */
 	void start(Stage stage, Account loggedAccount) throws Exception {
 		this.loggedAccount = (UserAccount) loggedAccount;
 		FXMLLoader fxmlLoader = new FXMLLoader();
@@ -237,8 +242,7 @@ public class ExtendLendController {
 	}
 
 	/**
-	 * Show an appropriate alert to the user when an error occur
-	 *
+	 * Show an appropriate alert to the user when an error or a warning occurs.
 	 * @param msg
 	 */
 	private void alertWarningMessage(String msg) {
