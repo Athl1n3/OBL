@@ -264,8 +264,8 @@ public class DatabaseController {
 	 * @return arrayList of user account
 	 */
 	public static ArrayList<UserAccount> getUserAccounts(accountStatus status) {
-		clientConnection
-				.executeQuery("SELECT * FROM Account WHERE userType = " + "'User'" + " AND status = '" + status + "';");
+		clientConnection.executeQuery("SELECT * FROM Account WHERE userType = " + "'User'"
+				+ " AND status = '" + status + "';");
 		try {
 			ArrayList<String> res = clientConnection.getList();
 			ArrayList<UserAccount> arr = new ArrayList<UserAccount>();
@@ -280,6 +280,7 @@ public class DatabaseController {
 			return null;
 		}
 	}
+
 
 	/**
 	 * adds new book to the library book list
@@ -384,14 +385,15 @@ public class DatabaseController {
 					Integer.parseInt(res.get(4)), res.get(5), res.get(6), Integer.parseInt(res.get(7)), res.get(8),
 					res.get(9), Integer.parseInt(res.get(10)),
 					res.get(11).equals("Regular") ? bookType.Regular : bookType.Wanted, Integer.parseInt(res.get(12)));
-			book.setBookOrders(getCount("bookorder", "bookID", res.get(0)));
+			book.setBookOrders(getCount("bookorder","bookID",res.get(0)));
 			res.subList(0, 13).clear();
-
+		
 			bookList.add(book);
 		}
 
 		return bookList;
 	}
+
 
 	/**
 	 * search for specific book according to its name,author, subject or description

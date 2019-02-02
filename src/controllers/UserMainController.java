@@ -155,7 +155,9 @@ public class UserMainController implements Initializable {
 	void start(Stage primaryStage, Account loggedAccount) throws Exception {
 		this.loggedAccount = (UserAccount) loggedAccount;
 		stage = primaryStage;
-		Parent root = FXMLLoader.load(getClass().getResource("../gui/UserMainForm.fxml"));
+		FXMLLoader fxmlLoader= new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/gui/UserMainForm.fxml"));
+		Parent root = fxmlLoader.load();
 		scene = new Scene(root);
 		primaryStage.setTitle("User Main");
 		primaryStage.setScene(scene);

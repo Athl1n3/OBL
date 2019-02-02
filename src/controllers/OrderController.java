@@ -108,7 +108,9 @@ public class OrderController implements Initializable {
 	public void start(Book orderedBook) {
 		OrderController.orderedBook = orderedBook;
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("../gui/OrderForm.fxml"));
+			FXMLLoader fxmlLoader= new FXMLLoader();
+			fxmlLoader.setLocation(getClass().getResource("/gui/OrderForm.fxml"));
+			Parent root = fxmlLoader.load();
 			Scene scene = new Scene(root);
 			Stage stage = new Stage();
 			stage.setScene(scene);

@@ -1,9 +1,11 @@
 package client;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import common.OBLclientIF;
+import common.PDFfile;
 import controllers.DatabaseController;
 
 public class ClientConnection implements OBLclientIF {
@@ -65,7 +67,6 @@ public class ClientConnection implements OBLclientIF {
 	@Override
 	public void serverObj(Object obj) {
 		System.out.println("> Object received from server.");
-		System.out.println(obj);
 		this.obj = obj;
 	}
 

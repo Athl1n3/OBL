@@ -33,7 +33,7 @@
                   </ImageView>
                   <ImageView fx:id="imgBack" fitHeight="50.0" fitWidth="45.0" layoutY="3.0" onMouseClicked="#imgBackClicked" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@..\images\baseline_arrow_back_black_48dp.png" />
+                        <Image url="@../images/baseline_arrow_back_black_48dp.png" />
                      </image>
                   </ImageView>
                </children>
