@@ -24,6 +24,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+/**
+*
+* @author Alaa Grable
+* @version 1.0 [17.1.2019]
+*
+*/
+
 public class NewAccountController {
 
 	@FXML
@@ -70,8 +77,8 @@ public class NewAccountController {
 	public ClientConnection cc;
 
 	/**
-	 * Clear all text fields
-	 * @param event
+	 * Clears all the fields in the Current GUI.
+	 * @param event - on pressing the 'Clear ' button.
 	 */
 	@FXML
 	void btnClearPressed(ActionEvent event) {
@@ -85,8 +92,8 @@ public class NewAccountController {
 	}
 
 	/**
-	 * When CreateAccount Button is pressed , this method will be called
-	 * 
+	 * Validate the inserted username exists in the DB, and if the password match. if and only if the passwords match and the username does not exists
+	 * in the DB , a new account will be created and will be saved into the DB.
 	 * @param event
 	 */
 	@FXML
@@ -138,6 +145,10 @@ public class NewAccountController {
 		}
 	}
 
+	/**
+	 * Load the 'Create new account' stage after initialising it.
+	 * @param primaryStage - the stage for display.
+	 */
 	void start(Stage primaryStage) throws Exception {
 		FXMLLoader fxmlLoader= new FXMLLoader();
 		fxmlLoader.setLocation(getClass().getResource("/gui/NewAccountForm.fxml"));
@@ -150,7 +161,8 @@ public class NewAccountController {
 	}
 
 	/**
-	 * Back to the previous screen
+	 * Close this stage and get back to the previous stage.
+	 * @param event - on pressing the 'back(image)' button.
 	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
@@ -163,7 +175,7 @@ public class NewAccountController {
 	}
 
 	/**
-	 * Initialise the current screen
+	 * Initialise the current screen with listeners.
 	 */
 	@FXML
 	void initialize() {
@@ -221,7 +233,7 @@ public class NewAccountController {
 	}
 
 	/**
-	 * Clear password fields when an error occur
+	 * Clears the 'password' and the 'confirm password 'fields.
 	 */
 	private void clearPassFields() {
 		txtConPassword.clear();
@@ -243,8 +255,7 @@ public class NewAccountController {
 	}
 
 	/**
-	 * Show an appropriate alert to the user when an error occur
-	 * 
+	 * Show an appropriate alert to the user when an error or a warning occurs.
 	 * @param msg
 	 */
 	private void alertWarningMessage(String msg) {

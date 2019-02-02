@@ -93,9 +93,9 @@ public class LendController {
 	private Book selectedBook;
 
 	/**
-	 * When BookLookUp button is pressed , this method will be called
-	 * 
-	 * @param event
+	 * Get the relevant information of the inserted book ID. Get the relevant information of the inserted user ID.
+	 * Display the information if the inserted book ID and user ID.
+	 * @param event - on pressing the 'Look Up' button.
 	 */
 	@FXML
 	void btnBookLookupPressed(ActionEvent event) {
@@ -162,8 +162,9 @@ public class LendController {
 			alertWarningMessage("User/Book already looked up!");
 	}
 
-	/*
-	 * Clear all textFields
+	/**
+	 * Clears all the fields in the Current GUI.
+	 * @param event - when pressing the 'Clear' button.
 	 */
 	@FXML
 	void btnClearPressed(ActionEvent event) {
@@ -182,8 +183,8 @@ public class LendController {
 	}
 
 	/**
-	 * When LendBook button is pressed , this method will be called
-	 * 
+	 * Validate if the chosen book copy is lent or not. if and only if this book copy is not lent then creates a new lent book request
+	 * and saves the request in the DB.
 	 * @param event
 	 */
 	@FXML
@@ -222,7 +223,8 @@ public class LendController {
 	}
 
 	/**
-	 * Back to the previous screen
+	 * Close this stage and get back to the previous stage.
+	 * @param event - on pressing the 'back(image)' button.
 	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
@@ -234,7 +236,7 @@ public class LendController {
 	}
 
 	/**
-	 * Initialise the current screen
+	 * Initialise the 'Lend ' stage.
 	 */
 	@FXML
 	void initialize() {
@@ -294,6 +296,12 @@ public class LendController {
 		stage.show();
 	}
 
+	/**
+	 * 
+	 * @param stage
+	 * @param selectedBook
+	 * @throws Exception
+	 */
 	void start(Stage stage, Book selectedBook) throws Exception {
 		this.selectedBook = selectedBook;
 		FXMLLoader fxmlLoader = new FXMLLoader();
@@ -307,8 +315,7 @@ public class LendController {
 	}
 
 	/**
-	 * Show an appropriate alert to the user when an error occur
-	 * 
+	 * Show an appropriate alert to the user when an error or a warning occurs.
 	 * @param msg
 	 */
 	private void alertWarningMessage(String msg) {

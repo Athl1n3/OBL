@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  * 					 AccountDetailsController, SceneController, UserLookupController, NotificationsController, Main forms controllers]
  * -Saleh Kasem [DatabaseController, ReturnController, LoginController, SearchController, MySQLConnection, OrderController]
  * -Fadi Habeeb [AddBookController, EditBookController, ManageLibraryController]
- * -Alaa Grable [NewAccountController, ExtendLendController, ManualExtendController, LendController, ReportsController]
+ * -Alaa Grable [NewAccountController, ExtendLendController, ManualExtendController, LendController, GUI Design, ReportsController]
  * -Ahmad Qais [AccountDetailsController]
  */
 public class MainLauncher extends Application {

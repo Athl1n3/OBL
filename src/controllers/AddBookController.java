@@ -78,11 +78,10 @@ public class AddBookController {
 	private Book newBook;
 
 	/**
-	 *
-	 * checks input validity and add this new book to the DB
-	 * 
-	 * @param event
-	 * @throws IOException
+	 * Validate the input inserted and add a new book to the DB only if the book doesn't exist already in the DB. 
+	 * Shows an alert if and only if the book has been created successfully and has been saved
+	 * into the DB.
+	 * @param event - on pressing the 'Add Book' button.
 	 */
 	@FXML
 	void btnAddBookPressed(ActionEvent event) throws IOException {
@@ -122,10 +121,9 @@ public class AddBookController {
 	}
 
 	/**
-	 * when browse button clicked this method open the window to get the path of the
-	 * file
-	 * 
-	 * @param event
+	 * Let the user pick the path of the desired file to upload and save it into the DB.
+	 * Display the path that has been chosen.
+	 * @param event - when pressing the 'Browse' button.
 	 */
 	@FXML
 	void btnBrowsePathPressed(ActionEvent event) {
@@ -138,11 +136,9 @@ public class AddBookController {
 	}
 
 	/**
-	 * this method clears all the data in the fields when clear button clicked
-	 * 
-	 * @param event
+	 * Clears all the fields in the Current GUI.
+	 * @param event - when pressing the 'Clear' button.
 	 */
-
 	@FXML
 	void btnClearPressed(ActionEvent event) {
 		txtBookName.clear();
@@ -157,14 +153,17 @@ public class AddBookController {
 		txtTableOfContents.clear();
 	}
 
+	/**
+	 * Close this stage and get back to the previous stage.
+	 * @param event - on pressing the 'back(image)' button.
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
 		((Stage) ((Node) event.getSource()).getScene().getWindow()).close(); // Close stage
 	}
 
 	/**
-	 * initialize the relevant fields and disable "Add book button" until fill all
-	 * the fields
+	 * Initialise the 'Add Book' stage.
 	 */
 	@FXML
 	void initialize() {
@@ -178,6 +177,7 @@ public class AddBookController {
 		DatabaseController.addTextLimiter(txtCatalog, 32,"Catalog","int");
 		DatabaseController.addTextLimiter(txtShelf, 32,"Shelf","character");
 		DatabaseController.addTextLimiter(txtDescirption, 256,"Description","character");
+		
 		
 		
 		btnAddBook.setDisable(true);
@@ -210,9 +210,9 @@ public class AddBookController {
 
 	}
 
-	 /** loads "add book form" and show it
-	 * 
-	 * @param primaryStage
+	/**
+	 * Load the 'Add Book' stage after initialising it.
+	 * @param primaryStage - the stage for display.
 	 */
 	public void start(Stage primaryStage) {
 		try {
@@ -230,9 +230,10 @@ public class AddBookController {
 			e.printStackTrace();
 		}
 	}
+	
 	/**
-	 * Validate updated user data
-	 * 
+	 * Validate the input inserted into the fields in the GUI.
+	 * Display an alert message if at least one of the fields is invalid.
 	 * @return true in case of a valid input
 	 */
 	@FXML
