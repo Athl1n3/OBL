@@ -273,7 +273,7 @@ public class DatabaseController {
 				UserAccount userAccount = new UserAccount();
 				userAccount.parseArrayIntoAccount(res);
 				arr.add(userAccount);
-				res.subList(0, 13).clear();
+				res.subList(0, 14).clear();
 			}
 			return arr;
 		} catch (NullPointerException e) {
