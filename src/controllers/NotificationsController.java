@@ -28,6 +28,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 public class NotificationsController {
@@ -77,8 +78,7 @@ public class NotificationsController {
 		if (!(tableView.getSelectionModel().isEmpty())) {
 			if (deleteConfirmation.showAndWait().get() == ButtonType.YES) {
 				Notification selectedNotf = tableView.getSelectionModel().getSelectedItem();
-				// DatabaseController.deleteNotfication(selectedNotf); // DONT FORGET TO
-				// UNCOMMENT
+				DatabaseController.deleteNotfication(selectedNotf);
 				tableView.getItems().remove(selectedNotf);
 			}
 		} else
@@ -92,9 +92,10 @@ public class NotificationsController {
 	 */
 	@FXML
 	void btnProccessNotificationPressed(ActionEvent event) {
+		ButtonType suspendButton = new ButtonType("Keep Suspended");
 		Alert lockConfirmation = new Alert(AlertType.CONFIRMATION,
-				"The system has detected 3 delays for this user and awaiting locking account approval\nDo you want to lock it?",
-				ButtonType.YES, ButtonType.CANCEL);// Lock confirmation message
+				"The system has detected 3 delays for this user and awaiting locking account approval\nDo you want to lock it?\n[Keeping an account suspended will reset its delays]",
+				ButtonType.YES, suspendButton, ButtonType.CANCEL);// Lock confirmation message
 
 		Notification selectedNotf = tableView.getSelectionModel().getSelectedItem();
 
@@ -102,13 +103,20 @@ public class NotificationsController {
 		String accountID = (selectedNotf.getMessage().replaceAll("\\D+", ""));
 		accountID = accountID.substring(0, accountID.length() - 1);
 		/////
-
+		lockConfirmation.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 		ButtonType choice = lockConfirmation.showAndWait().get();
 		if (choice == ButtonType.YES) {
-			if (DatabaseController.lockAccount(Integer.parseInt(accountID))) {
+			if (DatabaseController.lockAccount(Integer.parseInt(accountID), true)) {
 				new Alert(AlertType.INFORMATION, "Account has been locked successfully!").show();
-				// DatabaseController.deleteNotfication(selectedNotf); // DONT FORGET TO
-				// UNCOMMENT
+				DatabaseController.deleteNotfication(selectedNotf);
+				tableView.getItems().remove(selectedNotf);
+			} else
+				new Alert(AlertType.ERROR, "An error has occured!").show();
+		}else if(choice == suspendButton)
+		{
+			if (DatabaseController.lockAccount(Integer.parseInt(accountID), false)) {
+				new Alert(AlertType.INFORMATION, "Account has been kept as suspended successfully!\n Delays has been reset!").show();
+				DatabaseController.deleteNotfication(selectedNotf);
 				tableView.getItems().remove(selectedNotf);
 			} else
 				new Alert(AlertType.ERROR, "An error has occured!").show();
@@ -164,13 +172,14 @@ public class NotificationsController {
 				btnProccessNotification.setDisable(true);
 		});
 		
-		
 		tableView.setRowFactory( tableView -> {
 		    TableRow<Notification> row = new TableRow<>();
 		    row.setOnMouseClicked(event -> {
 		        if (event.getClickCount() == 2 && (!row.isEmpty()) ) {
 		        	Notification rowData = row.getItem();
-		            new Alert(AlertType.INFORMATION, rowData.getMessage(), ButtonType.OK).show();
+		            Alert notfMessage = new Alert(AlertType.INFORMATION, rowData.getMessage(), ButtonType.OK);
+		            notfMessage.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		            notfMessage.show();
 		        }
 		    });
 		    return row ;
