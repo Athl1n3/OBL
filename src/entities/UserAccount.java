@@ -90,7 +90,10 @@ public class UserAccount extends Account {
 		this.delays = delays;
 	}
 
-
+	/**
+	 * parse the result returned from DB to UserAccount
+	 * @param accountArray
+	 */
 	public void parseArrayIntoAccount(ArrayList<String> accountArray) {
 		this.setID(Integer.parseInt(accountArray.get(0)));
 		this.setFirstName(accountArray.get(1));

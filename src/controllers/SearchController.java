@@ -136,10 +136,6 @@ public class SearchController implements Initializable {
 		}
 	}
 
-	@FXML
-	void activateOrderBookButton(ContextMenuEvent event) {
-		btnOrderBook.setDisable(false);
-	}
 
 	/**
 	 * search for specific book by its (name,author,subject,description)
@@ -158,6 +154,7 @@ public class SearchController implements Initializable {
 				searchBy = "name";
 				cmbSearchBy.setValue("Name");
 			}
+			//get the search result from DB and present it on the table 
 			ArrayList<Book> arr = DatabaseController.bookSearch(txtSearch.getText(), searchBy);
 			bookList = FXCollections.observableArrayList(arr);
 			tableView.setItems(bookList);
@@ -172,6 +169,10 @@ public class SearchController implements Initializable {
 
 	}
 
+	/**
+	 * view the selected book details 
+	 * @param event
+	 */
 	@FXML
 	void btnViewInfoPressed(ActionEvent event) {
 		Book selectedForView = (Book) tableView.getSelectionModel().getSelectedItem();
@@ -266,20 +267,26 @@ public class SearchController implements Initializable {
 						return row;
 					});
 				}
+		// only logged User can use order button
 		if (DatabaseController.loggedAccount instanceof UserAccount && DatabaseController.loggedAccount != null)
 			btnOrderBook.setVisible(true);
-		
+		//disable viewInfoButton and bnCheck if the user didn't make selection from the table
 		btnViewInfo.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 		btnCheck.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 
 	}
 
+	/**
+	 * show the closest return date for selected book from the table
+	 * @param event
+	 */
 	@FXML
 	void checkClosestReturnDate(ActionEvent event) {
 		try {
 			Book selectedBook = tableView.getSelectionModel().getSelectedItem();
 			Alert alert = new Alert(AlertType.INFORMATION);
 			LocalDate date = DatabaseController.getClosestReturnDate(selectedBook.getBookID());
+			//show closest return date only for book who does't have available copies 
 			if (selectedBook.getAvailableCopies() == 0) {
 				alert.setContentText(
 						"Book(" + selectedBook.getName() + ") Closest Return date is:\n" + date.toString());
@@ -292,6 +299,12 @@ public class SearchController implements Initializable {
 		}
 	}
 
+	/**
+	 * open the search form
+	 * @param primaryStage
+	 * @param account
+	 * @throws IOException
+	 */
 	public void start(Stage primaryStage, Account account) throws IOException {
 		FXMLLoader fxmlLoader= new FXMLLoader();
 		fxmlLoader.setLocation(getClass().getResource("/gui/SearchForm.fxml"));
@@ -319,21 +332,26 @@ public class SearchController implements Initializable {
 
 	}
 
+	/**
+	 * show error message only
+	 * @param header
+	 * @param content
+	 */
 	public void showErrorAlert(String header, String content) {
 		Alert alert = new Alert(AlertType.ERROR, content);
 		alert.setHeaderText(header);
 		alert.show();
 	}
 	
+	/**
+	 * show warning message only
+	 * @param header
+	 * @param content
+	 */
 	public void showWarningAlert(String header, String content) {
 		Alert alert = new Alert(AlertType.WARNING, content);
 		alert.setHeaderText(header);
 		alert.show();
 	}
-	/*
-	 * public void openNewForm(String resource, String title) { try { Parent root =
-	 * FXMLLoader.load(getClass().getResource(resource)); Stage stage = new Stage();
-	 * Scene scene = new Scene(root); stage.setScene(scene); stage.setTitle(title);
-	 * stage.show(); } catch (IOException e) { e.printStackTrace(); } }
-	 */
+	
 }

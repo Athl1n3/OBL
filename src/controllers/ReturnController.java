@@ -74,6 +74,10 @@ public class ReturnController implements Initializable {
 	private Account lenderAccount;
 	private boolean lookedUp;
 
+	/**
+	 *  brows user and book details
+	 * @param event
+	 */
 	@FXML
 	void btnLookupPressed(ActionEvent event) {
 		if (lookedUp == false) {
@@ -115,6 +119,10 @@ public class ReturnController implements Initializable {
 			alertWarningMessage("User/Book already looked up!");
 	}
 
+	/**
+	 * clear all the fields 
+	 * @param event
+	 */
 	@FXML
 	void btnClearPressed(ActionEvent event) {
 		txtBookID.clear();
@@ -146,6 +154,10 @@ public class ReturnController implements Initializable {
 		new Alert(AlertType.WARNING, msg, ButtonType.OK).show();
 	}
 
+	/**
+	 * when the button pressed, return the book and update the DB
+	 * @param event
+	 */
 	@FXML
 	void btnReturnBookPressed(ActionEvent event) {
 
@@ -172,6 +184,11 @@ public class ReturnController implements Initializable {
 
 	}
 
+	/**
+	 * open the return Form 
+	 * @param primaryStage
+	 * @throws Exception
+	 */
 	void start(Stage primaryStage) throws Exception {
 		FXMLLoader fxmlLoader= new FXMLLoader();
 		fxmlLoader.setLocation(getClass().getResource("/gui/ReturnForm.fxml"));
@@ -182,7 +199,11 @@ public class ReturnController implements Initializable {
 		primaryStage.setResizable(false);
 		primaryStage.show();
 	}
-
+	
+	/**
+	 * return to the previous window
+	 * @param event
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
 		Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
@@ -191,6 +212,9 @@ public class ReturnController implements Initializable {
 		stage.setTitle("User Main");
 	}
 
+	/**
+	 * Initialize the form
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		btnReturnBook.setDisable(true);
@@ -204,6 +228,7 @@ public class ReturnController implements Initializable {
 		    	 dtIssueDate.hide();
 		});
 		dtReturnDate.setDisable(true);
+		//set listener to check user id input 
 		txtUserID.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("\\d*")) {
 				txtUserID.setText(newValue.replaceAll("[^\\d]", ""));
@@ -214,7 +239,7 @@ public class ReturnController implements Initializable {
 				alertWarningMessage("The ID must be 9 numbers");
 			}
 		});
-
+		//set listener to check book id input 
 		txtBookID.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("\\d*")) {
 				txtBookID.setText(newValue.replaceAll("[^\\d]", ""));

@@ -65,7 +65,12 @@ public class OrderController implements Initializable {
 	private Button btnPlaceOrder;
 
 	private static Book orderedBook;
-
+	
+	
+	/**
+	 * pressing the place order button
+	 * @param event
+	 */
 	@FXML
 	void btnPlaceOrderPressed(ActionEvent event) {
 		// check if the user status is Active
@@ -100,6 +105,10 @@ public class OrderController implements Initializable {
 		}
 	}
 
+	/**
+	 * back to the previous window 
+	 * @param event
+	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) {
 
@@ -122,6 +131,9 @@ public class OrderController implements Initializable {
 		}
 	}
 
+	/**
+	 * initialize the order Form
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		txtBookID.setDisable(true);
@@ -138,6 +150,7 @@ public class OrderController implements Initializable {
 		dtOrderDate.setValue(LocalDate.now());
 		txtUserID.setText(String.valueOf(DatabaseController.loggedAccount.getID()));
 		txtName.setText(DatabaseController.loggedAccount.getFullName());
+		//initialize the user status 
 		if (((UserAccount) DatabaseController.loggedAccount).getStatus() == accountStatus.Active) {
 			lblStatus.setText("Active");
 		} else if (((UserAccount) DatabaseController.loggedAccount).getStatus().equals(accountStatus.Suspended)) {
@@ -146,6 +159,12 @@ public class OrderController implements Initializable {
 			lblStatus.setText("Locked");
 	}
 
+	/**
+	 * show information alert to user
+	 * @param header
+	 * @param content
+	 * @param event
+	 */
 	public void showAlert(String header, String content, ActionEvent event) {
 		Alert alert = new Alert(AlertType.INFORMATION, content, ButtonType.OK);
 		alert.setHeaderText(header);

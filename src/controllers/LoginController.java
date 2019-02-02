@@ -104,7 +104,7 @@ public class LoginController implements Initializable {
 				Stage stage = ((Stage) ((Node) event.getSource()).getScene().getWindow());
 				if (account.getUserType() == UserType.User) {
 					if (!((UserAccount) account).getStatus().equals(accountStatus.Locked)) {
-						account.setLogged(true);
+						account.setLogged(true); // user logged successfully
 						DatabaseController.loggedAccount = account;
 						//update the login count to 0 after the user succeeded to login 
 						account.setLoginCount(0);
@@ -116,7 +116,7 @@ public class LoginController implements Initializable {
 						alert.setHeaderText("Locked");
 						alert.show();
 					}
-				} else {
+				} else { // librarian\manager logged successfully
 					account.setLogged(true);
 					DatabaseController.loggedAccount = account;
 					DatabaseController.logAccount(account);
@@ -127,7 +127,7 @@ public class LoginController implements Initializable {
 				alert.setHeaderText("Login Failure");
 				alert.show();
 			}
-		} catch (NullPointerException e) {
+		} catch (NullPointerException e) { // invalid userName
 			alert.setContentText("Incorrect Username !!!\n\n Please try again.");
 			alert.setHeaderText("Login Failure");
 			alert.show();
@@ -138,12 +138,19 @@ public class LoginController implements Initializable {
 		}
 	}
 
+	/**
+	 * initialize the Form
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		BooleanBinding loginBind = txtUsername.textProperty().isEmpty().or(txtPassword.textProperty().isEmpty());
 		btnLogin.disableProperty().bind(loginBind);
 	}
 
+	/**
+	 * start the login form
+	 * @param stage
+	 */
 	public void start(Stage stage) {
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader();
