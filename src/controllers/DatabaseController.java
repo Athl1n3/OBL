@@ -630,7 +630,7 @@ public class DatabaseController {
 		clientConnection.executeQuery("SELECT * FROM BookCopy;");
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<BookCopy> bookCopyList = new ArrayList<BookCopy>();
-		while (res.size() != 0) {
+		while (res.size() != 0) {//convert the result to arrayList<BookCopy>
 			BookCopy bookCopy = new BookCopy(Integer.parseInt(res.get(0)), res.get(1), LocalDate.parse(res.get(2)),
 					res.get(2).equals("1") ? true : false);
 			res.subList(0, 4).clear();
