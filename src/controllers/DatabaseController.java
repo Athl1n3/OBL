@@ -117,7 +117,8 @@ public class DatabaseController {
 		String query = "UPDATE account SET firstName = '" + account.getFirstName() + "', lastName = '"
 				+ account.getLastName() + "', eMail = '" + account.getEmail() + "', mobileNum = '"
 				+ account.getMobileNum() + "', userName = '" + account.getUserName() + "', password = '"
-				+ account.getPassword() + "', loginCount = '" + account.getLoginCount() + "' WHERE userID = '" + account.getAccountID() + "';";
+				+ account.getPassword() + "', loginCount = '" + account.getLoginCount() + "' WHERE userID = '"
+				+ account.getAccountID() + "';";
 		clientConnection.executeQuery(query);
 	}
 
@@ -134,21 +135,37 @@ public class DatabaseController {
 	public static void updateUserStatus(UserAccount userAccount, boolean resetDelays) {
 		String query;
 		if (resetDelays)
-			query = "UPDATE account SET status = '" + userAccount.getStatus() + "', delays = '0' WHERE userID = '"
-					+ userAccount.getAccountID() + "';";
+			query = "UPDATE account SET status = '" + userAccount.getStatus()
+					+ "', delays = '0', loginCount = '0' WHERE userID = '" + userAccount.getAccountID() + "';";
 		else
-			query = "UPDATE account SET status = '" + userAccount.getStatus() + "' WHERE userID = '"
+			query = "UPDATE account SET status = '" + userAccount.getStatus() + "', loginCount = '0' WHERE userID = '"
 					+ userAccount.getAccountID() + "';";
 		clientConnection.executeQuery(query);
 	}
 
 	/**
-	 * Lock user account
+	 * Add notification for librarians+managers
+	 * 
+	 * @param addNotf
+	 */
+	public static void addNotfication(String notfMessage) {
+		Timestamp now = new Timestamp(new Date().getTime());
+		clientConnection
+				.executeQuery("INSERT INTO notification(userID, date, message, usertype, messageType)VALUES ('0','"
+						+ now + "','" + notfMessage + "','Librarian','Message')");
+	}
+
+	/**
+	 * Lock user account or keep suspended and reset its delays
 	 * 
 	 * @param userAccount
 	 */
-	public static boolean lockAccount(int accountID) {
-		String query = "UPDATE account SET status = 'Locked' WHERE userID = '" + accountID + "';";
+	public static boolean lockAccount(int accountID, boolean lock) {
+		String query;
+		if (lock)
+			query = "UPDATE account SET status = 'Locked' WHERE userID = '" + accountID + "';";// Lock account
+		else
+			query = "UPDATE account SET delays = '0' WHERE userID = '" + accountID + "';";// Keep account suspended
 		clientConnection.executeQuery(query);
 		clientConnection.getObject();
 		return (Boolean) clientConnection.getObject();
@@ -659,8 +676,7 @@ public class DatabaseController {
 
 		arr.add("#");
 		arr.add(String.valueOf(lentBook.getBook().getBookID()));
-		if(graduateID != 0)
-		{
+		if (graduateID != 0) {
 			arr.add("$");
 			arr.add(String.valueOf(graduateID));
 		}

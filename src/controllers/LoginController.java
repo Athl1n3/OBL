@@ -85,7 +85,7 @@ public class LoginController implements Initializable {
 					DatabaseController.updateAccount(account);
 					if (account.getLoginCount() > 2 ) {	
 						
-						DatabaseController.lockAccount(account.getAccountID());
+						DatabaseController.lockAccount(account.getAccountID(), true);
 						alert.setContentText("Account has been LOCKED!\n\nPlease get to librarian form Help.");
 						alert.setHeaderText("Login Failure");
 						alert.show();
@@ -112,7 +112,7 @@ public class LoginController implements Initializable {
 						DatabaseController.logAccount(account);
 						openNewForm("User", stage);
 					} else {
-						alert.setCo ntentText("Account is \"Locked\"! \n Contact library for appeal.");
+						alert.setContentText("Account is \"Locked\"! \n Contact library for appeal.");
 						alert.setHeaderText("Locked");
 						alert.show();
 					}
