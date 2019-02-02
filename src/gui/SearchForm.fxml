@@ -17,15 +17,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="537.0" prefWidth="742.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SearchController">
+<VBox prefHeight="537.0" prefWidth="742.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SearchController">
    <children>
       <BorderPane prefHeight="527.0" prefWidth="748.0">
          <top>
             <Pane prefHeight="74.0" prefWidth="640.0" BorderPane.alignment="CENTER">
                <children>
-                  <ImageView fx:id="imgBack" fitHeight="44.0" fitWidth="57.0" onMouseClicked="#imgBackClicked" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgBack" fitHeight="44.0" fitWidth="57.0" layoutX="3.0" layoutY="3.0" onMouseClicked="#imgBackClicked" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@..\images\baseline_arrow_back_black_48dp.png" />
+                        <Image url="@../images/baseline_arrow_back_black_48dp.png" />
                      </image>
                   </ImageView>
                   <Label alignment="CENTER" layoutX="244.0" layoutY="15.0" prefHeight="40.0" prefWidth="228.0" text="Book Search" textFill="#16a635">
