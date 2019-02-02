@@ -70,9 +70,8 @@ public class ManageLibraryController {
 	private Button btnEditBook;
 
 	/**
-	 * This method called when "Add book" button clicked and open a form to fill
-	 * 
-	 * @param event
+	 * When 'Add Book' button is clicked , this method is called to display the 'Add Book' stage.
+	 * @param event - on pressing the 'Add Book' button.
 	 * @throws IOException
 	 */
 	@FXML
@@ -87,9 +86,8 @@ public class ManageLibraryController {
 	}
 
 	/**
-	 * This method called when "Delete book" button clicked and deletes this
-	 * specific book after the user confirmation
-	 * 
+	 * Deletes the selected book from DB. if and only if the user Confirm the deletion.
+	 * Update the DB. Display alert for succession if and only if the book has been deleted successfully.
 	 * @param event
 	 */
 	@FXML
@@ -126,10 +124,9 @@ public class ManageLibraryController {
 	}
 
 	/**
-	 * Open "edit book" form to edit a specific book
-	 * 
-	 * @param event
-	 * @throws Exception
+	 * When 'Edit Book' button is clicked , this method is called to display the 'Edit Book' stage.
+	 * @param event - on pressing the 'Edit Book' button.
+	 * @throws IOException
 	 */
 	@FXML
 	void btnEditBookPressed(ActionEvent event) throws Exception {
@@ -159,10 +156,8 @@ public class ManageLibraryController {
 	}
 
 	/**
-	 * Back to the previous scene
-	 * 
-	 * @param event
-	 * @throws IOException
+	 * Close this stage and get back to the previous stage.
+	 * @param event - on pressing the 'back(image)' button.
 	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
@@ -173,7 +168,7 @@ public class ManageLibraryController {
 	}
 
 	/**
-	 * Initialize GUI layout and tableview initialize gui depending on books
+	 * Initialise the 'Manage Library' stage.
 	 */
 	@FXML
 	public void initialize() {
@@ -214,9 +209,8 @@ public class ManageLibraryController {
 	}
 
 	/**
-	 * this method returns the current books in the DB
-	 * 
-	 * @return ObservableList<Book> with all the books
+	 * Gets all the Books in the DB as an ObservableList
+	 * @return ObservableList Book list
 	 */
 	public ObservableList<Book> getBooks() {
 		ArrayList<Book> allBooks;
@@ -228,7 +222,7 @@ public class ManageLibraryController {
 	}
 
 	/**
-	 * refresh the data in the table view
+	 * Refreshes the data in the tableView.
 	 * 
 	 * @param event
 	 */
@@ -238,10 +232,8 @@ public class ManageLibraryController {
 	}
 
 	/**
-	 * Load the relevant fxml file and show it
-	 * 
-	 * @param primaryStage
-	 * @throws Exception
+	 * Load the 'Manage Library' stage after initialising it.
+	 * @param primaryStage - the stage for display.
 	 */
 	void start(Stage primaryStage) throws Exception {
 		FXMLLoader fxmlLoader= new FXMLLoader();
@@ -254,11 +246,13 @@ public class ManageLibraryController {
 	}
 
 	/**
-	 * checks if the observable list 'search' contains the book
+	 * Validates if the specified book is in the observableList exists.
+	 * returns true if and only if the book does exists.
+	 * Otherwise returns false
 	 * 
-	 * @param search
-	 * @param book
-	 * @return true if the observable list 'search' contains the book
+	 * @param search - an ObservableList
+	 * @param book - specified book
+	 * @return Boolean statement
 	 */
 	boolean contain(ObservableList<Book> search, Book book) {
 		for (int i = 0; i < search.size(); i++)
@@ -268,6 +262,10 @@ public class ManageLibraryController {
 
 	}
 
+	/**
+	 * Opens the 'Manage Copies' stage for the selected book.
+	 * @param event - on pressing the 'Manage Copies' button.
+	 */
 	@FXML
 	void btnManageCopiesPressed(ActionEvent event) {
 	

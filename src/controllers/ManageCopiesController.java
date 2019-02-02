@@ -71,10 +71,10 @@ public class ManageCopiesController {
 	private static Book selectedBook;
 
 	/**
-	 * when "add copy" button is pressed this method will be called, checks input
-	 * validation and add new copy to DB
-	 * 
-	 * @param event
+	 * Validates if the selected book copy is already exists in DB.
+	 * Displays a succession alert if and only if the book copy has been added into the DB successfully.
+	 * Otherwise displays an error alert.
+	 * @param event - when pressing the 'Add Copy' button.
 	 */
 	@FXML
 void btnAddCopyPressed(ActionEvent event) {
@@ -100,8 +100,10 @@ void btnAddCopyPressed(ActionEvent event) {
 	}
 
 	/**
-	 * when "Delete copy" button presses this method will called and delete this copy 
-	 * @param event
+	 * Deletes the selected copy of the selected book and update the DB.
+	 * Displays a succession alert if and only if the book copy has been deleted successfully from DB.
+	 * Otherwise displays an error alert.
+	 * @param event - when pressing the 'Delete Copy' button.
 	 */
 	@FXML
 	void btnDeleteCopyPressed(ActionEvent event) {
@@ -136,9 +138,8 @@ void btnAddCopyPressed(ActionEvent event) {
 	}
 
 	/**
-	 * back to the previous screen when image "back"
-	 * @param event
-	 * @throws IOException
+	 * Close this stage and get back to the previous stage.
+	 * @param event - on pressing the 'back(image)' button.
 	 */
 	@FXML
 	void imgBackClicked(MouseEvent event) throws IOException {
@@ -164,7 +165,7 @@ void btnAddCopyPressed(ActionEvent event) {
 	}
 
 	/**
-	 * initialize the current screen with all the relevant information
+	 * Initialise the 'Manage Copies' stage.
 	 */
 	@FXML
 	void initialize() {
@@ -198,8 +199,8 @@ void btnAddCopyPressed(ActionEvent event) {
 	}
 
 	/**
-	 * this private method returns all the copies to specific book
-	 * @return
+	 * Gets all the copies for a specific book
+	 * @return ObservableList BookCopy list
 	 */
 	private ObservableList<BookCopy> getCopies() {
 		ArrayList<BookCopy> allCopies;

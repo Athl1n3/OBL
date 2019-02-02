@@ -139,6 +139,11 @@ public class ReportsController {
 	private String filePath = "D:\\";
 	static int[] Per = new int[11];
 
+	
+	/**
+	 * Checks which option the user has chosen.
+	 * Creates the the specified report according to the user choice.
+	 */
 	@FXML
 	void btnGetReportPressed(ActionEvent event) {
 
@@ -1914,8 +1919,8 @@ public class ReportsController {
 	}
 
 	/**
-	 * Checks if the file is open or not
-	 * 
+	 * Checks if the file with the specified path is opened or not.  returns false if and only if the file is not opened.
+	 * Otherwise returns true.
 	 * @param path
 	 * @return true if the file is open , otherwise false
 	 */
@@ -1937,6 +1942,14 @@ public class ReportsController {
 
 	}
 
+	/**
+	 * Distribute's a table according to the max with a calculated algorithm to distribute the max delay days to 10 cells in the table.
+	 * Display the table in the PDF file. display the content if the delays array into the created table.
+	 * @param document - the writer to the pdf file.
+	 * @param max - the max delays.
+	 * @param delays = the delays array for a specific book
+	 * @throws DocumentException
+	 */
 	public static void maxIsGreaterThan10(Document document, int max, long[] delays) throws DocumentException {
 
 		PdfPCell cell;
@@ -1972,7 +1985,14 @@ public class ReportsController {
 		}
 		document.add(table);
 	}
-
+	/**
+	 * Distributes a table according to the max with a 1 day difference.
+	 * Display the table in the PDF file. display the content if the delays array into the created table.
+	 * @param document - the writer to the pdf file.
+	 * @param max - the max delays.
+	 * @param delays = the delays array for a specific book
+	 * @throws DocumentException
+	 */
 	public static void maxIsLesserThan10(Document document, int max, long[] delays) throws DocumentException {
 
 		PdfPCell cell;

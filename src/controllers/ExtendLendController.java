@@ -199,8 +199,7 @@ public class ExtendLendController {
 	}
 
 	/**
-	 * Create an ObservableList that contains the lent books for that user
-	 * 
+	 * Gets all the lentBooks for the user as an ObservableList
 	 * @return ObservableList LentBooks list
 	 */
 	private ObservableList<LentBook> getLentBookList() {

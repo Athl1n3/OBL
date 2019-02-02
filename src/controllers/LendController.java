@@ -144,6 +144,7 @@ public class LendController {
 								alertWarningMessage("There are no copies available to lend this book \n" + "'"
 										+ bookData.getName() + "'");// if there is no copies of that book then let the
 																	// user know that
+								txtAvailableCopies.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 								btnLendBook.setDisable(true);
 							} else {
 								// if everything is okay then enable the button to let the user be able to lent
@@ -185,15 +186,11 @@ public class LendController {
 	/**
 	 * Validate if the chosen book copy is lent or not. if and only if this book copy is not lent then creates a new lent book request
 	 * and saves the request in the DB.
-	 * @param event
+	 * @param event - on pressing the 'Lend Book' button.
 	 */
 	@FXML
 	void btnLendBookPressed(ActionEvent event) {
 
-		// create the lent book request with the appropriate returning time
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// you need to get the copy from bookCopy table
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		BookCopy bookCopy = DatabaseController.getBookCopy(txtBookID.getText(), txtSerialNumber.getText());
 
 		if (bookCopy != null) {
@@ -287,6 +284,11 @@ public class LendController {
 		btnBookLookup.disableProperty().bind(booleanBind);
 	}
 
+	/**
+	 * Load the 'Lend ' stage after initialising it.
+	 * @param stage - the stage for display.
+	 * @throws Exception
+	 */
 	void start(Stage stage) throws Exception {
 		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setLocation(getClass().getResource("/gui/LendForm.fxml"));
@@ -299,9 +301,8 @@ public class LendController {
 	}
 
 	/**
-	 * 
-	 * @param stage
-	 * @param selectedBook
+	 * Load the 'Lend' stage from the 'Search' stage with the selected book after initialising it.
+	 * @param stage - the stage for display.
 	 * @throws Exception
 	 */
 	void start(Stage stage, Book selectedBook) throws Exception {

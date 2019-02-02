@@ -239,7 +239,7 @@ public class AddBookController {
 	@FXML
 	public boolean validateInput() {
 
-		// initialize the text fields to the original color
+		// Initialise the text fields to the original color
 		txtBookName.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtAuthor.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");
 		txtBookID.setStyle("-fx-border-color: white ; -fx-border-width: 2px ;");

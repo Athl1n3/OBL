@@ -103,24 +103,30 @@ public class NewAccountController {
 		if (txtUsername.getText().length() <= 5) {
 			// if not , inform the user that the username must be at least 6 characters
 			alertWarningMessage("Username length must be longer than 5 characters");
+			txtUsername.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			txtUsername.requestFocus();
 		} else {
 			// validate if the inputed password length is greather than 6
 			if (txtConPassword.getText().length() < 6 || txtPassword.getText().length() < 6) {
 				// if not, inform the user that the password must be at least 7 characters
-				alertWarningMessage("Password length must be atleast 6 characters");
 				clearPassFields();
+				alertWarningMessage("Password length must be atleast 6 characters");
+				txtConPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 			} else {
 				// validate that the two password fields are equal
 				if (!txtPassword.getText().equals(txtConPassword.getText())) {
 					// if not , inform the user that the password does not match
-					alertWarningMessage("Password does not match !");
 					clearPassFields();
+					alertWarningMessage("Password does not match !");
+					txtConPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+					txtPassword.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 				} else {
 					// validate the inputed email address
 					if (!validateEmail()) {
 						// inform the user that the email is invalid
 						alertWarningMessage("Invalid email address");
+						txtEmail.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 						txtEmail.requestFocus();
 					} else {
 						// if every textfield is valid , then create a new account with all the details
@@ -148,7 +154,7 @@ public class NewAccountController {
 
 	/**
 	 * Load the 'Create new account' stage after initialising it.
-	 * @param primaryStage - the stage for display.
+	 * @param primaryStage  the stage for display.
 	 */
 	void start(Stage primaryStage) throws Exception {
 		FXMLLoader fxmlLoader= new FXMLLoader();
@@ -242,8 +248,8 @@ public class NewAccountController {
 	}
 
 	/**
-	 * Validate the inputed email address
-	 * 
+	 * Validates the inserted Email Address. returns true if and only if the email is valid.
+	 * Otherwise returns false.
 	 * @return Boolean value
 	 */
 	private boolean validateEmail() {
