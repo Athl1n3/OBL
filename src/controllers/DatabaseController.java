@@ -777,16 +777,22 @@ public class DatabaseController {
 	}
 
 	/**
-	 * returns the last order id
-	 * 
-	 * @return int
+	 * get manual extend list
+	 * @return list
 	 */
-	/*
-	 * public static int getLatestOrderID() { clientConnection.
-	 * executeQuery("SELECT orderID FROM BookOrder ORDER BY orderID DESC"); if
-	 * (clientConnection.getList().size() != 0) return
-	 * Integer.parseInt(clientConnection.getList().get(0)); else return 0; }
-	 */
+	public static ArrayList<ManualExtend> getManualExtendList(){
+		clientConnection.executeQuery("SELECT * FROM ManualExtend;");
+		ArrayList<String> res = clientConnection.getList();
+		ArrayList<ManualExtend> list = new ArrayList<ManualExtend>();
+		while (res.size() != 0) {// convert the result to arrayList<BookCopy>
+			ManualExtend extend = new ManualExtend(Integer.parseInt(res.get(0)), Integer.parseInt(res.get(1)),res.get(2), LocalDate.parse(res.get(3)),
+					LocalDate.parse(res.get(4)));
+			res.subList(0, 5).clear();
+			list.add(extend);
+		}
+
+		return list;
+	}
 
 	/**
 	 * check existence of specific order
