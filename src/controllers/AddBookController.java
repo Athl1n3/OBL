@@ -98,14 +98,15 @@ public class AddBookController {
 					txtDescirption.getText(), Integer.parseInt(txtCatalog.getText()), txtTableOfContents.getText(),
 					txtShelf.getText(), 0,
 					bookType.valueOf(bookTypeCB.getSelectionModel().getSelectedItem().toString()), 0);
-					DatabaseController.saveFile(txtBookName.getText(), txtTableOfContents.getText(),
-					Integer.parseInt(txtBookID.getText()));
+					
 			
 			DatabaseController.saveFile(txtBookName.getText(), txtTableOfContents.getText(), Integer.parseInt(txtBookID.getText()));
 
 			// check if this id exist
 			if ((DatabaseController.getBook(newBook.getBookID())) == null) {
 				DatabaseController.addBook(newBook);
+				DatabaseController.saveFile(txtBookName.getText(), txtTableOfContents.getText(),
+						Integer.parseInt(txtBookID.getText()));
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Succsess");
 				alert.setHeaderText("The book has been added successfully");

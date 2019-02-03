@@ -97,7 +97,7 @@ public class BookDetailsController {
 
     @FXML
     void initialize() {
-    	txtBookType.setText(selectedBook.toString());
+    	txtBookType.setText(selectedBook.getBookType().name());
 		txtBookName.setText(selectedBook.getName());
 		txtAuthor.setText(selectedBook.getAuthor());
 		txtBookID.setText(Integer.toString(selectedBook.getBookID()));
