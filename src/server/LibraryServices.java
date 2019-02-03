@@ -1,3 +1,6 @@
+/**
+ * server package contains server side code layer and connection to the MySQL database
+ */
 package server;
 
 import java.io.File;
@@ -157,12 +160,10 @@ public class LibraryServices {
 					+ notificationTimeStamp + "','User ID: " + accountID
 					+ " has been \"Locked\" due graduation and he has no lent books,'Librarian', 'Message')");
 			// Send proper email to the graduate
-			/*
-			 * sendEmail(eMail, "Library Lent Books Return Due Graduation", "Hello" +
-			 * firstName + " " + lastName +
-			 * "\nCongratulations for your graduation\n Your library account period has expired and your library account has been locked!"
-			 * );
-			 */
+
+			sendEmail(eMail, "Library Lent Books Return Due Graduation", "Hello" + firstName + " " + lastName
+					+ "\nCongratulations for your graduation\n Your library account period has expired and your library account has been locked!");
+
 			// Console log
 			System.out.println("Email has been sent graduate student ID:" + accountID + " => " + eMail
 					+ " notifying that his account has been locked!");
@@ -196,12 +197,11 @@ public class LibraryServices {
 				orderNotification(Integer.parseInt(bookID));
 
 			// Send proper email to the graduate
-			/*
-			 * sendEmail(eMail, "Library Lent Books Return Due Graduation", "Hello " +
-			 * firstName + " " + lastName +
-			 * "\nCongratulations for your graduation\nYour library account period has expired and has been suspended.\nBut we can see you have a list of lent books that should be returned, please return the following books\n"
-			 * + lentBooks.toString().substring(1, lentBooks.toString().length() - 1));
-			 */
+
+			sendEmail(eMail, "Library Lent Books Return Due Graduation", "Hello " + firstName + " " + lastName
+					+ "\nCongratulations for your graduation\nYour library account period has expired and has been suspended.\nBut we can see you have a list of lent books that should be returned, please return the following books\n"
+					+ lentBooks.toString().substring(1, lentBooks.toString().length() - 1));
+
 			System.out.println("Email has been sent graduate student ID:" + accountID + " => " + eMail
 					+ " to return all lent books , and all orders has been removed");
 		}
@@ -243,8 +243,8 @@ public class LibraryServices {
 							.executeSelectQuery("SELECT name FROM book WHERE bookID = '" + lentReturns.get(i) + "';"))
 									.get(0);
 
-					/*sendEmail(eMail, "Lent Book Return", "Hello " + firstName + " " + lastName + "\nYour lent book '"
-							+ bookName + "' has to be returned by tomorrow " + LocalDate.now().plusDays(1));*/
+					sendEmail(eMail, "Lent Book Return", "Hello " + firstName + " " + lastName + "\nYour lent book '"
+							+ bookName + "' has to be returned by tomorrow " + LocalDate.now().plusDays(1));
 
 					System.out.println("Email has been sent => " + eMail + " to return '" + bookName + "'");
 				}
@@ -300,7 +300,7 @@ public class LibraryServices {
 			}
 		};
 		Timer lateReturnsTimer = new Timer();
-		lateReturnsTimer.schedule(lateReturnsTask, TimeUnit.SECONDS.toMillis(70), TimeUnit.DAYS.toMillis(1));
+		lateReturnsTimer.schedule(lateReturnsTask, TimeUnit.SECONDS.toMillis(40), TimeUnit.DAYS.toMillis(1));
 	}
 
 	/**
