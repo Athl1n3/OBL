@@ -168,7 +168,7 @@ public class ReportsController {
 		case "Activity Report": {
 			String date = cmbSavedReports.getSelectionModel().getSelectedItem();
 			if(!date.equals("Today")) {
-				DatabaseController.getActivityReportFileFromDB(LocalDate.parse(date), filePath);
+				DatabaseController.getActivityReportFileFromDB(LocalDate.parse(date), filePath+"/");
 				try {
 					Desktop.getDesktop().open(new File(filePath));
 				} catch (IOException e) {
