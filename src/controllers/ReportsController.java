@@ -20,8 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.swing.event.ChangeListener;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
@@ -33,32 +31,24 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.log.SysoCounter;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
-import com.mysql.fabric.xmlrpc.base.Data;
-import com.itextpdf.text.Image;
 
 import entities.Account;
 import entities.Account.UserType;
 import entities.ActivitiesReport;
 import entities.Book;
-import entities.Book.bookType;
-import entities.BookCopy;
 import entities.LentBook;
 import entities.LibrarianAccount;
 import entities.UserAccount;
 import entities.UserAccount.accountStatus;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -69,9 +59,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -80,11 +70,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -214,7 +202,8 @@ public class ReportsController {
 								new FileOutputStream(filePath + "\\Activity Report.pdf"));
 						document.open();
 						// set the logo in the pdf
-						Image img = Image.getInstance("src/images/pdfLogo.png");
+						URL url = ReportsController.class.getResource("/images/pdfLogo.png");
+						Image img = Image.getInstance(url);
 						img.setAlignment(1);
 						document.add(img);
 
@@ -564,7 +553,8 @@ public class ReportsController {
 							new FileOutputStream(filePath + "\\Lends Report.pdf"));
 					document.open();
 					// insert the logo in the header of the pdf
-					Image img = Image.getInstance("src/images/pdfLogo.png");
+					URL url = ReportsController.class.getResource("/images/pdfLogo.png");
+					Image img = Image.getInstance(url);
 					img.setAlignment(1);
 					document.add(img);
 
@@ -693,10 +683,10 @@ public class ReportsController {
 
 					int median;
 					if (arrayWanted.length % 2 == 0)
-						median = ((int) arrayWanted[arrayWanted.length / 2]
-								+ (int) arrayWanted[arrayWanted.length / 2 - 1]) / 2;
+						median = (arrayWanted[arrayWanted.length / 2]
+								+ arrayWanted[arrayWanted.length / 2 - 1]) / 2;
 					else
-						median = (int) arrayWanted[arrayWanted.length / 2];
+						median = arrayWanted[arrayWanted.length / 2];
 					cell = new PdfPCell(new Paragraph(String.valueOf((median))));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(cell);
@@ -799,10 +789,10 @@ public class ReportsController {
 					// calculate the median of regular books and display it
 
 					if (arrayRegular.length % 2 == 0)
-						median = ((int) arrayRegular[arrayRegular.length / 2]
-								+ (int) arrayRegular[arrayRegular.length / 2 - 1]) / 2;
+						median = (arrayRegular[arrayRegular.length / 2]
+								+ arrayRegular[arrayRegular.length / 2 - 1]) / 2;
 					else
-						median = (int) arrayRegular[arrayRegular.length / 2];
+						median = arrayRegular[arrayRegular.length / 2];
 
 					cell = new PdfPCell(new Paragraph(String.valueOf(median)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -911,7 +901,8 @@ public class ReportsController {
 					document.open();
 
 					// insert the logo in the header of the pdf
-					Image img = Image.getInstance("src/images/pdfLogo.png");
+					URL url = ReportsController.class.getResource("/images/pdfLogo.png");
+					Image img = Image.getInstance(url);
 					img.setAlignment(1);
 					document.add(img);
 
@@ -1022,7 +1013,8 @@ public class ReportsController {
 					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath + "\\Report.pdf"));
 					document.open();
 					// insert the logo in the header of the pdf
-					Image img = Image.getInstance("src/images/pdfLogo.png");
+					URL url = ReportsController.class.getResource("/images/pdfLogo.png");
+					Image img = Image.getInstance(url);
 					img.setAlignment(1);
 					document.add(img);
 
@@ -2106,7 +2098,7 @@ public class ReportsController {
 
 		double avg = 0;
 		for (int i = 0; i < delays.length; i++)
-			avg = avg + (double) delays[i];
+			avg = avg + delays[i];
 		cell = new PdfPCell(new Paragraph(String.valueOf(avg / delays.length)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table2.addCell(cell);
@@ -2184,7 +2176,7 @@ public class ReportsController {
 
 		double avg = 0;
 		for (int i = 0; i < delays.length; i++)
-			avg = avg + (double) delays[i];
+			avg = avg + delays[i];
 		cell = new PdfPCell(new Paragraph(String.valueOf(avg / delays.length)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table2.addCell(cell);
