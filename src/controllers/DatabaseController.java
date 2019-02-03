@@ -610,6 +610,7 @@ public class DatabaseController {
 		}
 		return null;
 	}
+	
 
 	/**
 	 * return the book copies list from DB
@@ -659,7 +660,19 @@ public class DatabaseController {
 	public static void deleteBookCopy(int bookID, String serialNumber) {
 
 		clientConnection.executeQuery(
-				"DELETE FROM BookCopy WHERE bookID = '" + bookID + "' AND copySerialNumber = '" + serialNumber + "';");
+				"DELETE FROM BookCopy WHERE bookID = '" + bookID + "' AND SerialNumber = '" + serialNumber + "';");
+	}
+	
+	/**
+	 * deletes all copies for specific book from booCopy table in DB
+	 * 
+	 * @param bookID
+	 * @param serialNumber
+	 */
+	public static void deleteBookCopies(int bookID) {
+
+		clientConnection.executeQuery(
+				"DELETE FROM BookCopy WHERE bookID = '" + bookID + "';");
 	}
 
 	/**

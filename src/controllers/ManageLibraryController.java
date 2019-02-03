@@ -112,9 +112,9 @@ public class ManageLibraryController {
 				// confirmation.setContentText("Select a book for delete!");
 				confirmation.showAndWait().ifPresent(response -> {
 					if (response == ButtonType.OK) {
+						DatabaseController.deleteBookCopies(selectedForDelete.getBookID());
 						DatabaseController.deleteBook(selectedForDelete.getBookID());
 						initialize();
-
 					}
 				});
 
@@ -299,8 +299,8 @@ public class ManageLibraryController {
 				flag=1;
 				}
 			if(flag!=1) {
-				if (DatabaseController.bookSearch(txtSearch.getText(), "id") != null)
-					arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "id"));
+				if (DatabaseController.bookSearch(txtSearch.getText(), "book id") != null)
+					arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "book id"));
 			}
 			
 			
