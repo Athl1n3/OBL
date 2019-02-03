@@ -35,6 +35,9 @@ public class ManageLibraryController {
 
 	@FXML
 	private ImageView imgBack;
+	
+	@FXML
+    private Button btnSearch;
 
 	@FXML
 	private TableView<Book> tableView;
@@ -184,30 +187,7 @@ public class ManageLibraryController {
 		availableCopies.setCellValueFactory(new PropertyValueFactory<Book, Integer>("availableCopies"));
 		tableView.setItems(getBooks());
 
-		txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-			ArrayList<Book> arr = new ArrayList<Book>();
-			ObservableList<Book> search = FXCollections.observableArrayList();
-			if (DatabaseController.bookSearch(txtSearch.getText(), "name") != null)
-				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "name"));
-
-			if (DatabaseController.bookSearch(txtSearch.getText(), "author") != null)
-				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "author"));
-
-			if (DatabaseController.bookSearch(txtSearch.getText(), "subject") != null)
-				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "subject"));
-
-			if (DatabaseController.bookSearch(txtSearch.getText(), "description") != null)
-				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "description"));
-			if (arr != null)
-				for (int i = 0; i < arr.size(); i++)
-					if (!contain(search, arr.get(i)))
-						search.add(arr.get(i));
-			tableView.setItems(search);
-
-		});
-
 	}
-
 	/**
 	 * Gets all the Books in the DB as an ObservableList
 	 * @return ObservableList Book list
@@ -293,6 +273,40 @@ public class ManageLibraryController {
 	}
 
 }
-	
+	 @FXML
+	    void btnSearchPressed(ActionEvent event) {
+		 int flag=0;
+		 ArrayList<Book> arr = new ArrayList<Book>();
+			ObservableList<Book> search = FXCollections.observableArrayList();
+			if (DatabaseController.bookSearch(txtSearch.getText(), "name") != null)
+				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "name"));
+
+			if (DatabaseController.bookSearch(txtSearch.getText(), "author") != null)
+				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "author"));
+
+			if (DatabaseController.bookSearch(txtSearch.getText(), "subject") != null)
+				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "subject"));
+
+			if (DatabaseController.bookSearch(txtSearch.getText(), "description") != null)
+				arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "description"));
+			
+			for (char c : txtSearch.getText().toCharArray())// Parse text field into chars array and validate
+				if (!Character.isDigit(c)) {//contain characters
+				flag=1;
+				}
+			if(flag!=1) {
+				if (DatabaseController.bookSearch(txtSearch.getText(), "id") != null)
+					arr.addAll(DatabaseController.bookSearch(txtSearch.getText(), "id"));
+			}
+			
+			
+			
+			if (arr != null)
+				for (int i = 0; i < arr.size(); i++)
+					if (!contain(search, arr.get(i)))
+						search.add(arr.get(i));
+			tableView.setItems(search);
+
+	    }
 
 }
