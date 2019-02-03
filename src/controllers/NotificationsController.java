@@ -126,6 +126,21 @@ public class NotificationsController {
 				new Alert(AlertType.ERROR, "An error has occured!").show();
 		}
 	}
+	
+	/**
+	 * Open manual extend form
+	 * @param event
+	 */
+	@FXML
+    void btnManualExtendClicked(ActionEvent event) {
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		ManualExtendNotificationController manExNot = new ManualExtendNotificationController();
+		try {
+			manExNot.start(stage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
 
 	/**
 	 * Return to the previous stage

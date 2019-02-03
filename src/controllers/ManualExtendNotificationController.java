@@ -1,23 +1,22 @@
 package controllers;
 
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
-import entities.LibrarianAccount;
-import entities.ManagerAccount;
 import entities.ManualExtend;
-import entities.Notification;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ManualExtendNotificationController {
@@ -66,5 +65,22 @@ public class ManualExtendNotificationController {
 		colExtendDate.setCellValueFactory(new PropertyValueFactory<>("extendDate"));
 		colDueDate.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
 		tableView.setItems(extendOList);
+	}
+	
+	public void start(Stage primaryStage) {
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader();
+			fxmlLoader.setLocation(getClass().getResource("/gui/ManualExtendNotificationForm.fxml"));
+			Parent root = fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.initOwner(primaryStage);
+			stage.initModality(Modality.WINDOW_MODAL);
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setTitle("Manual Extend Notifications Panel");
+			stage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

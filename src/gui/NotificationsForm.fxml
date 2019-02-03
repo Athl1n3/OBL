@@ -111,6 +111,7 @@
                <children>
                   <Button fx:id="btnProccessNotification" mnemonicParsing="false" onAction="#btnProccessNotificationPressed" text="Proccess Notification" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                   <Button fx:id="btnClearSelected" mnemonicParsing="false" onAction="#btnClearSelectedPressed" text="Clear Selected Notification" GridPane.columnIndex="2" />
+                  <Button fx:id="btnManualExtend" mnemonicParsing="false" onAction="#btnManualExtendClicked" text="Show Manual Extends" />
                </children>
             </GridPane>
          </bottom>

@@ -781,7 +781,7 @@ public class DatabaseController {
 	 * @return list
 	 */
 	public static ArrayList<ManualExtend> getManualExtendList(){
-		clientConnection.executeQuery("SELECT * FROM ManualExtend;");
+		clientConnection.executeQuery("SELECT bookID,userID,workerName,extendDate,dueDate FROM ManualExtend;");
 		ArrayList<String> res = clientConnection.getList();
 		ArrayList<ManualExtend> list = new ArrayList<ManualExtend>();
 		while (res.size() != 0) {// convert the result to arrayList<BookCopy>
