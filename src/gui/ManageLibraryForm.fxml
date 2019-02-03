@@ -38,7 +38,7 @@
                      </image>
                   </ImageView>
                   <TextField fx:id="txtSearch" layoutX="143.0" layoutY="73.0" prefHeight="31.0" prefWidth="140.0" promptText="Search" />
-                  <Label layoutX="36.0" layoutY="80.0" text="Book ID:" />
+                  <Button fx:id="btnSearch" layoutX="331.0" layoutY="76.0" mnemonicParsing="false" onAction="#btnSearchPressed" text="Search" />
                </children>
             </Pane>
          </top>
