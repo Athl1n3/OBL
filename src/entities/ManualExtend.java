@@ -1,3 +1,6 @@
+/**
+ * entities package contains all entities used by the library controllers 
+ */
 package entities;
 
 import java.time.LocalDate;
