@@ -133,6 +133,7 @@ public class EchoServer extends AbstractServer {
 		try {// getting blob file as resultSet from DB
 			ResultSet rs = DBcon.executeFileQuery(arr);
 			// save the file on server
+			//File newFile = new File("@/../" + arr.get(1));
 			File newFile = new File("C:\\obl\\" + arr.get(1));
 			output = new FileOutputStream(newFile);
 			if (rs.next()) {
