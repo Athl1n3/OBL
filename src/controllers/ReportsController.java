@@ -40,6 +40,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
+import com.mysql.fabric.xmlrpc.base.Data;
 import com.itextpdf.text.Image;
 
 import entities.Account;
@@ -54,7 +55,10 @@ import entities.UserAccount;
 import entities.UserAccount.accountStatus;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -65,14 +69,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -135,14 +143,26 @@ public class ReportsController {
 	@FXML
 	private CheckMenuItem itemLents;
 
+	@FXML
+	private ComboBox<String> cmbSavedReports;
+
+	@FXML
+	private TextField txtPath;
+
+	@FXML
+	private Button btnBrowse;
+
+	@FXML
+	void btnBrowsePresses(ActionEvent event) {
+	}
+
 	private static LibrarianAccount loggedLibAccount;
-	private String filePath = "D:\\";
+	private String filePath;
 	static int[] Per = new int[11];
 
-	
 	/**
-	 * Checks which option the user has chosen.
-	 * Creates the the specified report according to the user choice.
+	 * Checks which option the user has chosen. Creates the the specified report
+	 * according to the user choice.
 	 */
 	@FXML
 	void btnGetReportPressed(ActionEvent event) {
@@ -154,352 +174,364 @@ public class ReportsController {
 		switch (selectedRadioButton.getText()) {
 		// if the chosen option was 'Activity Report'
 		case "Activity Report": {
-			// get the corresponding data from the database
-			ActivitiesReport activitiesRprt = DatabaseController.getActivityReport();
-			ArrayList<UserAccount> accounts = activitiesRprt.getAccounts();
-			ArrayList<Book> books = activitiesRprt.getBooks();
-			// validate if we got the data
-			if (activitiesRprt == null || accounts == null || books == null) {
-				alertWarningMessage("Something went wrong while retrieving the activity report..");
-				break;
-			}
-			try {
-				int width, height;
-				PdfPCell cell;
-				Document document = new Document();
-				// check if the file is already open or not
-				if (isFileOpen(filePath + "Activity Report.pdf") == true) {
-					// if it is , then let the user know about that
-					new Alert(AlertType.ERROR,
-							"The file 'Activity Report.pdf' is already opened.\nClose it to create the report.",
-							ButtonType.OK).show();
-				} 
-				else {
-
-					// create an instance of a pdf
-					PdfWriter writer = PdfWriter.getInstance(document,
-							new FileOutputStream(filePath + "Activity Report.pdf"));
-					document.open();
-					// set the logo in the pdf
-					Image img = Image.getInstance("src/images/pdfLogo.png");
-					img.setAlignment(1);
-					document.add(img);
-
-					// initialise the header of the pdf file
-					Chunk glue = new Chunk(new VerticalPositionMark());
-					Paragraph p = new Paragraph(new Date().toString(), FontFactory.getFont(FontFactory.TIMES_BOLD, 20));
-					p.add(new Chunk(glue));
-					p.add("Activities Report");
-					document.add(p);
-					document.add(new Paragraph(
-							"----------------------------------------------------------------------------------------------------------------------------------"));
-
-					// Users Info Table (Start)
-					PdfPTable table = new PdfPTable(3);
-					table.setSpacingBefore(100);
-
-					// inserting header cells into the table
-					cell = new PdfPCell(new Paragraph("Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setColspan(3);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.GRAY);
-					table.addCell(cell);
-
-					// first row
-					cell = new PdfPCell(new Paragraph(" ", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("Number of users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("Percentage of total users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table.addCell(cell);
-
-					// second row
-					cell = new PdfPCell(new Paragraph("Users type", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph(String.valueOf(activitiesRprt.getTotalUsers())));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph(
-							String.valueOf((activitiesRprt.getTotalUsers() * 100.00) / activitiesRprt.getTotalUsers())
-									+ "%"));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					// third row
-					// insert the active users cells
-					cell = new PdfPCell(new Paragraph("Active Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					// get the number of active users
-					cell = new PdfPCell(new Paragraph(String.valueOf(activitiesRprt.getActiveUsersNumber())));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					// calculate the percentage of the active users from the total users in the
-					// system
-					double activePer = (activitiesRprt.getActiveUsersNumber() * 100.00)
-							/ activitiesRprt.getTotalUsers();
-					cell = new PdfPCell(new Paragraph(String.valueOf(activePer) + "%"));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					// fourth row
-					// insert suspended users cells
-					cell = new PdfPCell(new Paragraph("Suspended Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					// get the number of suspended users
-					cell = new PdfPCell(new Paragraph(String.valueOf(activitiesRprt.getFrozenUsersNumber())));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					// calculate the percentage of the suspended users from the total users in the
-					// system
-					double suspendedPer = (activitiesRprt.getFrozenUsersNumber() * 100.0)
-							/ activitiesRprt.getTotalUsers();
-					cell = new PdfPCell(new Paragraph(String.valueOf(suspendedPer) + "%"));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					// fifth row
-					// insert suspended users cells
-					cell = new PdfPCell(new Paragraph("Locked Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					// get the number of locked users
-					cell = new PdfPCell(new Paragraph(String.valueOf(activitiesRprt.getLockedUsersNumber())));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					// calculate the percentage of the locked users from the total users in the
-					// system
-					double lockedPer = (activitiesRprt.getLockedUsersNumber() * 100.00)
-							/ activitiesRprt.getTotalUsers();
-					cell = new PdfPCell(new Paragraph(String.valueOf(lockedPer) + "%"));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					document.add(table);
-					// Users Info Table (End)
-
-					// creates new page
-					document.newPage();
-
-					/* creates the pie chart */
-					DefaultPieDataset defaultCategoryDataset = new DefaultPieDataset();
-					defaultCategoryDataset.setValue("Active " + String.valueOf(activePer) + "%", activePer);
-					defaultCategoryDataset.setValue("Suspended " + String.valueOf(suspendedPer) + "%", suspendedPer);
-					defaultCategoryDataset.setValue("Locked" + String.valueOf(lockedPer) + "%", lockedPer);
-
-					JFreeChart jFreeChart = ChartFactory.createPieChart("Users Chart", defaultCategoryDataset, true,
-							false, false);
-
-					PdfContentByte pdfContentByte = writer.getDirectContent();
-					width = 400; // width of PieChart
-					height = 300; // height of pieChart
-					PdfTemplate pdfTemplate = pdfContentByte.createTemplate(width, height);
-
-					// create graphics
-					@SuppressWarnings("deprecation")
-					Graphics2D graphics2d = pdfTemplate.createGraphics(width, height, new DefaultFontMapper());
-
-					// create rectangle
-					java.awt.geom.Rectangle2D rectangle2d = new java.awt.geom.Rectangle2D.Double(0, 0, width, height);
-
-					jFreeChart.draw(graphics2d, rectangle2d);
-
-					graphics2d.dispose();
-					pdfContentByte.addTemplate(pdfTemplate, 100, 500); // 0, 0 will draw PIE chart on bottom left of
-																		// page
-					document.newPage();
-					/* end pie chart */
-
-					// Books Info Table (Start)
-					PdfPTable table2 = new PdfPTable(4);
-					table2.setSpacingBefore(100);
-
-					// inserting header cells into the table
-					cell = new PdfPCell(new Paragraph("Books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setColspan(4);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.GRAY);
-					table2.addCell(cell);
-
-					// first row
-					cell = new PdfPCell(new Paragraph("Book ID", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table2.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("Book Name", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table2.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("Number of copies", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table2.addCell(cell);
-
-					cell = new PdfPCell(
-							new Paragraph("Percentage of Library", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table2.addCell(cell);
-
-					// iterate through the books to display data for each book
-					int libraryBooks = activitiesRprt.getAllLibraryBooksNum();
-					DefaultPieDataset defaultCategoryDataset1 = new DefaultPieDataset();
-					for (Book book : books) {
-						cell = new PdfPCell(new Paragraph(String.valueOf(book.getBookID())));
-						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-						table2.addCell(cell);
-
-						cell = new PdfPCell(new Paragraph(book.getName()));
-						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-						table2.addCell(cell);
-
-						cell = new PdfPCell(new Paragraph(String.valueOf(book.getCopiesNumber())));
-						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-						table2.addCell(cell);
-
-						double Per = Math.round((book.getCopiesNumber() * 100.00) / libraryBooks);
-						cell = new PdfPCell(new Paragraph(String.valueOf(Per) + "%"));
-						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-						table2.addCell(cell);
-
-						defaultCategoryDataset1.setValue(book.getName() + " " + String.valueOf(Per) + "%", Per);
-					}
-
-					// display the total different books in the library
-					cell = new PdfPCell(new Paragraph("Total different books : " + String.valueOf(books.size()),
-							FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setColspan(4);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table2.addCell(cell);
-
-					// display the total books in the library
-					cell = new PdfPCell(new Paragraph("Total Books in the library : " + String.valueOf(libraryBooks),
-							FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setColspan(4);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table2.addCell(cell);
-
-					document.add(table2);
-					// Books Info Table (End)
-
-					/* creates the pie chart */
-					document.newPage();
-					JFreeChart jFreeChart1 = ChartFactory.createPieChart("Books Chart", defaultCategoryDataset1, true,
-							false, false);
-
-					PdfContentByte pdfContentByte1 = writer.getDirectContent();
-					width = 400; // width of PieChart
-					height = 300; // height of pieChart
-					PdfTemplate pdfTemplate1 = pdfContentByte1.createTemplate(width, height);
-
-					// create graphics
-					@SuppressWarnings("deprecation")
-					Graphics2D graphics2d1 = pdfTemplate1.createGraphics(width, height, new DefaultFontMapper());
-
-					// create rectangle
-					java.awt.geom.Rectangle2D rectangle2d1 = new java.awt.geom.Rectangle2D.Double(0, 0, width, height);
-
-					jFreeChart1.draw(graphics2d1, rectangle2d1);
-
-					graphics2d1.dispose();
-					pdfContentByte1.addTemplate(pdfTemplate1, 100, 500); // 0, 0 will draw PIE chart on bottom left of
-																			// page
-					document.newPage();
-					/* end pie chart */
-
-					// Late Users Info Table (Start)
-					PdfPTable table3 = new PdfPTable(3);
-					table3.setSpacingBefore(100);
-
-					// inserting header cells into the table
-					cell = new PdfPCell(new Paragraph("Late Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setColspan(3);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.GRAY);
-					table3.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("User ID", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table3.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("First Name", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table3.addCell(cell);
-
-					cell = new PdfPCell(new Paragraph("Last Name", FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table3.addCell(cell);
-
-					// iterate through the accounts and display the data for each account
-					for (UserAccount acc : accounts) {
-
-						cell = new PdfPCell(new Paragraph(String.valueOf(acc.getID())));
-						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-						table3.addCell(cell);
-
-						cell = new PdfPCell(new Paragraph(acc.getFirstName()));
-						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-						table3.addCell(cell);
-
-						cell = new PdfPCell(new Paragraph(acc.getLastName()));
-						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-						table3.addCell(cell);
-					}
-					// display the total accounts in the system
-					cell = new PdfPCell(new Paragraph("Total Accounts : " + String.valueOf(accounts.size()),
-							FontFactory.getFont(FontFactory.TIMES_BOLD)));
-					cell.setColspan(4);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-					table3.addCell(cell);
-
-					document.add(table3); // Late Users Info Table (End)
-
-					document.close();
-					// alert the user that the report has been created successfully
-					new Alert(AlertType.INFORMATION,
-							"Activity Report has been created successfully\n at " + filePath + "Activity Report.pdf",
-							ButtonType.OK).show();
-					// display the file immediately after creating it
-					Desktop.getDesktop().open(new File(filePath + "Activity Report.pdf"));
+			String date = cmbSavedReports.getSelectionModel().getSelectedItem();
+			if(!date.equals("Today")) {
+				DatabaseController.getActivityReportFileFromDB(LocalDate.parse(date), filePath);
+				try {
+					Desktop.getDesktop().open(new File(filePath));
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (DocumentException e) {
-				e.printStackTrace();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+			}
+			else {
+				// get the corresponding data from the database
+				ActivitiesReport activitiesRprt = DatabaseController.getActivityReport();
+				ArrayList<UserAccount> accounts = activitiesRprt.getAccounts();
+				ArrayList<Book> books = activitiesRprt.getBooks();
+				// validate if we got the data
+				if (activitiesRprt == null || accounts == null || books == null) {
+					alertWarningMessage("Something went wrong while retrieving the activity report..");
+					break;
+				}
+				try {
+					int width, height;
+					PdfPCell cell;
+					Document document = new Document();
+					// check if the file is already open or not
+					if (isFileOpen(filePath + "\\Activity Report.pdf") == true) {
+						// if it is , then let the user know about that
+						new Alert(AlertType.ERROR,
+								"The file 'Activity Report.pdf' is already opened.\nClose it to create the report.",
+								ButtonType.OK).show();
+					} else {
+
+						// create an instance of a pdf
+						PdfWriter writer = PdfWriter.getInstance(document,
+								new FileOutputStream(filePath + "\\Activity Report.pdf"));
+						document.open();
+						// set the logo in the pdf
+						Image img = Image.getInstance("src/images/pdfLogo.png");
+						img.setAlignment(1);
+						document.add(img);
+
+						// initialise the header of the pdf file
+						Chunk glue = new Chunk(new VerticalPositionMark());
+						Paragraph p = new Paragraph(new Date().toString(), FontFactory.getFont(FontFactory.TIMES_BOLD, 20));
+						p.add(new Chunk(glue));
+						p.add("Activities Report");
+						document.add(p);
+						document.add(new Paragraph(
+								"----------------------------------------------------------------------------------------------------------------------------------"));
+
+						// Users Info Table (Start)
+						PdfPTable table = new PdfPTable(3);
+						table.setSpacingBefore(100);
+
+						// inserting header cells into the table
+						cell = new PdfPCell(new Paragraph("Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setColspan(3);
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.GRAY);
+						table.addCell(cell);
+
+						// first row
+						cell = new PdfPCell(new Paragraph(" ", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table.addCell(cell);
+
+						cell = new PdfPCell(new Paragraph("Number of users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table.addCell(cell);
+
+						cell = new PdfPCell(
+								new Paragraph("Percentage of total users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table.addCell(cell);
+
+						// second row
+						cell = new PdfPCell(new Paragraph("Users type", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						cell = new PdfPCell(new Paragraph(String.valueOf(activitiesRprt.getTotalUsers())));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						cell = new PdfPCell(new Paragraph(
+								String.valueOf((activitiesRprt.getTotalUsers() * 100.00) / activitiesRprt.getTotalUsers())
+										+ "%"));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						// third row
+						// insert the active users cells
+						cell = new PdfPCell(new Paragraph("Active Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						// get the number of active users
+						cell = new PdfPCell(new Paragraph(String.valueOf(activitiesRprt.getActiveUsersNumber())));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						// calculate the percentage of the active users from the total users in the
+						// system
+						double activePer = (activitiesRprt.getActiveUsersNumber() * 100.00)
+								/ activitiesRprt.getTotalUsers();
+						cell = new PdfPCell(new Paragraph(String.valueOf(activePer) + "%"));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						// fourth row
+						// insert suspended users cells
+						cell = new PdfPCell(new Paragraph("Suspended Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						// get the number of suspended users
+						cell = new PdfPCell(new Paragraph(String.valueOf(activitiesRprt.getFrozenUsersNumber())));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						// calculate the percentage of the suspended users from the total users in the
+						// system
+						double suspendedPer = (activitiesRprt.getFrozenUsersNumber() * 100.0)
+								/ activitiesRprt.getTotalUsers();
+						cell = new PdfPCell(new Paragraph(String.valueOf(suspendedPer) + "%"));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						// fifth row
+						// insert suspended users cells
+						cell = new PdfPCell(new Paragraph("Locked Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						// get the number of locked users
+						cell = new PdfPCell(new Paragraph(String.valueOf(activitiesRprt.getLockedUsersNumber())));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						// calculate the percentage of the locked users from the total users in the
+						// system
+						double lockedPer = (activitiesRprt.getLockedUsersNumber() * 100.00)
+								/ activitiesRprt.getTotalUsers();
+						cell = new PdfPCell(new Paragraph(String.valueOf(lockedPer) + "%"));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(cell);
+
+						document.add(table);
+						// Users Info Table (End)
+
+						// creates new page
+						document.newPage();
+
+						/* creates the pie chart */
+						DefaultPieDataset defaultCategoryDataset = new DefaultPieDataset();
+						defaultCategoryDataset.setValue("Active " + String.valueOf(activePer) + "%", activePer);
+						defaultCategoryDataset.setValue("Suspended " + String.valueOf(suspendedPer) + "%", suspendedPer);
+						defaultCategoryDataset.setValue("Locked" + String.valueOf(lockedPer) + "%", lockedPer);
+
+						JFreeChart jFreeChart = ChartFactory.createPieChart("Users Chart", defaultCategoryDataset, true,
+								false, false);
+
+						PdfContentByte pdfContentByte = writer.getDirectContent();
+						width = 400; // width of PieChart
+						height = 300; // height of pieChart
+						PdfTemplate pdfTemplate = pdfContentByte.createTemplate(width, height);
+
+						// create graphics
+						@SuppressWarnings("deprecation")
+						Graphics2D graphics2d = pdfTemplate.createGraphics(width, height, new DefaultFontMapper());
+
+						// create rectangle
+						java.awt.geom.Rectangle2D rectangle2d = new java.awt.geom.Rectangle2D.Double(0, 0, width, height);
+
+						jFreeChart.draw(graphics2d, rectangle2d);
+
+						graphics2d.dispose();
+						pdfContentByte.addTemplate(pdfTemplate, 100, 500); // 0, 0 will draw PIE chart on bottom left of
+																			// page
+						document.newPage();
+						/* end pie chart */
+
+						// Books Info Table (Start)
+						PdfPTable table2 = new PdfPTable(4);
+						table2.setSpacingBefore(100);
+
+						// inserting header cells into the table
+						cell = new PdfPCell(new Paragraph("Books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setColspan(4);
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.GRAY);
+						table2.addCell(cell);
+
+						// first row
+						cell = new PdfPCell(new Paragraph("Book ID", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table2.addCell(cell);
+
+						cell = new PdfPCell(new Paragraph("Book Name", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table2.addCell(cell);
+
+						cell = new PdfPCell(new Paragraph("Number of copies", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table2.addCell(cell);
+
+						cell = new PdfPCell(
+								new Paragraph("Percentage of Library", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table2.addCell(cell);
+
+						// iterate through the books to display data for each book
+						int libraryBooks = activitiesRprt.getAllLibraryBooksNum();
+						DefaultPieDataset defaultCategoryDataset1 = new DefaultPieDataset();
+						for (Book book : books) {
+							cell = new PdfPCell(new Paragraph(String.valueOf(book.getBookID())));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							table2.addCell(cell);
+
+							cell = new PdfPCell(new Paragraph(book.getName()));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							table2.addCell(cell);
+
+							cell = new PdfPCell(new Paragraph(String.valueOf(book.getCopiesNumber())));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							table2.addCell(cell);
+
+							double Per = Math.round((book.getCopiesNumber() * 100.00) / libraryBooks);
+							cell = new PdfPCell(new Paragraph(String.valueOf(Per) + "%"));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							table2.addCell(cell);
+
+							defaultCategoryDataset1.setValue(book.getName() + " " + String.valueOf(Per) + "%", Per);
+						}
+
+						// display the total different books in the library
+						cell = new PdfPCell(new Paragraph("Total different books : " + String.valueOf(books.size()),
+								FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setColspan(4);
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table2.addCell(cell);
+
+						// display the total books in the library
+						cell = new PdfPCell(new Paragraph("Total Books in the library : " + String.valueOf(libraryBooks),
+								FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setColspan(4);
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table2.addCell(cell);
+
+						document.add(table2);
+						// Books Info Table (End)
+
+						/* creates the pie chart */
+						document.newPage();
+						JFreeChart jFreeChart1 = ChartFactory.createPieChart("Books Chart", defaultCategoryDataset1, true,
+								false, false);
+
+						PdfContentByte pdfContentByte1 = writer.getDirectContent();
+						width = 400; // width of PieChart
+						height = 300; // height of pieChart
+						PdfTemplate pdfTemplate1 = pdfContentByte1.createTemplate(width, height);
+
+						// create graphics
+						@SuppressWarnings("deprecation")
+						Graphics2D graphics2d1 = pdfTemplate1.createGraphics(width, height, new DefaultFontMapper());
+
+						// create rectangle
+						java.awt.geom.Rectangle2D rectangle2d1 = new java.awt.geom.Rectangle2D.Double(0, 0, width, height);
+
+						jFreeChart1.draw(graphics2d1, rectangle2d1);
+
+						graphics2d1.dispose();
+						pdfContentByte1.addTemplate(pdfTemplate1, 100, 500); // 0, 0 will draw PIE chart on bottom left of
+																				// page
+						document.newPage();
+						/* end pie chart */
+
+						// Late Users Info Table (Start)
+						PdfPTable table3 = new PdfPTable(3);
+						table3.setSpacingBefore(100);
+
+						// inserting header cells into the table
+						cell = new PdfPCell(new Paragraph("Late Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setColspan(3);
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.GRAY);
+						table3.addCell(cell);
+
+						cell = new PdfPCell(new Paragraph("User ID", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table3.addCell(cell);
+
+						cell = new PdfPCell(new Paragraph("First Name", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table3.addCell(cell);
+
+						cell = new PdfPCell(new Paragraph("Last Name", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table3.addCell(cell);
+
+						// iterate through the accounts and display the data for each account
+						for (UserAccount acc : accounts) {
+
+							cell = new PdfPCell(new Paragraph(String.valueOf(acc.getID())));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							table3.addCell(cell);
+
+							cell = new PdfPCell(new Paragraph(acc.getFirstName()));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							table3.addCell(cell);
+
+							cell = new PdfPCell(new Paragraph(acc.getLastName()));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							table3.addCell(cell);
+						}
+						// display the total accounts in the system
+						cell = new PdfPCell(new Paragraph("Total Accounts : " + String.valueOf(accounts.size()),
+								FontFactory.getFont(FontFactory.TIMES_BOLD)));
+						cell.setColspan(4);
+						cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+						cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+						table3.addCell(cell);
+
+						document.add(table3); // Late Users Info Table (End)
+
+						document.close();
+						// alert the user that the report has been created successfully
+						new Alert(AlertType.INFORMATION,
+								"Activity Report has been created successfully\n at " + filePath + "\\Activity Report.pdf",
+								ButtonType.OK).show();
+						// display the file immediately after creating it
+						Desktop.getDesktop().open(new File(txtPath.getText() + "\\Activity Report.pdf"));
+						DatabaseController.saveActivityReportFile(LocalDate.now(),txtPath.getText().concat("\\Activity Report.pdf"));
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (DocumentException e) {
+					e.printStackTrace();
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 			break;
 		}
@@ -509,13 +541,12 @@ public class ReportsController {
 			PdfPCell cell;
 
 			// check if the file is already open or not
-			if (isFileOpen(filePath + "Lends Report.pdf") == true) {
+			if (isFileOpen(filePath + "\\Lends Report.pdf") == true) {
 				// if the file is open , let the user know
 				new Alert(AlertType.ERROR, "The file 'Lends Report.pdf' is already opened.", ButtonType.OK).show();
-			} 
-			else {
+			} else {
 				ArrayList<LentBook> books = DatabaseController.getLentBookList(-1);
-				
+
 				// validate if we have retrieved the data from the data base
 				if (books == null) {
 					// if not , then let the user know
@@ -526,7 +557,7 @@ public class ReportsController {
 					// if not then create an instance of a pdf
 					Document document = new Document();
 					PdfWriter writer = PdfWriter.getInstance(document,
-							new FileOutputStream(filePath + "Lends Report.pdf"));
+							new FileOutputStream(filePath + "\\Lends Report.pdf"));
 					document.open();
 					// insert the logo in the header of the pdf
 					Image img = Image.getInstance("src/images/pdfLogo.png");
@@ -552,19 +583,21 @@ public class ReportsController {
 					// create a list to convert them to integer array to make it easier to sort them
 					List<String> wantedbks = new ArrayList<String>();
 					List<String> regularbks = new ArrayList<String>();
-					
+
 					// iterate through the lent books list
 					for (LentBook book : books) {
 						// check if this book type is 'wanted'
 						if (book.getBook().getBookType().toString().equals(Book.bookType.Wanted.toString()) == true) {
 							wantedBooks.add(book);
-							if(book.isReturned() == false) {
+							if (book.isReturned() == false) {
 								wntdBooks = wntdBooks + book.getIssueDate().until(LocalDate.now(), ChronoUnit.DAYS);
-								wantedbks.add(String.valueOf(book.getIssueDate().until(LocalDate.now(), ChronoUnit.DAYS)));
-							}
-							else {
-								wntdBooks = wntdBooks + book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS);
-								wantedbks.add(String.valueOf(book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS)));
+								wantedbks.add(
+										String.valueOf(book.getIssueDate().until(LocalDate.now(), ChronoUnit.DAYS)));
+							} else {
+								wntdBooks = wntdBooks
+										+ book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS);
+								wantedbks.add(String
+										.valueOf(book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS)));
 							}
 							// check whether the user of this lent book request is late to return the book
 							if (book.isLate() == true)
@@ -576,13 +609,15 @@ public class ReportsController {
 						} else {
 							// the book is not a 'regular' book , so we add it to the regular books list
 							regularBooks.add(book);
-							if(book.isReturned() == false) {
+							if (book.isReturned() == false) {
 								rglrBooks = rglrBooks + book.getIssueDate().until(LocalDate.now(), ChronoUnit.DAYS);
-								regularbks.add(String.valueOf(book.getIssueDate().until(LocalDate.now(), ChronoUnit.DAYS)));
-							}
-							else {
-								rglrBooks = rglrBooks + book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS);
-								regularbks.add(String.valueOf(book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS)));
+								regularbks.add(
+										String.valueOf(book.getIssueDate().until(LocalDate.now(), ChronoUnit.DAYS)));
+							} else {
+								rglrBooks = rglrBooks
+										+ book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS);
+								regularbks.add(String
+										.valueOf(book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS)));
 							}
 							// check whether the user of this lent book request is late to return the book
 							if (book.isLate() == true)
@@ -596,20 +631,20 @@ public class ReportsController {
 					int i = 0;
 					long[] wantedDelays = new long[wantedBooks.size()];
 					long[] regularDelays = new long[regularBooks.size()];
-					for(LentBook book : wantedBooks) {
-						if(book.isReturned() == false) 
+					for (LentBook book : wantedBooks) {
+						if (book.isReturned() == false)
 							wantedDelays[i++] = book.getIssueDate().until(LocalDate.now(), ChronoUnit.DAYS);
-						else 
+						else
 							wantedDelays[i++] = book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS);
 					}
 					i = 0;
-					for(LentBook book : regularBooks) {
-						if(book.isReturned() == false) 
+					for (LentBook book : regularBooks) {
+						if (book.isReturned() == false)
 							regularDelays[i++] = book.getIssueDate().until(LocalDate.now(), ChronoUnit.DAYS);
 						else
 							regularDelays[i++] = book.getIssueDate().until(book.getReturnDate(), ChronoUnit.DAYS);
 					}
-					
+
 					// converting (Start)
 					temp = wantedbks.toArray(new String[wantedbks.size()]);
 					int[] arrayWanted = Arrays.stream(temp).mapToInt(Integer::parseInt).toArray();
@@ -633,7 +668,8 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.GRAY);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Average 'Wanted' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(
+							new Paragraph("Average 'Wanted' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table.addCell(cell);
@@ -643,14 +679,21 @@ public class ReportsController {
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Median of 'Wanted' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(
+							new Paragraph("Median of 'Wanted' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table.addCell(cell);
 
 					// calculate the median of wanted books and display it
-					cell = new PdfPCell(new Paragraph(String.valueOf(
-							((arrayWanted[arrayWanted.length / 2] + arrayWanted[(arrayWanted.length - 1) / 2]) / 2))));
+
+					int median;
+					if (arrayWanted.length % 2 == 0)
+						median = ((int) arrayWanted[arrayWanted.length / 2]
+								+ (int) arrayWanted[arrayWanted.length / 2 - 1]) / 2;
+					else
+						median = (int) arrayWanted[arrayWanted.length / 2];
+					cell = new PdfPCell(new Paragraph(String.valueOf((median))));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(cell);
 
@@ -679,23 +722,24 @@ public class ReportsController {
 					table.addCell(cell);
 
 					document.add(table);
-					
-					int max =  (int)Arrays.stream(wantedDelays).max().getAsLong();
-					
+
+					int max = (int) Arrays.stream(wantedDelays).max().getAsLong();
+
 					PdfPTable table2 = new PdfPTable(3);
-					
+
 					cell = new PdfPCell(new Paragraph("'Wanted' Books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setColspan(3);
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.GRAY);
 					table2.addCell(cell);
-					
+
 					cell = new PdfPCell(new Paragraph("Days", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table2.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Percentage of total 'Wanted' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Percentage of total 'Wanted' books",
+							FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table2.addCell(cell);
@@ -705,13 +749,14 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table2.addCell(cell);
 					document.add(table2);
-					
-					if (max >= 10) 
+
+					if (max >= 10)
 						maxIsGreaterThan10(document, max, wantedDelays);
-					else 
+					else
 						maxIsLesserThan10(document, max, wantedDelays);
 					PdfPTable table21 = new PdfPTable(3);
-					cell = new PdfPCell(new Paragraph("Total 'Wanted' Books : " + String.valueOf(wantedBooks.size()), FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Total 'Wanted' Books : " + String.valueOf(wantedBooks.size()),
+							FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setColspan(3);
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.GRAY);
@@ -730,7 +775,8 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.GRAY);
 					table3.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Average 'Regular' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(
+							new Paragraph("Average 'Regular' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table3.addCell(cell);
@@ -740,15 +786,21 @@ public class ReportsController {
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table3.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Median of 'Regular' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(
+							new Paragraph("Median of 'Regular' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table3.addCell(cell);
 
 					// calculate the median of regular books and display it
-					cell = new PdfPCell(new Paragraph(String.valueOf(
-							((arrayRegular[arrayRegular.length / 2] + arrayRegular[(arrayRegular.length - 1) / 2])
-									/ 2))));
+
+					if (arrayRegular.length % 2 == 0)
+						median = ((int) arrayRegular[arrayRegular.length / 2]
+								+ (int) arrayRegular[arrayRegular.length / 2 - 1]) / 2;
+					else
+						median = (int) arrayRegular[arrayRegular.length / 2];
+
+					cell = new PdfPCell(new Paragraph(String.valueOf(median)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table3.addCell(cell);
 
@@ -778,23 +830,24 @@ public class ReportsController {
 
 					document.add(table3);
 					// Regular Books Info (End)
-					
-					max =  (int)Arrays.stream(regularDelays).max().getAsLong();
-					
+
+					max = (int) Arrays.stream(regularDelays).max().getAsLong();
+
 					PdfPTable table4 = new PdfPTable(3);
-					
+
 					cell = new PdfPCell(new Paragraph("'Regular' Books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setColspan(3);
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.GRAY);
 					table4.addCell(cell);
-					
+
 					cell = new PdfPCell(new Paragraph("Days", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table4.addCell(cell);
 
-					cell = new PdfPCell(new Paragraph("Percentage of total 'Regular' books", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Percentage of total 'Regular' books",
+							FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table4.addCell(cell);
@@ -804,26 +857,26 @@ public class ReportsController {
 					cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 					table4.addCell(cell);
 					document.add(table4);
-					
-					if (max >= 10) 
+
+					if (max >= 10)
 						maxIsGreaterThan10(document, max, regularDelays);
-					else 
+					else
 						maxIsLesserThan10(document, max, regularDelays);
 					PdfPTable table22 = new PdfPTable(3);
-					cell = new PdfPCell(new Paragraph("Total 'Regular' Books : " + String.valueOf(regularBooks.size()), FontFactory.getFont(FontFactory.TIMES_BOLD)));
+					cell = new PdfPCell(new Paragraph("Total 'Regular' Books : " + String.valueOf(regularBooks.size()),
+							FontFactory.getFont(FontFactory.TIMES_BOLD)));
 					cell.setColspan(3);
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setBackgroundColor(BaseColor.GRAY);
 					table22.addCell(cell);
 					document.add(table22);
 
-
 					document.close();
 					// display the file immediately after creating it
-					Desktop.getDesktop().open(new File(filePath + "Lends Report.pdf"));
+					Desktop.getDesktop().open(new File(filePath + "\\Lends Report.pdf"));
 					// alert the user that the report has been created successfully
 					new Alert(AlertType.INFORMATION,
-							"Lends Report has been created successfully\nat " + filePath + "Lends Report.pdf",
+							"Lends Report has been created successfully\nat " + filePath + "\\Lends Report.pdf",
 							ButtonType.OK).show();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -834,7 +887,7 @@ public class ReportsController {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 			break;
 		}
@@ -844,13 +897,13 @@ public class ReportsController {
 				PdfPCell cell;
 				Document document = new Document();
 				// check if the file is already open or not
-				if (isFileOpen(filePath + "Return Delays Report.pdf") == true) {
+				if (isFileOpen(filePath + "\\Return Delays Report.pdf") == true) {
 					// if the file is open , let the user know
 					new Alert(AlertType.ERROR, "The file 'Return Delays Report.pdf' is already opened.", ButtonType.OK)
 							.show();
 				} else {
 					// if not then create an instance of a pdf
-					PdfWriter.getInstance(document, new FileOutputStream(filePath + "Return Delays Report.pdf"));
+					PdfWriter.getInstance(document, new FileOutputStream(filePath + "\\Return Delays Report.pdf"));
 					document.open();
 
 					// insert the logo in the header of the pdf
@@ -877,66 +930,69 @@ public class ReportsController {
 						break;
 					}
 					for (Book book : books) {
-						ArrayList<LentBook> lentBooks = DatabaseController.getLateCopiesForSpecificBook(book.getBookID());
+						ArrayList<LentBook> lentBooks = DatabaseController
+								.getLateCopiesForSpecificBook(book.getBookID());
 						if (lentBooks == null) {
 							alertWarningMessage("Something went wrong while retrieving lent books from data base.");
 							document.close();
 							break;
-						} 
-						else {
+						} else {
 							PdfPTable table = new PdfPTable(2);
 							table.setSpacingBefore(100);
-							
-							cell = new PdfPCell(new Paragraph("Book ID : " + String.valueOf(book.getBookID()), FontFactory.getFont(FontFactory.TIMES_BOLD)));
+
+							cell = new PdfPCell(new Paragraph("Book ID : " + String.valueOf(book.getBookID()),
+									FontFactory.getFont(FontFactory.TIMES_BOLD)));
 							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 							cell.setBackgroundColor(BaseColor.ORANGE);
 							table.addCell(cell);
 
-							cell = new PdfPCell(new Paragraph("Book Name : " + book.getName(), FontFactory.getFont(FontFactory.TIMES_BOLD)));
+							cell = new PdfPCell(new Paragraph("Book Name : " + book.getName(),
+									FontFactory.getFont(FontFactory.TIMES_BOLD)));
 							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 							cell.setBackgroundColor(BaseColor.ORANGE);
 							table.addCell(cell);
 							document.add(table);
-							
-							
+
 							int i = 0;
 							long[] delays = new long[lentBooks.size()];
-							for (LentBook lntBook : lentBooks) 
+							for (LentBook lntBook : lentBooks)
 								delays[i++] = lntBook.getDueDate().until(lntBook.getReturnDate(), ChronoUnit.DAYS);
-							
-							int max =  (int)Arrays.stream(delays).max().getAsLong();
 
-							
+							int max = (int) Arrays.stream(delays).max().getAsLong();
+
 							PdfPTable table2 = new PdfPTable(3);
-							
+
 							cell = new PdfPCell(new Paragraph("Days", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 							cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 							table2.addCell(cell);
 
-							cell = new PdfPCell(new Paragraph("Percentage of Total Late Users ", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+							cell = new PdfPCell(new Paragraph("Percentage of Total Late Users ",
+									FontFactory.getFont(FontFactory.TIMES_BOLD)));
 							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 							cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 							table2.addCell(cell);
 
-							cell = new PdfPCell(new Paragraph("Number of Late Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+							cell = new PdfPCell(
+									new Paragraph("Number of Late Users", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 							cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 							table2.addCell(cell);
 							document.add(table2);
 
-							if (max >= 10) 
+							if (max >= 10)
 								maxIsGreaterThan10(document, max, delays);
-							else 
-								maxIsLesserThan10(document, max, delays);						}
+							else
+								maxIsLesserThan10(document, max, delays);
+						}
 					}
 					document.close();
 
 					// alert the user that the report has been created successfully
 					new Alert(AlertType.INFORMATION, "Return Delays Report has been created successfully\nat "
-							+ filePath + "Return Delays Report.pdf", ButtonType.OK).show();
+							+ filePath + "\\Return Delays Report.pdf", ButtonType.OK).show();
 					// display the file immediately after creating it
-					Desktop.getDesktop().open(new File(filePath + "Return Delays Report.pdf"));
+					Desktop.getDesktop().open(new File(filePath + "\\Return Delays Report.pdf"));
 				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -954,12 +1010,12 @@ public class ReportsController {
 			Document document = new Document();
 			try {
 				// check if the file is already open or not
-				if (isFileOpen(filePath + "Report.pdf")) {
+				if (isFileOpen(filePath + "\\Report.pdf")) {
 					// if the file is open , then let the user know
 					new Alert(AlertType.ERROR, "The file 'Report.pdf' is already opened.", ButtonType.OK).show();
 				} else {
 					// if not then create an instance of a pdf
-					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath + "Report.pdf"));
+					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath + "\\Report.pdf"));
 					document.open();
 					// insert the logo in the header of the pdf
 					Image img = Image.getInstance("src/images/pdfLogo.png");
@@ -1022,10 +1078,10 @@ public class ReportsController {
 					}
 					document.close();
 					// alert the user that the report has been created successfully
-					Desktop.getDesktop().open(new File(filePath + "Report.pdf"));
+					Desktop.getDesktop().open(new File(filePath + "\\Report.pdf"));
 					// alert the user that the report has been created successfully
 					new Alert(AlertType.INFORMATION,
-							"Report has been created successfully\nat " + filePath + "Report.pdf", ButtonType.OK)
+							"Report has been created successfully\nat " + filePath + "\\Report.pdf", ButtonType.OK)
 									.show();
 				}
 			} catch (FileNotFoundException e) {
@@ -1053,7 +1109,7 @@ public class ReportsController {
 
 	void start(Stage primaryStage, Account loggedLibAccount) throws Exception {
 		this.loggedLibAccount = (LibrarianAccount) loggedLibAccount;
-		FXMLLoader fxmlLoader= new FXMLLoader();
+		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setLocation(getClass().getResource("/gui/ReportsForm.fxml"));
 		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
@@ -1076,7 +1132,18 @@ public class ReportsController {
 				mnuBtn.setVisible(false);
 				lblReport.setVisible(false);
 			}
+			if(rdActivityReport.isSelected() == true) {
+				txtPath.setVisible(true);
+				btnBrowse.setVisible(true);
+				cmbSavedReports.setVisible(true);
+			}
+			else {
+				txtPath.setVisible(false);
+				btnBrowse.setVisible(false);
+				cmbSavedReports.setVisible(false);
+			}
 		});
+		
 		mnuBtn.setText(itemOrders.getText());
 		itemOrders.setOnAction(e -> {
 			mnuBtn.setText(itemOrders.getText());
@@ -1096,7 +1163,38 @@ public class ReportsController {
 		itemsActive.setOnAction(e -> {
 			mnuBtn.setText(itemsActive.getText());
 		});
+		
+		ObservableList<String> options = FXCollections.observableArrayList(DatabaseController.getAllReportsFromDB());
+		options.add("Today");
+		cmbSavedReports.getItems().addAll(options);
+		cmbSavedReports.setValue("Today");
+		
+		txtPath.setEditable(false);
+		final DirectoryChooser directoryChooser = new DirectoryChooser();
+        configuringDirectoryChooser(directoryChooser);
+		
+		btnBrowse.setOnAction(new EventHandler<ActionEvent>() {
+			 
+            @Override
+            public void handle(ActionEvent event) {
+                File dir = directoryChooser.showDialog(null);
+                if (dir != null) {
+                    txtPath.setText(dir.getAbsolutePath());
+                    filePath = dir.getAbsolutePath();
+                } else {
+                    txtPath.setText(null);
+                }
+            }
+        });
 	}
+	
+	 private void configuringDirectoryChooser(DirectoryChooser directoryChooser) {
+	        // Set title for DirectoryChooser
+	        directoryChooser.setTitle("Save the report");
+	 
+	        // Set Initial Directory
+	        directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+	    }
 
 	/**
 	 * Show an appropriate alert to the user when an error occur
@@ -1314,8 +1412,8 @@ public class ReportsController {
 				returned++;
 				// if the user has returned the book , then calculate the difference between
 				// dates and display it
-				cell = new PdfPCell(new Paragraph(
-						String.valueOf(lent.getDueDate().until(lent.getReturnDate(), ChronoUnit.DAYS))));
+				cell = new PdfPCell(
+						new Paragraph(String.valueOf(lent.getDueDate().until(lent.getReturnDate(), ChronoUnit.DAYS))));
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(cell);
 
@@ -1488,7 +1586,8 @@ public class ReportsController {
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph("Percentage of total late lents", FontFactory.getFont(FontFactory.TIMES_BOLD)));
+		cell = new PdfPCell(
+				new Paragraph("Percentage of total late lents", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
@@ -1920,8 +2019,9 @@ public class ReportsController {
 	}
 
 	/**
-	 * Checks if the file with the specified path is opened or not.  returns false if and only if the file is not opened.
-	 * Otherwise returns true.
+	 * Checks if the file with the specified path is opened or not. returns false if
+	 * and only if the file is not opened. Otherwise returns true.
+	 * 
 	 * @param path
 	 * @return true if the file is open , otherwise false
 	 */
@@ -1944,11 +2044,13 @@ public class ReportsController {
 	}
 
 	/**
-	 * Distribute's a table according to the max with a calculated algorithm to distribute the max delay days to 10 cells in the table.
-	 * Display the table in the PDF file. display the content if the delays array into the created table.
+	 * Distribute's a table according to the max with a calculated algorithm to
+	 * distribute the max delay days to 10 cells in the table. Display the table in
+	 * the PDF file. display the content if the delays array into the created table.
+	 * 
 	 * @param document - the writer to the pdf file.
-	 * @param max - the max delays.
-	 * @param delays = the delays array for a specific book
+	 * @param max      - the max delays.
+	 * @param delays   = the delays array for a specific book
 	 * @throws DocumentException
 	 */
 	public static void maxIsGreaterThan10(Document document, int max, long[] delays) throws DocumentException {
@@ -1967,56 +2069,65 @@ public class ReportsController {
 					count[c]++;
 				}
 				if (mode == 0)
-					if (((int)delays[k]) == max)
+					if (((int) delays[k]) == max)
 						count[9]++;
 			}
 			mode = 1;
 			cell = new PdfPCell(new Paragraph(String.valueOf(Per[i - 1]) + " - " + String.valueOf(Per[i])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			table.addCell(cell);
-			
+
 			cell = new PdfPCell(new Paragraph(String.valueOf(Math.round((count[c] * 100.00) / delays.length)) + "%"));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			table.addCell(cell);
-			
+
 			cell = new PdfPCell(new Paragraph(String.valueOf(count[c])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			table.addCell(cell);
 			c++;
 		}
 		document.add(table);
-		
+
 		PdfPTable table2 = new PdfPTable(2);
-		
+
 		cell = new PdfPCell(new Paragraph("Average (Lates)", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
-		
+
 		cell = new PdfPCell(new Paragraph("Median (Lates)", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
-		
+
 		double avg = 0;
-		for(int i = 0 ; i < delays.length;i++)
-			avg = avg + (double)delays[i];
-		cell = new PdfPCell(new Paragraph(String.valueOf(avg/delays.length)));
+		for (int i = 0; i < delays.length; i++)
+			avg = avg + (double) delays[i];
+		cell = new PdfPCell(new Paragraph(String.valueOf(avg / delays.length)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph(String.valueOf((int)(delays[delays.length / 2] + delays[(delays.length - 1) / 2])/ 2)));
+		int median;
+		if (delays.length % 2 == 0)
+			median = ((int) delays[delays.length / 2] + (int) delays[delays.length / 2 - 1]) / 2;
+		else
+			median = (int) delays[delays.length / 2];
+
+		cell = new PdfPCell(new Paragraph(String.valueOf(median)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table2.addCell(cell);
-		
+
 		document.add(table2);
 	}
+
 	/**
-	 * Distributes a table according to the max with a 1 day difference.
-	 * Display the table in the PDF file. display the content if the delays array into the created table.
+	 * Distributes a table according to the max with a 1 day difference. Display the
+	 * table in the PDF file. display the content if the delays array into the
+	 * created table.
+	 * 
 	 * @param document - the writer to the pdf file.
-	 * @param max - the max delays.
-	 * @param delays = the delays array for a specific book
+	 * @param max      - the max delays.
+	 * @param delays   = the delays array for a specific book
 	 * @throws DocumentException
 	 */
 	public static void maxIsLesserThan10(Document document, int max, long[] delays) throws DocumentException {
@@ -2056,28 +2167,33 @@ public class ReportsController {
 		}
 		document.add(table);
 		PdfPTable table2 = new PdfPTable(2);
-		
+
 		cell = new PdfPCell(new Paragraph("Average (Lates)", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
-		
+
 		cell = new PdfPCell(new Paragraph("Median (Lates)", FontFactory.getFont(FontFactory.TIMES_BOLD)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 		table2.addCell(cell);
-		
+
 		double avg = 0;
-		for(int i = 0 ; i < delays.length;i++)
-			avg = avg + (double)delays[i];
-		cell = new PdfPCell(new Paragraph(String.valueOf(avg/delays.length)));
+		for (int i = 0; i < delays.length; i++)
+			avg = avg + (double) delays[i];
+		cell = new PdfPCell(new Paragraph(String.valueOf(avg / delays.length)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table2.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph(String.valueOf((int)(delays[delays.length / 2] + delays[(delays.length - 1) / 2])/ 2)));
+		int median;
+		if (delays.length % 2 == 0)
+			median = ((int) delays[delays.length / 2] + (int) delays[delays.length / 2 - 1]) / 2;
+		else
+			median = (int) delays[delays.length / 2];
+		cell = new PdfPCell(new Paragraph(String.valueOf(median)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table2.addCell(cell);
-		
+
 		document.add(table2);
 	}
 }

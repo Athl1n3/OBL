@@ -3,10 +3,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -19,18 +21,18 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="332.0" prefWidth="473.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportsController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="385.0" prefWidth="604.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportsController">
    <children>
-      <BorderPane prefHeight="430.0" prefWidth="400.0">
+      <BorderPane prefHeight="377.0" prefWidth="744.0">
          <top>
             <Pane prefHeight="61.0" prefWidth="534.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label layoutX="188.0" layoutY="4.0" prefHeight="53.0" prefWidth="98.0" text="Reports">
+                  <Label layoutX="253.0" layoutY="4.0" prefHeight="53.0" prefWidth="98.0" text="Reports">
                      <font>
                         <Font name="Bell MT Bold" size="27.0" />
                      </font>
                   </Label>
-                  <ImageView fitHeight="70.0" fitWidth="138.0" layoutX="335.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="84.0" fitWidth="159.0" layoutX="445.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/Logo.png" />
                      </image>
@@ -46,8 +48,7 @@
          <bottom>
             <GridPane prefHeight="50.0" prefWidth="540.0" BorderPane.alignment="CENTER">
               <columnConstraints>
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="474.0" minWidth="10.0" prefWidth="474.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="241.20001220703125" minWidth="0.0" prefWidth="0.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints />
@@ -61,31 +62,31 @@
                      </GridPane.margin>
                   </Button>
                   <Separator prefWidth="200.0" GridPane.rowIndex="1" />
-                  <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
             </GridPane>
          </bottom>
          <center>
-            <GridPane prefHeight="221.0" prefWidth="445.0" BorderPane.alignment="CENTER">
+            <GridPane maxWidth="-Infinity" prefHeight="266.0" prefWidth="604.0" BorderPane.alignment="CENTER">
               <columnConstraints>
-                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="147.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="198.0" minWidth="10.0" prefWidth="146.0" />
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="207.0" minWidth="10.0" prefWidth="117.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="363.0" minWidth="211.0" prefWidth="211.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="264.0" minWidth="10.0" prefWidth="264.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="160.0" minHeight="10.0" prefHeight="145.19998168945312" vgrow="SOMETIMES" />
                 <RowConstraints maxHeight="118.0" minHeight="10.0" prefHeight="56.000018310546864" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TilePane prefHeight="105.0" prefWidth="169.0" GridPane.columnIndex="1">
+                  <TilePane prefHeight="160.0" prefWidth="137.0" GridPane.columnIndex="1">
                      <children>
-                        <RadioButton fx:id="rdActivityReport" mnemonicParsing="false" prefHeight="30.0" prefWidth="162.0" selected="true" text="Activity Report">
+                        <RadioButton fx:id="rdActivityReport" mnemonicParsing="false" prefHeight="30.0" prefWidth="193.0" selected="true" text="Activity Report">
                            <toggleGroup>
                               <ToggleGroup fx:id="colorToggleGroup" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton fx:id="rdLendsReport" mnemonicParsing="false" prefHeight="30.0" prefWidth="161.0" text="Lends Report" toggleGroup="$colorToggleGroup" />
-                        <RadioButton fx:id="rdDelaysReport" mnemonicParsing="false" prefHeight="17.0" prefWidth="161.0" text="Return Delays Report" toggleGroup="$colorToggleGroup" />
-                        <RadioButton fx:id="rdOther" mnemonicParsing="false" prefHeight="30.0" prefWidth="161.0" text="Other" toggleGroup="$colorToggleGroup" />
+                        <RadioButton fx:id="rdLendsReport" mnemonicParsing="false" prefHeight="30.0" prefWidth="194.0" text="Lends Report" toggleGroup="$colorToggleGroup" />
+                        <RadioButton fx:id="rdDelaysReport" mnemonicParsing="false" prefHeight="21.0" prefWidth="192.0" text="Return Delays Report" toggleGroup="$colorToggleGroup" />
+                        <RadioButton fx:id="rdOther" mnemonicParsing="false" prefHeight="30.0" prefWidth="192.0" text="Other" toggleGroup="$colorToggleGroup" />
                      </children>
                   </TilePane>
                   <Label text="Report Type:" GridPane.valignment="TOP">
@@ -113,9 +114,16 @@
                         <CheckMenuItem fx:id="itemsSuspend" mnemonicParsing="false" text="Suspend Accounts" />
                         <CheckMenuItem fx:id="itemsLocked" mnemonicParsing="false" text="Locked Accounts" />
                      </items></MenuButton>
+                  <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+                     <children>
+                        <ComboBox fx:id="cmbSavedReports" layoutX="102.0" prefHeight="31.0" prefWidth="158.0" />
+                        <TextField fx:id="txtPath" layoutX="39.0" layoutY="115.0" />
+                        <Button fx:id="btnBrowse" layoutX="48.0" layoutY="80.0" mnemonicParsing="false" onAction="#btnBrowsePresses" text="Browse" />
+                     </children>
+                  </Pane>
                </children>
                <padding>
-                  <Insets left="90.0" right="90.0" top="20.0" />
+                  <Insets top="25.0" />
                </padding>
             </GridPane>
          </center>

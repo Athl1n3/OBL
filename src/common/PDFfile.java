@@ -1,13 +1,20 @@
 package common;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
+/**
+ * PDF file to be pass 
+ * @author saleh
+ */
 public class PDFfile implements Serializable {
 	
 	private String Description=null;
 	private String fileName=null;	
 	private String filePath =null;
-	private int bookID;
+	private String value;
+	ArrayList<String> arrName;
+
 	private int size=0;
 	public  byte[] mybytearray;
 	
@@ -68,13 +75,20 @@ public class PDFfile implements Serializable {
 		this.filePath = filePath;
 	}
 
-	public int getBookID() {
-		return bookID;
+	public String getValue() {
+		return value;
 	}
 
-	public void setBookID(int bookID) {
-		this.bookID = bookID;
-	}	
+	public void setValue(String value) {
+		this.value = value;
+	}
 	
+	public ArrayList<String> getArrName() {
+		return arrName;
+	}
+
+	public void setArrName(ArrayList<String> arrName) {
+		this.arrName = arrName;
+	}
 }
 

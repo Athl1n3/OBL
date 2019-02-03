@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import common.PDFfile;
+
 /**
  * this class responsible about executing the queries from the clients
  * @author Saleh Kasem
@@ -115,9 +117,13 @@ public class MySQLConnection {
 	 * @param inputStream
 	 * @param id
 	 */
-	public void updateFile(InputStream inputStream, int id) {
-		
-		String sql = "UPDATE Book SET tableOfContents =? WHERE bookID = '" + id + "';";
+	public void updateFile(InputStream inputStream, Object msg) {
+		String sql;
+		if(((PDFfile)msg).getArrName().get(0).equals("&"))
+			 sql = "UPDATE Book SET tableOfContents =? WHERE bookID = '" + ((PDFfile)msg).getValue() + "';";
+		else {
+			 sql = "INSERT INTO Reports(Date,report) VALUES  ('"+ ((PDFfile)msg).getValue() + "',?);";
+		}
 		try {
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setBinaryStream(1, inputStream);
@@ -154,8 +160,13 @@ public class MySQLConnection {
 	/*
 	 * execute only the file query
 	 */
-	public ResultSet executeFileQuery(int bookID) {
-		String query = "SELECT tableOfContents FROM Book WHERE bookID = '" + bookID + "';";
+	public ResultSet executeFileQuery(ArrayList<String> arr) {
+		String query;
+		if(arr.get(arr.size()-1).equals("@"))
+			query = "SELECT tableOfContents FROM Book WHERE bookID = '" + arr.get(0) + "';";
+		else
+			query = "SELECT report FROM Reports WHERE Date = '" + arr.get(0) + "';";
+		
 		try {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);

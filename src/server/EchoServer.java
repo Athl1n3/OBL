@@ -51,9 +51,9 @@ public class EchoServer extends AbstractServer {
 			obj = new String("Student ID " + msg + "has been set as graduated");
 		} else if (msg instanceof ArrayList) {
 			ArrayList<String> arr = (ArrayList<String>) msg;
-			if (arr.get(arr.size() - 1).equals("@")) {
+			if (arr.get(arr.size() - 1).equals("@") || arr.get(arr.size() - 1).equals("!")) {
 				getFileFromDB(arr, client);
-			} else if (arr.get(0).equals("#")) {
+			}else if (arr.get(0).equals("#")) {
 				boolean graduate = false;
 				int graduateID = 0;
 				arr.remove(0);
@@ -81,19 +81,22 @@ public class EchoServer extends AbstractServer {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * handle the file received from client and pass it to MySQLConnection class to be saved in DB
+	 * handle the file received from client and pass it to MySQLConnection class to
+	 * be saved in DB
+	 * 
 	 * @param msg
 	 * @param client
 	 */
 	public void handelFileFromClient(Object msg, ConnectionToClient client) {
 		InputStream is = new ByteArrayInputStream(((PDFfile) msg).getMybytearray());
-		DBcon.updateFile(is, ((PDFfile) msg).getBookID());
+		DBcon.updateFile(is, msg);
 	}
 
 	/**
-	 * upload the file from DB to specific path on server 
+	 * upload the file from DB to specific path on server
+	 * 
 	 * @param msg
 	 * @param client
 	 * @param outputFileName
@@ -103,7 +106,7 @@ public class EchoServer extends AbstractServer {
 		System.out.println("upload file");
 		FileOutputStream fos = null;
 		BufferedOutputStream bos = null;
-		try {//get the file from output stream to output file path
+		try {// get the file from output stream to output file path
 			fos = new FileOutputStream(outputFileName);
 			bos = new BufferedOutputStream(fos);
 			bos.write(((PDFfile) msg).getMybytearray(), 0, ((PDFfile) msg).getSize());
@@ -119,23 +122,30 @@ public class EchoServer extends AbstractServer {
 	}
 
 	/**
-	 * get the from DB and prepared it to be pass to client
+	 * get the file from DB and prepared it to be pass to client
+	 * 
 	 * @param arr
 	 * @param client
 	 */
 	public void getFileFromDB(ArrayList<String> arr, ConnectionToClient client) {
 		FileOutputStream output = null;
 		BufferedInputStream buffer = null;
-		try {//getting blob file as resultSet from DB
-			ResultSet rs = DBcon.executeFileQuery(Integer.parseInt(arr.get(0)));
-			//save the file on server
+		try {// getting blob file as resultSet from DB
+			ResultSet rs = DBcon.executeFileQuery(arr);
+			// save the file on server
+			//File newFile = new File("@/../" + arr.get(1));
 			File newFile = new File("C:\\obl\\" + arr.get(1));
 			output = new FileOutputStream(newFile);
 			if (rs.next()) {
 				byte[] mybytearray = new byte[2048];
-				InputStream is = rs.getBinaryStream("tableOfContents");
+				InputStream is = null;
+				if(arr.get(arr.size()-1).equals("@"))
+					 is = rs.getBinaryStream("tableOfContents");
+				else
+					 is = rs.getBinaryStream("report");
+
 				buffer = new BufferedInputStream(is);
-				//write the file to specific path
+				// write the file to specific path
 				while (is.read(mybytearray) > 0) {
 					output.write(mybytearray);
 				}
@@ -157,8 +167,10 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 	
+
 	/**
 	 * get the file from the server where it's saved and send it to client
+	 * 
 	 * @param arr
 	 * @param newFile
 	 * @param client
@@ -262,6 +274,7 @@ public class EchoServer extends AbstractServer {
 
 	/**
 	 * the main witch activate the server
+	 * 
 	 * @param args
 	 * @throws IOException
 	 */

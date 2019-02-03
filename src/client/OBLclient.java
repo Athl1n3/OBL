@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 import common.OBLclientIF;
@@ -114,11 +116,12 @@ public class OBLclient extends AbstractClient {
 	 * @param filePath
 	 * @param bookID
 	 */
-	public void handleFileFromClientUI(String bookName, String filePath, int bookID) {
+	public void handleFileFromClientUI(ArrayList<String> arrName, String filePath, String value) {
 		try {
-			PDFfile uploadedFile = new PDFfile(bookName);
+			PDFfile uploadedFile = new PDFfile(arrName.get(1));
 			uploadedFile.setFilePath(filePath);
-			uploadedFile.setBookID(bookID);
+			uploadedFile.setValue(value);
+			uploadedFile.setArrName(arrName);
 			File newFile = new File(filePath);
 			byte[] mybytearray = new byte[(int) newFile.length()];
 			FileInputStream fis = new FileInputStream(newFile);
@@ -160,5 +163,6 @@ public class OBLclient extends AbstractClient {
 	protected void connectionEstablished() {
 		System.out.println("Successfully connected to the server");
 	}
+	
 }
 //End of ChatClient class
