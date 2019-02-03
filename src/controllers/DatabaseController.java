@@ -689,6 +689,9 @@ public class DatabaseController {
 		arr.add(String.valueOf(copy.getPurchaseDate()));
 		arr.add(query);
 		clientConnection.executeQuery(arr);
+		
+		clientConnection.executeQuery("UPDATE Book SET copiesNumber = copiesNumber + 1, availableCopies = availableCopies + 1 WHERE bookID = '"
+				+ copy.getBookID() + "';");
 	}
 
 	/**
