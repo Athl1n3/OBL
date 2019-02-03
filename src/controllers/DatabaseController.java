@@ -661,6 +661,10 @@ public class DatabaseController {
 
 		clientConnection.executeQuery(
 				"DELETE FROM BookCopy WHERE bookID = '" + bookID + "' AND SerialNumber = '" + serialNumber + "';");
+
+		clientConnection.executeQuery("UPDATE Book SET copiesNumber = copiesNumber - 1, availableCopies = availableCopies - 1 WHERE bookID = '"
+				+ bookID + "';");
+		
 	}
 	
 	/**
