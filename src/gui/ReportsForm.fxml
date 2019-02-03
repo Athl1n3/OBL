@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="385.0" prefWidth="604.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportsController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="385.0" prefWidth="604.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportsController">
    <children>
       <BorderPane prefHeight="377.0" prefWidth="744.0">
          <top>
@@ -118,7 +118,7 @@
                      <children>
                         <ComboBox fx:id="cmbSavedReports" layoutX="102.0" prefHeight="31.0" prefWidth="158.0" />
                         <TextField fx:id="txtPath" layoutX="39.0" layoutY="115.0" />
-                        <Button fx:id="btnBrowse" layoutX="48.0" layoutY="80.0" mnemonicParsing="false" text="Browse" />
+                        <Button fx:id="btnBrowse" layoutX="48.0" layoutY="80.0" mnemonicParsing="false" onAction="#btnBrowsePresses" text="Browse" />
                      </children>
                   </Pane>
                </children>
