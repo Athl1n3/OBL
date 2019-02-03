@@ -1,3 +1,6 @@
+/**
+ * client package contains classes that help client connect to the server
+ */
 package client;
 
 import java.io.BufferedInputStream;
@@ -6,7 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 

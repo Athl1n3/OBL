@@ -1,12 +1,12 @@
+/**
+ * client package contains classes that help client connect to the server
+ */
 package client;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import common.OBLclientIF;
-import common.PDFfile;
 import controllers.DatabaseController;
 
 public class ClientConnection implements OBLclientIF {
