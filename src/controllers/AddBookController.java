@@ -106,7 +106,6 @@ public class AddBookController {
 			// check if this id exist
 			if ((DatabaseController.getBook(newBook.getBookID())) == null) {
 				DatabaseController.addBook(newBook);
-				System.out.println("Ddd");
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Succsess");
 				alert.setHeaderText("The book has been added successfully");
