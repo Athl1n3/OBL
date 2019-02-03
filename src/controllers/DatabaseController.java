@@ -1235,7 +1235,7 @@ public class DatabaseController {
 	 * @param bookID
 	 */
 	public static void saveActivityReportFile(LocalDate date, String filePath) {
-		String fileName = date.toString() + " Activity Report.pdf";
+		String fileName = "Activity Report.pdf";
 		ArrayList<String> arr = new ArrayList<String>();
 		arr.add(" ");
 		arr.add(fileName);
@@ -1269,6 +1269,16 @@ public class DatabaseController {
 		arr.add(filePath);
 		arr.add("!");
 		clientConnection.uploadFile(arr);
+	}
+	
+	public static ArrayList<String> getAllReportsFromDB() {
+		String query = "SELECT Date FROM Reports";
+		clientConnection.executeQuery(query);
+		ArrayList<String> res = clientConnection.getList();
+		if (res != null) {
+			return res;
+		}
+		return null;		
 	}
 
 }
