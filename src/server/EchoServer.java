@@ -137,7 +137,12 @@ public class EchoServer extends AbstractServer {
 			output = new FileOutputStream(newFile);
 			if (rs.next()) {
 				byte[] mybytearray = new byte[2048];
-				InputStream is = rs.getBinaryStream("tableOfContents");
+				InputStream is = null;
+				if(arr.get(arr.size()-1).equals("@"))
+					 is = rs.getBinaryStream("tableOfContents");
+				else
+					 is = rs.getBinaryStream("report");
+
 				buffer = new BufferedInputStream(is);
 				// write the file to specific path
 				while (is.read(mybytearray) > 0) {

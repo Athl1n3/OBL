@@ -122,7 +122,7 @@ public class MySQLConnection {
 		if(((PDFfile)msg).getArrName().get(0).equals("&"))
 			 sql = "UPDATE Book SET tableOfContents =? WHERE bookID = '" + ((PDFfile)msg).getValue() + "';";
 		else {
-			 sql = "UPDATE Reports SET report =? WHERE Date = '" + ((PDFfile)msg).getValue() + "';";
+			 sql = "INSERT INTO Reports(Date,report) VALUES  ('"+ ((PDFfile)msg).getValue() + "',?);";
 		}
 		try {
 			PreparedStatement statement = conn.prepareStatement(sql);

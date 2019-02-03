@@ -31,10 +31,10 @@ public class LibraryServices {
 	public LibraryServices(MySQLConnection dbCon) {
 		initMailConnection();
 		LibraryServices.dbCon = dbCon;
-		// emailService();// Initiate book returns email service
-		// lateReturnsService();//Initiate late returns service
-		// savedCopiesManager();
-		scheduledSuspensionManager();
+		emailService();// Initiate book returns email service
+		lateReturnsService();// Initiate late returns service
+		savedCopiesManager();// Initiate saved copies manager
+		scheduledSuspensionManager();// Initiate scheduled suspension manager
 	}
 
 	/**
@@ -210,13 +210,12 @@ public class LibraryServices {
 	@SuppressWarnings("unchecked")
 	public void graduateReturn(int accountID) {
 		int leftLents = Integer.parseInt(((ArrayList<String>) dbCon
-				.executeQuery("SELECT COUNT(*) FROM lentBook WHERE userID = '" + accountID + "' AND returned = '0';")).get(0));
-		if (leftLents == 0)
-		{
+				.executeQuery("SELECT COUNT(*) FROM lentBook WHERE userID = '" + accountID + "' AND returned = '0';"))
+						.get(0));
+		if (leftLents == 0) {
 			dbCon.executeQuery("UPDATE account SET status = 'Locked' WHERE userID= '" + accountID + "';");
-			System.out.println("Graduate userID = "+accountID+" was locked");
-		}
-		else
+			System.out.println("Graduate userID = " + accountID + " was locked");
+		} else
 			System.out.println("Graduate still got " + leftLents + " unreturned books!");
 	}
 
@@ -243,11 +242,10 @@ public class LibraryServices {
 					String bookName = ((ArrayList<String>) dbCon
 							.executeSelectQuery("SELECT name FROM book WHERE bookID = '" + lentReturns.get(i) + "';"))
 									.get(0);
-					/*
-					 * sendEmail(eMail, "Lent Book Return", "Hello " + firstName + " " + lastName +
-					 * "\nYour lent book '" + bookName + "' has to be returned by tomorrow " +
-					 * LocalDate.now().plusDays(1));
-					 */
+
+					/*sendEmail(eMail, "Lent Book Return", "Hello " + firstName + " " + lastName + "\nYour lent book '"
+							+ bookName + "' has to be returned by tomorrow " + LocalDate.now().plusDays(1));*/
+
 					System.out.println("Email has been sent => " + eMail + " to return '" + bookName + "'");
 				}
 				if (lentReturns.size() == 0) {
