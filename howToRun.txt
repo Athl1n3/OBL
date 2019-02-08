@@ -1,0 +1,10 @@
+Change server.properties
+
+jdbc.schema= schemahere
+jdbc.username= usernamehere
+jdbc.password= passwordhere
+
+Change client.properties
+
+server.host = serverIP
+server.port = serverPort
