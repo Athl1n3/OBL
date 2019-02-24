@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -15,18 +16,18 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="377.0" prefWidth="539.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReturnController">
+<VBox prefHeight="420.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReturnController">
   <children>
-      <BorderPane prefHeight="468.0" prefWidth="600.0">
+      <BorderPane prefHeight="446.0" prefWidth="640.0">
          <top>
-            <Pane prefHeight="68.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <Pane prefHeight="93.0" prefWidth="640.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label layoutX="203.0" layoutY="25.0" text="Return Book">
+                  <Label layoutX="250.0" layoutY="10.0" text="Return Book">
                      <font>
                         <Font name="Bell MT Bold" size="25.0" />
                      </font>
                   </Label>
-                  <ImageView fitHeight="81.0" fitWidth="169.0" layoutX="384.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="81.0" fitWidth="169.0" layoutX="464.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/Logo.png" />
                      </image>
@@ -36,38 +37,38 @@
                         <Image url="@../images/baseline_arrow_back_black_48dp.png" />
                      </image>
                   </ImageView>
+                  <Label layoutX="6.0" layoutY="71.0" prefHeight="19.0" prefWidth="365.0" text="*Insert returned book data [BookID, Book Serial Number,  Lender ID]" />
                </children>
             </Pane>
          </top>
          <left>
-            <GridPane prefHeight="221.0" prefWidth="269.0" BorderPane.alignment="CENTER">
+            <GridPane prefHeight="239.0" prefWidth="299.0" BorderPane.alignment="CENTER">
               <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="90.0" minWidth="10.0" prefWidth="90.0" />
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="180.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="61.66668701171875" minHeight="10.0" prefHeight="46.0" valignment="CENTER" />
-                  <RowConstraints maxHeight="45.666656494140625" minHeight="10.0" prefHeight="42.0" valignment="CENTER" />
-                <RowConstraints minHeight="10.0" prefHeight="50.0" />
-                  <RowConstraints minHeight="10.0" prefHeight="50.0" />
-                  <RowConstraints minHeight="10.0" prefHeight="50.0" />
+                  <RowConstraints maxHeight="61.66668701171875" minHeight="10.0" prefHeight="46.0" valignment="CENTER" />
+                  <RowConstraints maxHeight="34.0" minHeight="7.0" prefHeight="17.0" />
+                <RowConstraints minHeight="10.0" prefHeight="46.0" />
+                  <RowConstraints minHeight="10.0" prefHeight="46.0" />
+                  <RowConstraints minHeight="10.0" prefHeight="46.0" />
               </rowConstraints>
                <children>
                   <Label text="Book ID:" />
-                  <Label GridPane.rowIndex="2" />
-                  <TextField fx:id="txtBookID" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" promptText="Enter Book ID" GridPane.columnIndex="1">
-                     <padding>
-                        <Insets bottom="10.0" />
-                     </padding>
-                  </TextField>
-                  <Label text="Issued date:" GridPane.rowIndex="3" />
-                  <DatePicker fx:id="dtIssueDate" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Label text="Return date:" GridPane.rowIndex="4" />
-                  <DatePicker fx:id="dtReturnDate" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <Label text="Book Name:" GridPane.rowIndex="2" />
-                  <TextField fx:id="txtBookName" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="183.0" promptText="Lent book name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField fx:id="txtSerialNumber" promptText="Enter Copy Serial Number" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label GridPane.rowIndex="3" />
+                  <TextField fx:id="txtBookID" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="200.0" promptText="Enter Book ID" GridPane.columnIndex="1" />
+                  <TextField fx:id="txtSerialNumber" maxWidth="-Infinity" prefWidth="200.0" promptText="Enter Copy Serial Number" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Issued date:" GridPane.rowIndex="4" />
+                  <DatePicker fx:id="dtIssueDate" editable="false" focusTraversable="false" maxWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label text="Return date:" GridPane.rowIndex="5" />
+                  <DatePicker fx:id="dtReturnDate" focusTraversable="false" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Label text="Book Name:" GridPane.rowIndex="3" />
+                  <TextField fx:id="txtBookName" editable="false" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="200.0" promptText="Lent Book Name" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <Label text="Serial Number:" GridPane.rowIndex="1" />
+                  <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Separator prefWidth="200.0" GridPane.rowIndex="2" />
                </children>
                <BorderPane.margin>
                   <Insets top="20.0" />
@@ -75,34 +76,32 @@
             </GridPane>
          </left>
          <right>
-            <GridPane prefHeight="221.0" prefWidth="251.0" BorderPane.alignment="CENTER">
+            <GridPane prefHeight="239.0" prefWidth="306.0" BorderPane.alignment="CENTER">
               <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="90.0" minWidth="10.0" prefWidth="90.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="180.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="50.0" />
-                <RowConstraints minHeight="10.0" prefHeight="50.0" />
-                  <RowConstraints minHeight="10.0" prefHeight="50.0" />
-                  <RowConstraints minHeight="10.0" prefHeight="50.0" />
-                  <RowConstraints minHeight="10.0" prefHeight="50.0" />
+                <RowConstraints maxHeight="61.66668701171875" minHeight="10.0" prefHeight="46.0" />
+                <RowConstraints maxHeight="61.66668701171875" minHeight="10.0" prefHeight="46.0" />
+                  <RowConstraints maxHeight="61.66668701171875" minHeight="10.0" prefHeight="17.0" />
+                  <RowConstraints maxHeight="61.66668701171875" minHeight="10.0" prefHeight="46.0" />
+                  <RowConstraints maxHeight="61.66668701171875" minHeight="10.0" prefHeight="46.0" />
+                  <RowConstraints maxHeight="61.66668701171875" minHeight="10.0" prefHeight="46.0" />
               </rowConstraints>
                <children>
                   <Label text="User ID:" />
-                  <TextField fx:id="txtUserID" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="171.0" promptText="Enter User ID" GridPane.columnIndex="1">
-                     <padding>
-                        <Insets bottom="10.0" />
-                     </padding>
-                  </TextField>
-                  <Label text="Due Date:" GridPane.rowIndex="3" />
-                  <Label text="Name:" GridPane.rowIndex="2" />
-                  <TextField fx:id="txtName" editable="false" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="171.0" promptText="User Name" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                     <padding>
-                        <Insets bottom="10.0" />
-                     </padding>
-                  </TextField>
-                  <DatePicker fx:id="dtDueDate" editable="false" prefHeight="26.0" prefWidth="180.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Button fx:id="btnLookup" mnemonicParsing="false" onAction="#btnLookupPressed" prefHeight="25.0" prefWidth="83.0" text="Lookup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="txtUserID" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="200.0" promptText="Enter User ID" GridPane.columnIndex="1" />
+                  <Label text="Due Date:" GridPane.rowIndex="4" />
+                  <Label text="Name:" GridPane.rowIndex="3" />
+                  <TextField fx:id="txtName" editable="false" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="200.0" promptText="Lender Name" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <DatePicker fx:id="dtDueDate" editable="false" focusTraversable="false" prefHeight="26.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Button fx:id="btnLookup" mnemonicParsing="false" onAction="#btnLookupPressed" prefHeight="25.0" prefWidth="83.0" text="Lookup" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="50.0" />
+                     </GridPane.margin></Button>
+                  <Separator prefWidth="200.0" GridPane.rowIndex="2" />
+                  <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
                <BorderPane.margin>
                   <Insets right="5.0" top="20.0" />
@@ -132,6 +131,13 @@
                </children>
             </GridPane>
          </bottom>
+         <center>
+            <Pane maxWidth="-Infinity" prefHeight="259.0" prefWidth="20.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Separator layoutX="-45.0" layoutY="115.0" prefWidth="200.0" />
+               </children>
+            </Pane>
+         </center>
       </BorderPane>
   </children>
 </VBox>

@@ -60,12 +60,11 @@
                   </Label>
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="14.0" layoutY="14.0" prefHeight="19.0" prefWidth="75.0" text="ID:">
+                        <Label layoutX="47.0" layoutY="27.0" prefHeight="19.0" prefWidth="27.0" text="ID:">
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
                         </Label>
-                        <Button fx:id="btnUserLookup" layoutX="74.0" layoutY="60.0" mnemonicParsing="false" onAction="#btnUserLookupPressed" text="User Books Lookup" />
                         <Separator layoutX="232.0" layoutY="3.0" orientation="VERTICAL" prefHeight="120.0" prefWidth="2.0" />
                         <GridPane layoutX="232.0" layoutY="24.0" prefHeight="63.0" prefWidth="444.0">
                           <columnConstraints>
@@ -99,13 +98,14 @@
                                     <Font name="Arial Black" size="12.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="txtUserID" disable="true" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" GridPane.columnIndex="1" />
-                              <TextField fx:id="txtUsername" disable="true" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="txtName" disable="true" maxWidth="162.0" minWidth="140.0" prefHeight="30.0" prefWidth="162.0" GridPane.columnIndex="3" />
+                              <TextField fx:id="txtUserID" editable="false" focusTraversable="false" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" GridPane.columnIndex="1" />
+                              <TextField fx:id="txtUsername" editable="false" focusTraversable="false" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="txtName" editable="false" focusTraversable="false" maxWidth="162.0" minWidth="140.0" prefHeight="30.0" prefWidth="162.0" GridPane.columnIndex="3" />
                               <Label fx:id="lblStatus" text="---" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
-                        <TextField fx:id="txtID" layoutX="74.0" layoutY="10.0" />
+                        <TextField fx:id="txtID" layoutX="75.0" layoutY="24.0" />
+                        <Button fx:id="btnUserLookup" layoutX="90.0" layoutY="60.0" mnemonicParsing="false" onAction="#btnUserLookupPressed" text="User Books Lookup" />
                      </children>
                   </Pane>
                   <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">

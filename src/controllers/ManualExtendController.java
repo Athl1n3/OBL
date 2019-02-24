@@ -110,9 +110,11 @@ public class ManualExtendController {
 	private LibrarianAccount loggedLibAccount;
 
 	/**
-	 * Validate if the book that has been selected to extend the lend duration can be extended.
-	 * if and only if the extension has been successful , an alert message will be displayed.
-	 * Otherwise an error alert message will be displayed.
+	 * Validate if the book that has been selected to extend the lend duration can
+	 * be extended. if and only if the extension has been successful , an alert
+	 * message will be displayed. Otherwise an error alert message will be
+	 * displayed.
+	 * 
 	 * @param event - on pressing the 'Extend Lend' button.
 	 */
 	@FXML
@@ -128,7 +130,8 @@ public class ManualExtendController {
 					"The book " + selectedBook.getBook().getName() + " is a 'Wanted'\n book and cannot be extended.");
 		} else {
 			// validate if there is a week or less to return that book
-			if ((LocalDate.now().isBefore(selectedBook.getDueDate().minusWeeks(1))) == true || (LocalDate.now().isEqual(selectedBook.getDueDate().minusWeeks(1))) == true) {
+			if ((LocalDate.now().isBefore(selectedBook.getDueDate().minusWeeks(1))) == true
+					|| (LocalDate.now().isEqual(selectedBook.getDueDate().minusWeeks(1))) == true) {
 				// if not then let the user know that he can't extend the book return time
 				alertWarningMessage(
 						"You have more than 1 week left to return this book, therefore you can extend this book returning time.");
@@ -176,8 +179,10 @@ public class ManualExtendController {
 	}
 
 	/**
-	 * Validate if the inserted user ID exists in the DB or not. if and only if the user ID exists in the DB , 
-	 * all of his information will be displayed. Otherwise an error alert will be displayed.
+	 * Validate if the inserted user ID exists in the DB or not. if and only if the
+	 * user ID exists in the DB , all of his information will be displayed.
+	 * Otherwise an error alert will be displayed.
+	 * 
 	 * @param event - on pressing the 'Extend Lend' button.
 	 */
 	@FXML
@@ -191,10 +196,25 @@ public class ManualExtendController {
 			if (accAbs instanceof UserAccount) {
 				acc = (UserAccount) accAbs;
 				// display the user details according to the inserted ID
-				txtUserID.setText(String.valueOf(acc.getID()));
+				txtUserID.setText(String.valueOf(acc.getAccountID()));
+				txtUserID.setDisable(false);
+				txtUsername.setDisable(false);
+				txtName.setDisable(false);
 				txtUsername.setText(acc.getUserName());
 				txtName.setText(acc.getFirstName() + " " + acc.getLastName());
 				lblStatus.setText(String.valueOf(acc.getStatus()));
+				switch (acc.getStatus()) {
+				case Active:
+					lblStatus.setTextFill(javafx.scene.paint.Color.GREEN);
+					break;
+				case Suspended:
+					lblStatus.setTextFill(javafx.scene.paint.Color.rgb(153, 153, 0));
+					break;
+				case Locked:
+					lblStatus.setTextFill(javafx.scene.paint.Color.RED);
+					break;
+				}
+				txtID.setStyle(null);
 				// get the books of the user as an observableList to display it in the table
 				ObservableList<LentBook> list = getLentBookList(usrID);
 				// display the data in the tableView
@@ -209,8 +229,20 @@ public class ManualExtendController {
 				}
 			} else
 				alertWarningMessage("Can't perform this action for librarian account!");
-		} else
+		} else {
 			alertWarningMessage("User doesn't exist!");
+			txtID.requestFocus();
+			txtID.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+			txtUserID.clear();
+			txtUsername.clear();
+			txtName.clear();
+			txtUserID.setDisable(true);
+			txtUsername.setDisable(true);
+			txtName.setDisable(true);
+			lblStatus.setText("---");
+			lblStatus.setTextFill(javafx.scene.paint.Color.BLACK);
+			tableView.getItems().clear();
+		}
 	}
 
 	/**
@@ -231,7 +263,9 @@ public class ManualExtendController {
 				alertWarningMessage("The ID must be 9 numbers");
 			}
 		});
-
+		txtUserID.setDisable(true);
+		txtUsername.setDisable(true);
+		txtName.setDisable(true);
 		// Defines how to fill data for each cell
 		bookNameCol.setCellValueFactory(new Callback<CellDataFeatures<LentBook, String>, ObservableValue<String>>() {
 			@Override
@@ -269,6 +303,7 @@ public class ManualExtendController {
 
 	/**
 	 * Gets all the lentBooks for the user as an ObservableList
+	 * 
 	 * @return ObservableList LentBooks list
 	 */
 	private ObservableList<LentBook> getLentBookList(String userID) {
@@ -283,10 +318,11 @@ public class ManualExtendController {
 
 	/**
 	 * Load the 'Manual Extend Lend' stage after initialising it.
+	 * 
 	 * @param primaryStage - the stage for display.
 	 */
 	void start(Stage stage) throws Exception {
-		FXMLLoader fxmlLoader= new FXMLLoader();
+		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setLocation(getClass().getResource("/gui/ManualExtendForm.fxml"));
 		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
@@ -298,6 +334,7 @@ public class ManualExtendController {
 
 	/**
 	 * Show an appropriate alert to the user when an error or a warning occurs.
+	 * 
 	 * @param msg
 	 */
 	private void alertWarningMessage(String msg) {
@@ -306,6 +343,7 @@ public class ManualExtendController {
 
 	/**
 	 * Close this stage and get back to the previous stage.
+	 * 
 	 * @param event - on pressing the 'back(image)' button.
 	 */
 	@FXML

@@ -79,7 +79,8 @@ public class ReturnController implements Initializable {
 	private boolean lookedUp;
 
 	/**
-	 *  brows user and book details
+	 * brows user and book details
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -94,7 +95,14 @@ public class ReturnController implements Initializable {
 					if (lentBook == null) {
 						// if not , then let the user know
 						alertWarningMessage("No lent book with the inserted data was found! ");
+						txtUserID.setStyle(null);
+						txtBookID.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+						txtSerialNumber.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+						txtBookID.requestFocus();
 					} else {
+						txtBookID.setStyle(null);
+						txtSerialNumber.setStyle(null);
+						txtUserID.setStyle(null);
 						txtBookID.setDisable(true);
 						txtUserID.setDisable(true);
 						txtSerialNumber.setDisable(true);
@@ -103,28 +111,38 @@ public class ReturnController implements Initializable {
 						dtIssueDate.setValue(lentBook.getIssueDate());
 						dtDueDate.setValue(lentBook.getDueDate());
 						btnReturnBook.setDisable(false);
+						txtBookName.setDisable(false);
+						txtName.setDisable(false);
+						dtIssueDate.setDisable(false);
+						dtDueDate.setDisable(false);
+						btnReturnBook.setStyle("-fx-border-color: black ; -fx-border-width: 1px ;");
 						lookedUp = true;
 						dtReturnDate.setDisable(false);
 						dtReturnDate.setDayCellFactory(picker -> new DateCell() {
-					        @Override
+							@Override
 							public void updateItem(LocalDate date, boolean empty) {
-					            super.updateItem(date, empty);
-					            LocalDate issueDate = dtIssueDate.getValue();
+								super.updateItem(date, empty);
+								LocalDate issueDate = dtIssueDate.getValue();
 
-					            setDisable(empty || date.compareTo(issueDate) < 0 || date.compareTo(LocalDate.now()) > 0);
-					        }
-					    });
+								setDisable(
+										empty || date.compareTo(issueDate) < 0 || date.compareTo(LocalDate.now()) > 0);
+							}
+						});
 					}
 				} else
 					alertWarningMessage("Librarian ID can't be used for returns!");
-			} else
+			} else {
 				alertWarningMessage("User doesn't exist!");
+				txtUserID.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+				txtUserID.requestFocus();
+			}
 		} else
 			alertWarningMessage("User/Book already looked up!");
 	}
 
 	/**
-	 * clear all the fields 
+	 * clear all the fields
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -145,8 +163,16 @@ public class ReturnController implements Initializable {
 		txtUserID.setDisable(false);
 		txtSerialNumber.setDisable(false);
 		dtReturnDate.setDisable(true);
+		txtBookName.setDisable(true);
+		txtName.setDisable(true);
+		dtIssueDate.setDisable(true);
+		dtDueDate.setDisable(true);
 		dtReturnDate.setValue(LocalDate.now());
 		btnReturnBook.setDisable(true);
+		txtBookID.setStyle(null);
+		txtSerialNumber.setStyle(null);
+		txtUserID.setStyle(null);
+		btnReturnBook.setStyle(null);
 	}
 
 	/**
@@ -160,41 +186,46 @@ public class ReturnController implements Initializable {
 
 	/**
 	 * when the button pressed, return the book and update the DB
+	 * 
 	 * @param event
 	 */
 	@FXML
 	void btnReturnBookPressed(ActionEvent event) {
-
-		try { // update Book AvailableCopies += 1
-			DatabaseController.updateBookAvailableCopies(lentBook.getBook(), 1);
-			// update lent field to false in book copy table
-			lentBook.getBookCopy().setLent(false);
-			DatabaseController.updateBookCopy(lentBook.getBookCopy());
-			lentBook.setReturnDate(dtReturnDate.getValue());
-			lentBook.setReturned(true); // update lent Book in DB lentBook table
-			if(((UserAccount)lenderAccount).isGraduate())
-				DatabaseController.returnBook(lentBook, lenderAccount.getAccountID());//graduated
-			else
-				DatabaseController.returnBook(lentBook, 0);//Not graduated
-			DatabaseController.addActivity(lenderAccount.getAccountID(),
-					"Returned Book [Book ID: " + lentBook.getBook().getBookID() + "]");
-			if (!lentBook.isLate()) {
-				alertWarningMessage("Book returned successfully");
-			} else
-				alertWarningMessage("Book returned in late");
-		} catch (Exception e) {
-			e.printStackTrace();
+		Alert returnConfirmation = new Alert(AlertType.CONFIRMATION, "Are you sure to return that book?",
+				ButtonType.YES, ButtonType.CANCEL);
+		if (returnConfirmation.showAndWait().get() == ButtonType.YES) {
+			try { // update Book AvailableCopies += 1
+				DatabaseController.updateBookAvailableCopies(lentBook.getBook(), 1);
+				// update lent field to false in book copy table
+				lentBook.getBookCopy().setLent(false);
+				DatabaseController.updateBookCopy(lentBook.getBookCopy());
+				lentBook.setReturnDate(dtReturnDate.getValue());
+				lentBook.setReturned(true); // update lent Book in DB lentBook table
+				if (((UserAccount) lenderAccount).isGraduate())
+					DatabaseController.returnBook(lentBook, lenderAccount.getAccountID());// graduated
+				else
+					DatabaseController.returnBook(lentBook, 0);// Not graduated
+				DatabaseController.addActivity(lenderAccount.getAccountID(),
+						"Returned Book [Book ID: " + lentBook.getBook().getBookID() + "]");
+				if (!lentBook.isLate()) {
+					alertWarningMessage("Book was returned successfully");
+				} else
+					alertWarningMessage("Book was returned in late");
+				btnClearPressed(null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-
 	}
 
 	/**
-	 * open the return Form 
+	 * open the return Form
+	 * 
 	 * @param primaryStage
 	 * @throws Exception
 	 */
 	void start(Stage primaryStage) throws Exception {
-		FXMLLoader fxmlLoader= new FXMLLoader();
+		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setLocation(getClass().getResource("/gui/ReturnForm.fxml"));
 		Parent root = fxmlLoader.load();
 		Scene scene = new Scene(root);
@@ -203,9 +234,10 @@ public class ReturnController implements Initializable {
 		primaryStage.setResizable(false);
 		primaryStage.show();
 	}
-	
+
 	/**
 	 * return to the previous window
+	 * 
 	 * @param event
 	 */
 	@FXML
@@ -223,16 +255,20 @@ public class ReturnController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		btnReturnBook.setDisable(true);
 		dtReturnDate.setEditable(false);
+		txtBookName.setDisable(true);
+		txtName.setDisable(true);
+		dtIssueDate.setDisable(true);
+		dtDueDate.setDisable(true);
 		dtDueDate.setOnMouseClicked(e -> {
-		     if(!dtDueDate.isEditable())
-		    	 dtDueDate.hide();
+			if (!dtDueDate.isEditable())
+				dtDueDate.hide();
 		});
 		dtIssueDate.setOnMouseClicked(e -> {
-		     if(!dtIssueDate.isEditable())
-		    	 dtIssueDate.hide();
+			if (!dtIssueDate.isEditable())
+				dtIssueDate.hide();
 		});
 		dtReturnDate.setDisable(true);
-		//set listener to check user id input 
+		// set listener to check user id input
 		txtUserID.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("\\d*")) {
 				txtUserID.setText(newValue.replaceAll("[^\\d]", ""));
@@ -243,7 +279,7 @@ public class ReturnController implements Initializable {
 				alertWarningMessage("The ID must be 9 numbers");
 			}
 		});
-		//set listener to check book id input 
+		// set listener to check book id input
 		txtBookID.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("\\d*")) {
 				txtBookID.setText(newValue.replaceAll("[^\\d]", ""));
